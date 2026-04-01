@@ -98,8 +98,28 @@ if (rendered.diagnostics?.length) {
   }
 }
 
-// Inject the bundled JS before </body>
-let html = rendered.html.replace('</body>', `<script type="module">${js}</script>\n</body>`);
+// Strip Stencil SSR hydration markers so the custom-elements runtime
+// treats the DOM as fresh and re-renders over it (same content, invisible).
+// This preserves the prerendered visual paint while allowing full interactivity.
+let html = rendered.html;
+html = html.replace(/\s*s-id="[^"]*"/g, '');
+html = html.replace(/\s*c-id="[^"]*"/g, '');
+html = html.replace(/\s*class="hydrated"/g, '');
+html = html.replace(/\s*class=""/g, '');
+// Clean up 'hydrated' from class lists that have other classes too
+html = html.replace(/\bhydrated\b\s*/g, '');
+
+// Escape </ sequences in JS so they don't break the inline <script> tag.
+const safeJs = js.replaceAll('</', '<\\/');
+
+// Inject scripts before </body>.
+// 1. A tiny synchronous script clears prerendered custom-element children so the
+//    runtime doesn't duplicate content (it appends rather than replaces).
+// 2. The module script loads the full component bundle.
+// IMPORTANT: use a function replacement to avoid $& and $' patterns in the
+// minified JS being interpreted as special replacement tokens.
+const bootstrap = `<script>document.querySelectorAll('app-dashboard').forEach(function(e){e.textContent=''})</script>`;
+html = html.replace('</body>', () => `${bootstrap}\n<script type="module">${safeJs}</script>\n</body>`);
 
 console.log(`   ${(html.length / 1024).toFixed(1)} KB total`);
 
