@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>yabai GUI</title>
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      --bg: #1a1a2e;
+      --bg2: #16213e;
+      --bg3: #0f3460;
+      --accent: #e94560;
+      --accent2: #533483;
+      --text: #eaeaea;
+      --text2: #a0a0a0;
+      --success: #4ecca3;
+      --warning: #ffc107;
+      --danger: #ff6b6b;
+      --info: #4dabf7;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 20px;
+      line-height: 1.5;
+    }
+    h1 { margin: 0 0 20px; font-size: 1.8rem; }
+    h2 { margin: 30px 0 15px; font-size: 1.3rem; color: var(--accent); border-bottom: 1px solid var(--bg3); padding-bottom: 8px; }
+    h3 { margin: 20px 0 10px; font-size: 1rem; color: var(--text2); }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+    .card {
+      background: var(--bg2);
+      border-radius: 12px;
+      padding: 20px;
+      border: 1px solid var(--bg3);
+    }
+    .card.compact { padding: 15px; }
+    .btn {
+      background: var(--accent2);
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+      margin: 4px;
+    }
+    .btn:hover { background: var(--accent); transform: translateY(-1px); }
+    .btn.small { padding: 6px 12px; font-size: 0.8rem; }
+    .btn.success { background: var(--success); color: #1a1a2e; }
+    .btn.warning { background: var(--warning); color: #1a1a2e; }
+    .btn.danger { background: var(--danger); }
+    .btn.info { background: var(--info); }
+    .btn-group { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+    .btn-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    select, input[type="text"], input[type="number"], input[type="range"] {
+      background: var(--bg3);
+      color: var(--text);
+      border: 1px solid var(--accent2);
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      min-width: 120px;
+    }
+    input[type="range"] { padding: 0; height: 6px; }
+    select:focus, input:focus { outline: none; border-color: var(--accent); }
+    .input-group { display: flex; gap: 8px; align-items: center; margin: 8px 0; flex-wrap: wrap; }
+    .input-group label { min-width: 100px; color: var(--text2); font-size: 0.85rem; }
+    .tooltip {
+      position: relative;
+      display: inline-block;
+      color: var(--text2);
+      cursor: help;
+      margin-left: 4px;
+    }
+    .tooltip:hover::after {
+      content: attr(data-tip);
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--bg3);
+      color: var(--text);
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      white-space: pre-wrap;
+      max-width: 300px;
+      z-index: 100;
+      border: 1px solid var(--accent2);
+      margin-bottom: 6px;
+    }
+    .output {
+      background: #000;
+      color: #0f0;
+      font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+      padding: 15px;
+      border-radius: 8px;
+      min-height: 200px;
+      max-height: 400px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      font-size: 0.85rem;
+      margin-top: 10px;
+    }
+    .output.error { color: var(--danger); }
+    .cmd-preview {
+      background: var(--bg3);
+      padding: 12px;
+      border-radius: 6px;
+      font-family: monospace;
+      margin: 10px 0;
+      border-left: 3px solid var(--accent);
+    }
+    .section { margin-bottom: 30px; }
+    .tab-bar { display: flex; gap: 4px; margin-bottom: 15px; flex-wrap: wrap; }
+    .tab {
+      padding: 8px 16px;
+      background: var(--bg3);
+      border: none;
+      color: var(--text);
+      cursor: pointer;
+      border-radius: 6px;
+      font-size: 0.9rem;
+    }
+    .tab.active { background: var(--accent); }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      margin-left: 8px;
+    }
+    .badge.sip { background: var(--warning); color: #1a1a2e; }
+    .badge.safe { background: var(--success); color: #1a1a2e; }
+    .badge.danger { background: var(--danger); }
+    .toggle-row { display: flex; align-items: center; gap: 10px; margin: 8px 0; }
+    .raw-cmd { width: 100%; background: var(--bg3); }
+    .status-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--bg2);
+      padding: 10px 20px;
+      border-top: 1px solid var(--bg3);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+    }
+    .main-content { padding-bottom: 60px; }
+    .json-tree { color: #0f0; }
+    .json-key { color: #ff6b6b; }
+    .json-string { color: #4dabf7; }
+    .json-number { color: #ffc107; }
+    .json-bool { color: #4ecca3; }
+    .grid-2 { grid-template-columns: 1fr 1fr; }
+    @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } }
+    .collapsible {
+      background: var(--bg3);
+      color: var(--text);
+      cursor: pointer;
+      padding: 12px;
+      width: 100%;
+      border: none;
+      text-align: left;
+      outline: none;
+      border-radius: 8px;
+      margin: 5px 0;
+      font-size: 0.9rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .collapsible:hover { background: var(--accent2); }
+    .collapsible::after { content: '+'; font-size: 1.2rem; }
+    .collapsible.active::after { content: '-'; }
+    .collapsible-content {
+      padding: 0 12px;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.2s;
+    }
+    .collapsible-content.open { max-height: 2000px; padding: 12px; }
+  </style>
+</head>
+<body>
+  <div class="main-content">
+    <h1>yabai GUI <span style="font-size:0.6em;color:var(--text2)">v7.1.17</span></h1>
+    
+    <div class="tab-bar">
+      <button class="tab active" onclick="switchTab('query')">Query</button>
+      <button class="tab" onclick="switchTab('windows')">Windows</button>
+      <button class="tab" onclick="switchTab('spaces')">Spaces</button>
+      <button class="tab" onclick="switchTab('displays')">Displays</button>
+      <button class="tab" onclick="switchTab('config')">Config</button>
+      <button class="tab" onclick="switchTab('rules')">Rules</button>
+      <button class="tab" onclick="switchTab('signals')">Signals</button>
+      <button class="tab" onclick="switchTab('service')">Service</button>
+      <button class="tab" onclick="switchTab('raw')">Raw</button>
+    </div>
+
+    <!-- QUERY TAB -->
+    <div id="query" class="tab-content active">
+      <div class="grid">
+        <div class="card">
+          <h3>Quick Queries <span class="badge safe">Safe</span></h3>
+          <div class="btn-group">
+            <button class="btn success" onclick="runQuery('displays')">Query Displays</button>
+            <button class="btn success" onclick="runQuery('spaces')">Query Spaces</button>
+            <button class="btn success" onclick="runQuery('windows')">Query Windows</button>
+          </div>
+          <div class="input-group">
+            <label>Filter by:</label>
+            <select id="queryFilterType">
+              <option value="">None</option>
+              <option value="display">Display</option>
+              <option value="space">Space</option>
+              <option value="window">Window</option>
+            </select>
+            <input type="text" id="queryFilterValue" placeholder="selector (e.g., 1, prev, focused)">
+          </div>
+          <div class="input-group">
+            <label>Properties:</label>
+            <input type="text" id="queryProps" placeholder="comma-separated fields (optional)">
+          </div>
+        </div>
+        <div class="card">
+          <h3>Live Status</h3>
+          <div class="btn-group">
+            <button class="btn small" onclick="refreshAll()">Refresh All</button>
+            <button class="btn small warning" onclick="clearOutput()">Clear</button>
+          </div>
+          <div id="statusSummary" style="font-size:0.85rem;color:var(--text2);margin-top:10px;">
+            Click Refresh All to load current state
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WINDOWS TAB -->
+    <div id="windows" class="tab-content">
+      <div class="grid">
+        <div class="card">
+          <h3>Focus & Navigation</h3>
+          <div class="btn-group">
+            <button class="btn" onclick="windowCmd('--focus prev')">← Prev</button>
+            <button class="btn" onclick="windowCmd('--focus next')">Next →</button>
+            <button class="btn" onclick="windowCmd('--focus recent')">Recent</button>
+            <button class="btn" onclick="windowCmd('--focus mouse')">Under Mouse</button>
+          </div>
+          <div class="btn-group">
+            <button class="btn small" onclick="windowCmd('--focus stack.prev')">Stack ↑</button>
+            <button class="btn small" onclick="windowCmd('--focus stack.next')">Stack ↓</button>
+            <button class="btn small" onclick="windowCmd('--focus largest')">Largest</button>
+            <button class="btn small" onclick="windowCmd('--focus smallest')">Smallest</button>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Window Actions <span class="tooltip" data-tip="Operations on the selected window">ⓘ</span></h3>
+          <div class="btn-group">
+            <button class="btn warning" onclick="windowCmd('--close')">Close</button>
+            <button class="btn" onclick="windowCmd('--minimize')">Minimize</button>
+          </div>
+          <div class="input-group">
+            <label>Deminimize ID:</label>
+            <input type="text" id="deminimizeId" placeholder="window id">
+            <button class="btn small" onclick="execCmd(`yabai -m window --deminimize ${document.getElementById('deminimizeId').value}`)">Restore</button>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Move & Swap</h3>
+          <div class="btn-group">
+            <button class="btn" onclick="windowCmd('--swap prev')">Swap ←</button>
+            <button class="btn" onclick="windowCmd('--swap next')">Swap →</button>
+            <button class="btn" onclick="windowCmd('--swap largest')">Swap Largest</button>
+          </div>
+          <div class="btn-group">
+            <button class="btn small" onclick="windowCmd('--warp prev')">Warp ←</button>
+            <button class="btn small" onclick="windowCmd('--warp next')">Warp →</button>
+            <button class="btn small" onclick="windowCmd('--stack prev')">Stack on ←</button>
+            <button class="btn small" onclick="windowCmd('--stack next')">Stack on →</button>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Send To <span class="badge sip">SIP</span></h3>
+          <div class="input-group">
+            <label>Display:</label>
+            <select id="winDisplay">
+              <option value="prev">Prev</option>
+              <option value="next">Next</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+            </select>
+            <button class="btn small" onclick="windowCmd(`--display ${document.getElementById('winDisplay').value}`)">Send</button>
+          </div>
+          <div class="input-group">
+            <label>Space:</label>
+            <select id="winSpace">
+              <option value="prev">Prev</option>
+              <option value="next">Next</option>
+              <option value="recent">Recent</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+            <button class="btn small" onclick="windowCmd(`--space ${document.getElementById('winSpace').value}`)">Send</button>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Toggles <span class="badge sip">SIP</span></h3>
+          <div class="btn-group">
+            <button class="btn small" onclick="windowCmd('--toggle float')">Float</button>
+            <button class="btn small" onclick="windowCmd('--toggle sticky')">Sticky</button>
+            <button class="btn small" onclick="windowCmd('--toggle pip')">PiP</button>
+            <button class="btn small" onclick="windowCmd('--toggle shadow')">Shadow</button>
+            <button class="btn small" onclick="windowCmd('--toggle split')">Split</button>
+          </div>
+          <div class="btn-group">
+            <button class="btn small" onclick="windowCmd('--toggle zoom-parent')">Zoom Parent</button>
+            <button class="btn small" onclick="windowCmd('--toggle zoom-fullscreen')">Zoom FS</button>
+            <button class="btn small" onclick="windowCmd('--toggle native-fullscreen')">Native FS</button>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Advanced <span class="badge sip">SIP</span></h3>
+          <div class="input-group">
+            <label>Grid:</label>
+            <input type="text" id="gridVal" placeholder="r:c:x:y:w:h" style="width:120px;">
+            <button class="btn small" onclick="windowCmd(`--grid ${document.getElementById('gridVal').value}`)">Apply</button>
+          </div>
+          <div class="input-group">
+            <label>Insert:</label>
+            <select id="insertDir">
+              <option value="north">North</option>
+              <option value="east">East</option>
+              <option value="south">South</option>
+              <option value="west">West</option>
+              <option value="stack">Stack</option>
+            </select>
+            <button class="btn small" onclick="windowCmd(`--insert ${document.getElementById('insertDir').value}`)">Set</button>
+          </div>
+          <div class="input-group">
+            <label>Opacity:</label>
+            <input type="range" id="opacityVal" min="0" max="1" step="0.1" value="1">
+            <span id="opacityDisplay">1.0</span>
+            <button class="btn small" onclick="windowCmd(`--opacity ${document.getElementById('opacityVal').value}`)">Set</button>
+          </div>
+          <div class="input-group">
+            <label>Scratchpad:</label>
+            <input type="text" id="scratchpadLabel" placeholder="label" style="width:80px;">
+            <button class="btn small" onclick="windowCmd(`--scratchpad ${document.getElementById('scratchpadLabel').value}`)">Assign</button>
+            <button class="btn small" onclick="execCmd('yabai -m window --scratchpad recover')">Recover</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SPACES TAB -->
+    <div id="spaces" class="tab-content">
+      <div class="grid">
+        <div class="card">
+          <h3>Focus & Navigation <span class="badge sip">SIP</span></h3>
+          <div class="btn-group">
+            <button class="btn" onclick="spaceCmd('--focus prev')">← Prev</button>
+            <button class="btn" onclick="spaceCmd('--focus next')">Next →</button>
+            <button class="btn" onclick="spaceCmd('--focus recent')">Recent</button>
+            <button class="btn" onclick="spaceCmd('--focus 1')">Space 1</button>
+            <button class="btn" onclick="spaceCmd('--focus 2')">Space 2</button>
+            <button class="btn" onclick="spaceCmd('--focus 3')">Space 3</button>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Manage Spaces <span class="badge sip">SIP</span></h3>
+          <div class="btn-group">
+            <button class="btn success" onclick="spaceCmd('--create')">Create</button>
+            <button class="btn danger" onclick="confirmCmd('Destroy space?', 'spaceCmd(\'--destroy\')')">Destroy</button>
+          </div>
+          <div class="input-group">
+            <label>Create on Display:</label>
+            <select id="createOnDisplay">
+              <option value="">Current</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+            </select>
+            <button class="btn small" onclick="spaceCmd(`--create ${document.getElementById('createOnDisplay').value}`)">Create</button>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Space Operations <span class="badge sip">SIP</span></h3>
+          <div class="btn-group">
+            <button class="btn" onclick="spaceCmd('--move prev')">Move ←</button>
+            <button class="btn" onclick="spaceCmd('--move next')">Move →</button>
+            <button class="btn" onclick="spaceCmd('--swap prev')">Swap ←</button>
+            <button class="btn" onclick="spaceCmd('--swap next')">Swap →</button>
+          </div>
+          <div class="input-group">
+            <label>Send to Display:</label>
+            <select id="spaceToDisplay">
+              <option value="prev">Prev</option>
+              <option value="next">Next</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+            </select>
+            <button class="btn small" onclick="spaceCmd(`--display ${document.getElementById('spaceToDisplay').value}`)">Send</button>
+          </div>
+          <div class="input-group">
+            <label>Label:</label>
+            <input type="text" id="spaceLabel" placeholder="label name">
+            <button class="btn small" onclick="spaceCmd(`--label ${document.getElementById('spaceLabel').value}`)">Set</button>
+            <button class="btn small" onclick="spaceCmd('--label')">Clear</button>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Layout & Balance</h3>
+          <div class="btn-group">
+            <button class="btn" onclick="spaceCmd('--layout bsp')">BSP</button>
+            <button class="btn" onclick="spaceCmd('--layout stack')">Stack</button>
+            <button class="btn" onclick="spaceCmd('--layout float')">Float</button>
+          </div>
+          <div class="btn-group">
+            <button class="btn small" onclick="spaceCmd('--rotate 90')">↻ 90°</button>
+            <button class="btn small" onclick="spaceCmd('--rotate 180')">↻ 180°</button>
+            <button class="btn small" onclick="spaceCmd('--rotate 270')">↻ 270°</button>
+            <button class="btn small" onclick="spaceCmd('--mirror x-axis')">| Mirror</button>
+            <button class="btn small" onclick="spaceCmd('--mirror y-axis')">— Mirror</button>
+          </div>
+          <div class="btn-group">
+            <button class="btn small" onclick="spaceCmd('--balance')">Balance</button>
+            <button class="btn small" onclick="spaceCmd('--equalize')">Equalize</button>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Padding & Gap</h3>
+          <div class="input-group">
+            <label>Padding:</label>
+            <input type="text" id="paddingVal" placeholder="t:b:l:r" style="width:100px;">
+            <select id="paddingType">
+              <option value="abs">abs</option>
+              <option value="rel">rel</option>
+            </select>
+            <button class="btn small" onclick="spaceCmd(`--padding ${document.getElementById('paddingType').value}:${document.getElementById('paddingVal').value}`)">Set</button>
+            <button class="btn small" onclick="spaceCmd('--toggle padding')">Toggle</button>
+          </div>
+          <div class="input-group">
+            <label>Gap:</label>
+            <input type="number" id="gapVal" placeholder="pixels">
+            <select id="gapType">
+              <option value="abs">abs</option>
+              <option value="rel">rel</option>
+            </select>
+            <button class="btn small" onclick="spaceCmd(`--gap ${document.getElementById('gapType').value}:${document.getElementById('gapVal').value}`)">Set</button>
+            <button class="btn small" onclick="spaceCmd('--toggle gap')">Toggle</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DISPLAYS TAB -->
+    <div id="displays" class="tab-content">
+      <div class="grid">
+        <div class="card">
+          <h3>Focus Display <span class="badge sip">SIP</span></h3>
+          <div class="btn-group">
+            <button class="btn" onclick="displayCmd('--focus prev')">← Prev</button>
+            <button class="btn" onclick="displayCmd('--focus next')">Next →</button>
+            <button class="btn" onclick="displayCmd('--focus recent')">Recent</button>
+            <button class="btn" onclick="displayCmd('--focus 1')">Display 1</button>
+            <button class="btn" onclick="displayCmd('--focus 2')">Display 2</button>
+          </div>
+          <div class="btn-group">
+            <button class="btn small" onclick="displayCmd('--focus north')">↑ North</button>
+            <button class="btn small" onclick="displayCmd('--focus east')">→ East</button>
+            <button class="btn small" onclick="displayCmd('--focus south')">↓ South</button>
+            <button class="btn small" onclick="displayCmd('--focus west')">← West</button>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Send Space to Display <span class="badge sip">SIP</span></h3>
+          <div class="input-group">
+            <label>Space:</label>
+            <select id="sendSpaceSel">
+              <option value="focused">Focused</option>
+              <option value="prev">Prev</option>
+              <option value="next">Next</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+            </select>
+            <span>→</span>
+            <select id="sendToDisplay">
+              <option value="prev">Prev</option>
+              <option value="next">Next</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+            </select>
+            <button class="btn small" onclick="execCmd(`yabai -m space ${document.getElementById('sendSpaceSel').value} --display ${document.getElementById('sendToDisplay').value}`)">Send</button>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Display Labels</h3>
+          <div class="input-group">
+            <label>Label Display:</label>
+            <select id="labelDisplay">
+              <option value="focused">Focused</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+            </select>
+            <input type="text" id="displayLabelVal" placeholder="label">
+            <button class="btn small" onclick="execCmd(`yabai -m display ${document.getElementById('labelDisplay').value} --label ${document.getElementById('displayLabelVal').value}`)">Set</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONFIG TAB -->
+    <div id="config" class="tab-content">
+      <div class="grid">
+        <div class="card">
+          <h3>Global Settings <span class="badge sip">SIP</span></h3>
+          <button class="collapsible" onclick="toggleCollapsible(this)">Mouse & Focus Settings</button>
+          <div class="collapsible-content">
+            <div class="toggle-row">
+              <span>Mouse follows focus:</span>
+              <select id="mouseFollowsFocus" onchange="setConfig('mouse_follows_focus', this.value)">
+                <option value="">-</option>
+                <option value="on">on</option>
+                <option value="off">off</option>
+              </select>
+            </div>
+            <div class="toggle-row">
+              <span>Focus follows mouse:</span>
+              <select id="focusFollowsMouse" onchange="setConfig('focus_follows_mouse', this.value)">
+                <option value="">-</option>
+                <option value="autofocus">autofocus</option>
+                <option value="autoraise">autoraise</option>
+                <option value="off">off</option>
+              </select>
+            </div>
+            <div class="toggle-row">
+              <span>Window origin display:</span>
+              <select id="windowOriginDisplay" onchange="setConfig('window_origin_display', this.value)">
+                <option value="">-</option>
+                <option value="default">default</option>
+                <option value="focused">focused</option>
+                <option value="cursor">cursor</option>
+              </select>
+            </div>
+            <div class="toggle-row">
+              <span>Window placement:</span>
+              <select id="windowPlacement" onchange="setConfig('window_placement', this.value)">
+                <option value="">-</option>
+                <option value="first_child">first_child</option>
+                <option value="second_child">second_child</option>
+              </select>
+            </div>
+            <div class="toggle-row">
+              <span>Window insertion point:</span>
+              <select id="windowInsertion" onchange="setConfig('window_insertion_point', this.value)">
+                <option value="">-</option>
+                <option value="focused">focused</option>
+                <option value="first">first</option>
+                <option value="last">last</option>
+              </select>
+            </div>
+          </div>
+          
+          <button class="collapsible" onclick="toggleCollapsible(this)">Mouse Actions</button>
+          <div class="collapsible-content">
+            <div class="toggle-row">
+              <span>Mouse modifier:</span>
+              <select id="mouseModifier" onchange="setConfig('mouse_modifier', this.value)">
+                <option value="">-</option>
+                <option value="cmd">cmd</option>
+                <option value="alt">alt</option>
+                <option value="shift">shift</option>
+                <option value="ctrl">ctrl</option>
+                <option value="fn">fn</option>
+              </select>
+            </div>
+            <div class="toggle-row">
+              <span>Mouse action 1:</span>
+              <select id="mouseAction1" onchange="setConfig('mouse_action1', this.value)">
+                <option value="">-</option>
+                <option value="move">move</option>
+                <option value="resize">resize</option>
+              </select>
+            </div>
+            <div class="toggle-row">
+              <span>Mouse action 2:</span>
+              <select id="mouseAction2" onchange="setConfig('mouse_action2', this.value)">
+                <option value="">-</option>
+                <option value="move">move</option>
+                <option value="resize">resize</option>
+              </select>
+            </div>
+            <div class="toggle-row">
+              <span>Mouse drop action:</span>
+              <select id="mouseDropAction" onchange="setConfig('mouse_drop_action', this.value)">
+                <option value="">-</option>
+                <option value="swap">swap</option>
+                <option value="stack">stack</option>
+              </select>
+            </div>
+          </div>
+          
+          <button class="collapsible" onclick="toggleCollapsible(this)">Visual Settings (SIP)</button>
+          <div class="collapsible-content">
+            <div class="toggle-row">
+              <span>Window opacity:</span>
+              <select id="windowOpacity" onchange="setConfig('window_opacity', this.value)">
+                <option value="">-</option>
+                <option value="on">on</option>
+                <option value="off">off</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <label>Active opacity:</label>
+              <input type="range" min="0" max="1" step="0.05" value="1" onchange="setConfig('active_window_opacity', this.value)">
+            </div>
+            <div class="input-group">
+              <label>Normal opacity:</label>
+              <input type="range" min="0" max="1" step="0.05" value="0.9" onchange="setConfig('normal_window_opacity', this.value)">
+            </div>
+            <div class="input-group">
+              <label>Animation duration:</label>
+              <input type="number" id="animDuration" step="0.1" placeholder="0.0" style="width:80px;">
+              <button class="btn small" onclick="setConfig('window_animation_duration', document.getElementById('animDuration').value)">Set</button>
+            </div>
+            <div class="input-group">
+              <label>Menubar opacity:</label>
+              <input type="range" min="0" max="1" step="0.1" value="1" onchange="setConfig('menubar_opacity', this.value)">
+            </div>
+          </div>
+        </div>
+        
+        <div class="card">
+          <h3>Space Settings <span class="badge sip">SIP</span></h3>
+          <button class="collapsible" onclick="toggleCollapsible(this)">Default Space Config</button>
+          <div class="collapsible-content">
+            <div class="toggle-row">
+              <span>Layout:</span>
+              <select id="defaultLayout" onchange="setSpaceConfig('layout', this.value)">
+                <option value="">-</option>
+                <option value="bsp">bsp</option>
+                <option value="stack">stack</option>
+                <option value="float">float</option>
+              </select>
+            </div>
+            <div class="toggle-row">
+              <span>Split type:</span>
+              <select id="splitType" onchange="setSpaceConfig('split_type', this.value)">
+                <option value="">-</option>
+                <option value="vertical">vertical</option>
+                <option value="horizontal">horizontal</option>
+                <option value="auto">auto</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <label>Top padding:</label>
+              <input type="number" id="topPad" placeholder="0" style="width:70px;">
+            </div>
+            <div class="input-group">
+              <label>Bottom padding:</label>
+              <input type="number" id="bottomPad" placeholder="0" style="width:70px;">
+            </div>
+            <div class="input-group">
+              <label>Left padding:</label>
+              <input type="number" id="leftPad" placeholder="0" style="width:70px;">
+            </div>
+            <div class="input-group">
+              <label>Right padding:</label>
+              <input type="number" id="rightPad" placeholder="0" style="width:70px;">
+            </div>
+            <div class="input-group">
+              <label>Window gap:</label>
+              <input type="number" id="windowGap" placeholder="0" style="width:70px;">
+            </div>
+            <button class="btn small" onclick="applySpacePadding()">Apply Padding/Gap</button>
+            <div class="toggle-row" style="margin-top:10px;">
+              <span>Auto balance:</span>
+              <select id="autoBalance" onchange="setSpaceConfig('auto_balance', this.value)">
+                <option value="">-</option>
+                <option value="on">on</option>
+                <option value="off">off</option>
+                <option value="x-axis">x-axis</option>
+                <option value="y-axis">y-axis</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RULES TAB -->
+    <div id="rules" class="tab-content">
+      <div class="grid">
+        <div class="card">
+          <h3>Rule Management <span class="badge sip">SIP</span></h3>
+          <div class="btn-group">
+            <button class="btn" onclick="ruleCmd('--list')">List Rules</button>
+            <button class="btn warning" onclick="ruleCmd('--apply')">Apply All</button>
+          </div>
+          <div class="input-group">
+            <label>Remove rule #:</label>
+            <input type="number" id="ruleIndex" placeholder="index" style="width:80px;">
+            <button class="btn small danger" onclick="confirmCmd('Remove this rule?', `ruleCmd('--remove ${document.getElementById('ruleIndex').value}')`)">Remove</button>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Add New Rule <span class="badge sip">SIP</span></h3>
+          <div class="input-group">
+            <label>Label:</label>
+            <input type="text" id="ruleLabel" placeholder="optional name">
+          </div>
+          <div class="input-group">
+            <label>App regex:</label>
+            <input type="text" id="ruleApp" placeholder="e.g., Finder|Safari" style="flex:1;">
+            <label><input type="checkbox" id="ruleAppNeg"> !</label>
+          </div>
+          <div class="input-group">
+            <label>Title regex:</label>
+            <input type="text" id="ruleTitle" placeholder="e.g., Settings" style="flex:1;">
+            <label><input type="checkbox" id="ruleTitleNeg"> !</label>
+          </div>
+          <div class="input-group">
+            <label>Manage:</label>
+            <select id="ruleManage">
+              <option value="">-</option>
+              <option value="on">on</option>
+              <option value="off">off (float)</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>Sticky:</label>
+            <select id="ruleSticky">
+              <option value="">-</option>
+              <option value="on">on</option>
+              <option value="off">off</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>Sub-layer:</label>
+            <select id="ruleLayer">
+              <option value="">-</option>
+              <option value="below">below</option>
+              <option value="normal">normal</option>
+              <option value="above">above</option>
+              <option value="auto">auto</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>Opacity:</label>
+            <input type="number" id="ruleOpacity" min="0" max="1" step="0.1" placeholder="0.0-1.0" style="width:90px;">
+          </div>
+          <div class="input-group">
+            <label>Grid:</label>
+            <input type="text" id="ruleGrid" placeholder="r:c:x:y:w:h" style="width:120px;">
+          </div>
+          <div class="input-group">
+            <label>Scratchpad:</label>
+            <input type="text" id="ruleScratchpad" placeholder="label" style="width:100px;">
+          </div>
+          <label style="font-size:0.8rem;color:var(--text2);margin:5px 0;display:block;">
+            <input type="checkbox" id="ruleOneShot"> One-shot rule
+          </label>
+          <div class="cmd-preview" id="rulePreview">yabai -m rule --add</div>
+          <div class="btn-row">
+            <button class="btn small" onclick="updateRulePreview()">Preview</button>
+            <button class="btn success" onclick="addRule()">Add Rule</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SIGNALS TAB -->
+    <div id="signals" class="tab-content">
+      <div class="grid">
+        <div class="card">
+          <h3>Signal Management</h3>
+          <div class="btn-group">
+            <button class="btn" onclick="signalCmd('--list')">List Signals</button>
+          </div>
+          <div class="input-group">
+            <label>Remove signal #:</label>
+            <input type="number" id="signalIndex" placeholder="index" style="width:80px;">
+            <button class="btn small danger" onclick="confirmCmd('Remove this signal?', `signalCmd('--remove ${document.getElementById('signalIndex').value}')`)">Remove</button>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Add Signal</h3>
+          <div class="input-group">
+            <label>Event:</label>
+            <select id="signalEvent">
+              <option value="">Select event...</option>
+              <option value="application_launched">application_launched</option>
+              <option value="application_terminated">application_terminated</option>
+              <option value="application_front_switched">application_front_switched</option>
+              <option value="application_activated">application_activated</option>
+              <option value="application_deactivated">application_deactivated</option>
+              <option value="application_visible">application_visible</option>
+              <option value="application_hidden">application_hidden</option>
+              <option value="window_created">window_created</option>
+              <option value="window_destroyed">window_destroyed</option>
+              <option value="window_focused">window_focused</option>
+              <option value="window_moved">window_moved</option>
+              <option value="window_resized">window_resized</option>
+              <option value="window_minimized">window_minimized</option>
+              <option value="window_deminimized">window_deminimized</option>
+              <option value="window_title_changed">window_title_changed</option>
+              <option value="space_created">space_created</option>
+              <option value="space_destroyed">space_destroyed</option>
+              <option value="space_changed">space_changed</option>
+              <option value="display_added">display_added</option>
+              <option value="display_removed">display_removed</option>
+              <option value="display_moved">display_moved</option>
+              <option value="display_resized">display_resized</option>
+              <option value="display_changed">display_changed</option>
+              <option value="mission_control_enter">mission_control_enter</option>
+              <option value="mission_control_exit">mission_control_exit</option>
+              <option value="dock_did_restart">dock_did_restart</option>
+              <option value="system_woke">system_woke</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>Label:</label>
+            <input type="text" id="signalLabel" placeholder="optional">
+          </div>
+          <div class="input-group">
+            <label>App filter:</label>
+            <input type="text" id="signalApp" placeholder="regex (optional)">
+            <label><input type="checkbox" id="signalAppNeg"> !</label>
+          </div>
+          <div class="input-group">
+            <label>Title filter:</label>
+            <input type="text" id="signalTitle" placeholder="regex (optional)">
+            <label><input type="checkbox" id="signalTitleNeg"> !</label>
+          </div>
+          <div class="input-group">
+            <label>Action:</label>
+            <input type="text" id="signalAction" placeholder="command to run" style="flex:1;">
+          </div>
+          <div class="cmd-preview" id="signalPreview">yabai -m signal --add event=</div>
+          <div class="btn-row">
+            <button class="btn small" onclick="updateSignalPreview()">Preview</button>
+            <button class="btn success" onclick="addSignal()">Add Signal</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SERVICE TAB -->
+    <div id="service" class="tab-content">
+      <div class="grid grid-2">
+        <div class="card">
+          <h3>Service Control</h3>
+          <div class="btn-group">
+            <button class="btn success" onclick="execCmd('yabai --start-service')">Start Service</button>
+            <button class="btn warning" onclick="execCmd('yabai --stop-service')">Stop Service</button>
+            <button class="btn" onclick="execCmd('yabai --restart-service')">Restart</button>
+          </div>
+          <div class="btn-group">
+            <button class="btn small" onclick="execCmd('yabai --install-service')">Install</button>
+            <button class="btn small danger" onclick="confirmCmd('Uninstall service?', 'execCmd(\'yabai --uninstall-service\')')">Uninstall</button>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Scripting Addition <span class="badge sip">SIP</span></h3>
+          <p style="font-size:0.8rem;color:var(--text2);">System Integrity Protection must be partially disabled.</p>
+          <div class="btn-group">
+            <button class="btn" onclick="execCmd('yabai --load-sa')">Load SA</button>
+            <button class="btn warning" onclick="confirmCmd('Uninstall SA? Requires root.', 'execCmd(\'sudo yabai --uninstall-sa\')')">Uninstall SA</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RAW TAB -->
+    <div id="raw" class="tab-content">
+      <div class="card">
+        <h3>Raw Command</h3>
+        <input type="text" class="raw-cmd" id="rawCmd" placeholder="Enter full yabai command (e.g., yabai -m space --create)" style="padding:12px;">
+        <div class="btn-row" style="margin-top:10px;">
+          <button class="btn success" onclick="execRaw()">Execute</button>
+          <button class="btn" onclick="document.getElementById('rawCmd').value=''">Clear</button>
+          <span style="color:var(--text2);font-size:0.8rem;margin-left:10px;">Be careful with destructive commands</span>
+        </div>
+        <h4 style="margin-top:20px;">Quick Templates</h4>
+        <div class="btn-group">
+          <button class="btn small" onclick="setRaw('yabai -m window --focus ')">Focus window</button>
+          <button class="btn small" onclick="setRaw('yabai -m space --focus ')">Focus space</button>
+          <button class="btn small" onclick="setRaw('yabai -m display --focus ')">Focus display</button>
+          <button class="btn small" onclick="setRaw('yabai -m config ')">Set config</button>
+          <button class="btn small" onclick="setRaw('yabai -m query --windows --window ')">Query window</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- OUTPUT PANEL -->
+    <div class="card" style="margin-top:20px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <h3 style="margin:0;">Output</h3>
+        <div class="btn-group" style="margin:0;">
+          <button class="btn small" onclick="copyOutput()">Copy</button>
+          <button class="btn small warning" onclick="clearOutput()">Clear</button>
+        </div>
+      </div>
+      <div class="cmd-preview" id="lastCommand" style="margin-bottom:10px;">Ready...</div>
+      <div class="output" id="output">Click any button to execute a command. Output will appear here.</div>
+    </div>
+  </div>
+
+  <div class="status-bar">
+    <span id="statusText">yabai GUI v1.0</span>
+    <span style="color:var(--text2);">
+      <span class="badge sip" style="margin-right:8px;">SIP</span> = Requires SIP partially disabled
+    </span>
+  </div>
+
+  <script>
+    // ============================================
+    // NATIVE BRIDGE STUB
+    // Replace this with actual bridge implementation
+    // ============================================
+    async function executeCommand(cmd) {
+      // STUB: Replace with actual native bridge call
+      // Examples:
+      //   Tauri: return await invoke('execute', { command: cmd })
+      //   Electron: return await ipcRenderer.invoke('exec', cmd)
+      //   WKWebView: return await window.webkit.messageHandlers.exec.postMessage(cmd)
+      //   HTTP: return await fetch('/api/exec', { method: 'POST', body: cmd })
+      
+      console.log('Would execute:', cmd);
+      
+      // Mock responses for demo
+      if (cmd.includes('query --displays')) {
+        return JSON.stringify([{
+          id: 1, uuid: "UUID-1", index: 1, label: "", frame: { x: 0, y: 0, w: 1920, h: 1080 },
+          spaces: [1, 2, 3], "has-focus": true
+        }], null, 2);
+      }
+      if (cmd.includes('query --spaces')) {
+        return JSON.stringify([
+          { id: 1, uuid: "S1", index: 1, label: "", type: "bsp", display: 1, windows: [100, 101], "first-window": 100, "last-window": 101, "has-focus": true, "is-visible": true, "is-native-fullscreen": false },
+          { id: 2, uuid: "S2", index: 2, label: "", type: "float", display: 1, windows: [], "first-window": 0, "last-window": 0, "has-focus": false, "is-visible": false, "is-native-fullscreen": false }
+        ], null, 2);
+      }
+      if (cmd.includes('query --windows')) {
+        return JSON.stringify([
+          { id: 100, pid: 1234, app: "Safari", title: "GitHub", scratchpad: "", frame: { x: 0, y: 0, w: 960, h: 1080 }, role: "AXWindow", subrole: "AXStandardWindow", "root-window": true, display: 1, space: 1, level: 0, "sub-level": 0, layer: "normal", "sub-layer": "normal", opacity: 1, "split-type": "horizontal", "split-child": "second_child", "stack-index": 0, "can-move": true, "can-resize": true, "has-focus": true, "has-shadow": true, "has-parent-zoom": false, "has-fullscreen-zoom": false, "has-ax-reference": true, "is-native-fullscreen": false, "is-visible": true, "is-minimized": false, "is-hidden": false, "is-floating": false, "is-sticky": false, "is-grabbed": false }
+        ], null, 2);
+      }
+      if (cmd.includes('rule --list')) {
+        return JSON.stringify([{
+          index: 0, label: "Finder", app: "Finder", title: "", role: "", subrole: "",
+          display: 0, space: 0, "follow_space": false, opacity: 0, manage: false,
+          sticky: false, "mouse_follows_focus": false, "sub-layer": "",
+          "native-fullscreen": false, grid: "", scratchpad: "", "one-shot": false, flags: "manage=off"
+        }], null, 2);
+      }
+      if (cmd.includes('signal --list')) {
+        return JSON.stringify([{
+          index: 0, label: "", app: "", title: "", active: false,
+          event: "application_launched", action: "echo \"App launched: $YABAI_PROCESS_ID\""
+        }], null, 2);
+      }
+      
+      // Generic mock success
+      return `Command executed successfully (mock): ${cmd}`;
+    }
+
+    // ============================================
+    // UI HELPERS
+    // ============================================
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+      event.target.classList.add('active');
+      document.getElementById(tabId).classList.add('active');
+    }
+
+    function toggleCollapsible(btn) {
+      btn.classList.toggle('active');
+      btn.nextElementSibling.classList.toggle('open');
+    }
+
+    function showCmd(cmd) {
+      document.getElementById('lastCommand').textContent = cmd;
+      document.getElementById('statusText').textContent = 'Running...';
+    }
+
+    function formatJson(text) {
+      try {
+        const obj = JSON.parse(text);
+        return syntaxHighlight(JSON.stringify(obj, null, 2));
+      } catch {
+        return text;
+      }
+    }
+
+    function syntaxHighlight(json) {
+      return json.replace(/(".*?"):/g, '<span class="json-key">$1</span>:' )
+                 .replace(/: "(.*?)"/g, ': <span class="json-string">"$1"</span>')
+                 .replace(/: (\d+\.?\d*)/g, ': <span class="json-number">$1</span>')
+                 .replace(/: (true|false)/g, ': <span class="json-bool">$1</span>');
+    }
+
+    async function execCmd(cmd, showConfirm = false) {
+      if (showConfirm && !confirm(`Execute: ${cmd}?`)) return;
+      showCmd(cmd);
+      const output = document.getElementById('output');
+      output.classList.remove('error');
+      output.textContent = 'Executing...';
+      
+      try {
+        const result = await executeCommand(cmd);
+        output.innerHTML = formatJson(result);
+        document.getElementById('statusText').textContent = 'Completed';
+      } catch (err) {
+        output.classList.add('error');
+        output.textContent = `Error: ${err.message || err}`;
+        document.getElementById('statusText').textContent = 'Error';
+      }
+    }
+
+    function confirmCmd(msg, callback) {
+      if (confirm(msg)) {
+        eval(callback);
+      }
+    }
+
+    function clearOutput() {
+      document.getElementById('output').textContent = '';
+      document.getElementById('lastCommand').textContent = 'Ready...';
+    }
+
+    function copyOutput() {
+      const text = document.getElementById('output').textContent;
+      navigator.clipboard.writeText(text);
+      document.getElementById('statusText').textContent = 'Copied to clipboard';
+      setTimeout(() => document.getElementById('statusText').textContent = 'yabai GUI v1.0', 2000);
+    }
+
+    // ============================================
+    // COMMAND BUILDERS
+    // ============================================
+    function windowCmd(args) {
+      execCmd(`yabai -m window ${args}`);
+    }
+
+    function spaceCmd(args) {
+      execCmd(`yabai -m space ${args}`);
+    }
+
+    function displayCmd(args) {
+      execCmd(`yabai -m display ${args}`);
+    }
+
+    function setConfig(key, value) {
+      if (!value) return;
+      execCmd(`yabai -m config ${key} ${value}`);
+    }
+
+    function setSpaceConfig(key, value) {
+      if (!value) return;
+      execCmd(`yabai -m config ${key} ${value}`);
+    }
+
+    function applySpacePadding() {
+      const t = document.getElementById('topPad').value || 0;
+      const b = document.getElementById('bottomPad').value || 0;
+      const l = document.getElementById('leftPad').value || 0;
+      const r = document.getElementById('rightPad').value || 0;
+      const g = document.getElementById('windowGap').value || 0;
+      execCmd(`yabai -m config top_padding ${t}`);
+      execCmd(`yabai -m config bottom_padding ${b}`);
+      execCmd(`yabai -m config left_padding ${l}`);
+      execCmd(`yabai -m config right_padding ${r}`);
+      execCmd(`yabai -m config window_gap ${g}`);
+    }
+
+    function runQuery(type) {
+      let cmd = `yabai -m query --${type}`;
+      const filterType = document.getElementById('queryFilterType').value;
+      const filterVal = document.getElementById('queryFilterValue').value;
+      const props = document.getElementById('queryProps').value;
+      
+      if (filterType && filterVal) cmd += ` --${filterType} ${filterVal}`;
+      if (props) cmd += ` ${props}`;
+      
+      execCmd(cmd);
+    }
+
+    async function refreshAll() {
+      const summary = document.getElementById('statusSummary');
+      summary.textContent = 'Refreshing...';
+      
+      try {
+        const displays = await executeCommand('yabai -m query --displays');
+        const spaces = await executeCommand('yabai -m query --spaces');
+        const windows = await executeCommand('yabai -m query --windows');
+        
+        const d = JSON.parse(displays);
+        const s = JSON.parse(spaces);
+        const w = JSON.parse(windows);
+        
+        summary.innerHTML = `
+          <strong>${d.length} Displays</strong> | 
+          <strong>${s.length} Spaces</strong> | 
+          <strong>${w.length} Windows</strong><br>
+          Focused: ${w.find(x => x['has-focus'])?.app || 'None'}
+        `;
+        document.getElementById('output').innerHTML = `
+          <h4>Displays</h4>${syntaxHighlight(JSON.stringify(d, null, 2))}
+          <h4>Spaces</h4>${syntaxHighlight(JSON.stringify(s, null, 2))}
+          <h4>Windows</h4>${syntaxHighlight(JSON.stringify(w, null, 2))}
+        `;
+      } catch (err) {
+        summary.textContent = 'Error: ' + err.message;
+      }
+    }
+
+    function ruleCmd(args) {
+      execCmd(`yabai -m rule ${args}`);
+    }
+
+    function updateRulePreview() {
+      const parts = ['yabai -m rule --add'];
+      
+      const label = document.getElementById('ruleLabel').value;
+      if (label) parts.push(`label=${label}`);
+      
+      const app = document.getElementById('ruleApp').value;
+      if (app) parts.push(`app${document.getElementById('ruleAppNeg').checked ? '!' : ''}=${app}`);
+      
+      const title = document.getElementById('ruleTitle').value;
+      if (title) parts.push(`title${document.getElementById('ruleTitleNeg').checked ? '!' : ''}=${title}`);
+      
+      const manage = document.getElementById('ruleManage').value;
+      if (manage) parts.push(`manage=${manage}`);
+      
+      const sticky = document.getElementById('ruleSticky').value;
+      if (sticky) parts.push(`sticky=${sticky}`);
+      
+      const layer = document.getElementById('ruleLayer').value;
+      if (layer) parts.push(`sub-layer=${layer}`);
+      
+      const opacity = document.getElementById('ruleOpacity').value;
+      if (opacity) parts.push(`opacity=${opacity}`);
+      
+      const grid = document.getElementById('ruleGrid').value;
+      if (grid) parts.push(`grid=${grid}`);
+      
+      const scratchpad = document.getElementById('ruleScratchpad').value;
+      if (scratchpad) parts.push(`scratchpad=${scratchpad}`);
+      
+      if (document.getElementById('ruleOneShot').checked) parts.push('--one-shot');
+      
+      document.getElementById('rulePreview').textContent = parts.join(' ');
+    }
+
+    function addRule() {
+      updateRulePreview();
+      const cmd = document.getElementById('rulePreview').textContent;
+      execCmd(cmd);
+    }
+
+    function signalCmd(args) {
+      execCmd(`yabai -m signal ${args}`);
+    }
+
+    function updateSignalPreview() {
+      const parts = ['yabai -m signal --add'];
+      
+      const event = document.getElementById('signalEvent').value;
+      if (event) parts.push(`event=${event}`);
+      
+      const label = document.getElementById('signalLabel').value;
+      if (label) parts.push(`label=${label}`);
+      
+      const app = document.getElementById('signalApp').value;
+      if (app) parts.push(`app${document.getElementById('signalAppNeg').checked ? '!' : ''}=${app}`);
+      
+      const title = document.getElementById('signalTitle').value;
+      if (title) parts.push(`title${document.getElementById('signalTitleNeg').checked ? '!' : ''}=${title}`);
+      
+      const action = document.getElementById('signalAction').value;
+      if (action) parts.push(`action="${action}"`);
+      
+      document.getElementById('signalPreview').textContent = parts.join(' ');
+    }
+
+    function addSignal() {
+      updateSignalPreview();
+      const cmd = document.getElementById('signalPreview').textContent;
+      execCmd(cmd);
+    }
+
+    function setRaw(cmd) {
+      document.getElementById('rawCmd').value = cmd;
+    }
+
+    function execRaw() {
+      const cmd = document.getElementById('rawCmd').value.trim();
+      if (!cmd) return;
+      execCmd(cmd);
+    }
+
+    // Handle range slider display
+    document.getElementById('opacityVal')?.addEventListener('input', function() {
+      document.getElementById('opacityDisplay').textContent = this.value;
+    });
+
+    // Init
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('yabai GUI loaded. Connect executeCommand() to your native bridge.');
+    });
+  </script>
+</body>
+</html>
