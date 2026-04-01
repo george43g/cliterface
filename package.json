@@ -1,0 +1,58 @@
+{
+  "name": "cliterface",
+  "version": "0.0.1",
+  "description": "This tool provides and generates web based GUI for common CLI tools, the best versions of which will be pooled among the community",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.js",
+  "types": "dist/types/index.d.ts",
+  "collection": "dist/collection/collection-manifest.json",
+  "collection:main": "dist/collection/index.js",
+  "unpkg": "dist/cliterface/cliterface.esm.js",
+  "exports": {
+    ".": "./dist/components/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/george43g/cliterface.git"
+  },
+  "files": [
+    "dist/",
+    "www/",
+    "loader/"
+  ],
+  "scripts": {
+    "tailwind": "tailwindcss -i ./src/global/input.css -o ./src/global/output.css",
+    "tailwind:watch": "tailwindcss -i ./src/global/input.css -o ./src/global/output.css --watch",
+    "tailwind:build": "tailwindcss -i ./src/global/input.css -o ./src/global/output.css --minify",
+    "stencil": "stencil build",
+    "bundle": "bun run build.ts",
+    "build": "bun run tailwind:build && bun run stencil && bun run bundle",
+    "dev": "bun run build && concurrently --kill-others -n tw,watch -c magenta,cyan 'bun run tailwind:watch' 'bun run dev.ts'",
+    "test": "stencil-test",
+    "test:watch": "stencil-test --watch",
+    "generate": "stencil generate",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "format": "biome format --write .",
+    "format:check": "biome format .",
+    "check": "biome check --write ."
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.4.10",
+    "@stencil/core": "^4.27.1",
+    "@stencil/vitest": "^1.8.3",
+    "@tailwindcss/cli": "^4.2.2",
+    "@types/node": "^22.13.5",
+    "@vitest/browser-playwright": "^4.0.0",
+    "concurrently": "^9.2.1",
+    "esbuild": "^0.27.4",
+    "postcss": "^8.5.8",
+    "tailwindcss": "^4.2.2",
+    "typescript": "^6.0.2",
+    "vitest": "^4.0.0"
+  },
+  "license": "MIT",
+  "trustedDependencies": [
+    "postcss-combine-duplicated-selectors"
+  ]
+}

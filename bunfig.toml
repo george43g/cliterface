@@ -1,0 +1,10 @@
+[install]
+cache = true
+
+[run]
+shell = "bun"
+
+[build]
+minify = true
+target = "browser"
+format = "esm"
