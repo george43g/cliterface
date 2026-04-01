@@ -1,0 +1,133 @@
+.cli-command-preview {
+  background: var(--color-bg3, #0f3460);
+  padding: 16px;
+  border-radius: 8px;
+  border-left: 3px solid var(--color-accent, #e94560);
+  font-family: var(--font-mono, "SF Mono", Monaco, monospace);
+  position: relative;
+}
+
+.cli-command-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.cli-segment {
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  cursor: help;
+  border: 2px solid transparent;
+}
+
+.cli-segment:hover,
+.cli-segment-highlighted {
+  background: rgba(233, 69, 96, 0.2);
+  border-color: var(--color-accent, #e94560);
+  box-shadow: 0 0 0 4px rgba(233, 69, 96, 0.1);
+}
+
+/* Segment type colors */
+.cli-segment-command {
+  color: var(--color-accent, #e94560);
+  font-weight: 600;
+}
+
+.cli-segment-flag {
+  color: var(--color-info, #4dabf7);
+}
+
+.cli-segment-argument {
+  color: var(--color-success, #4ecca3);
+}
+
+.cli-segment-value {
+  color: var(--color-warning, #ffc107);
+}
+
+.cli-segment-separator {
+  color: var(--color-text2, #a0a0a0);
+}
+
+.cli-segment-incompatible {
+  opacity: 0.4;
+  text-decoration: line-through;
+}
+
+/* Explanation panel */
+.cli-command-explanation {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--color-bg2, #16213e);
+  animation: fade-in 0.2s ease;
+}
+
+.cli-explanation-content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cli-explanation-type {
+  display: inline-flex;
+  align-self: flex-start;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.cli-explanation-type-command {
+  background: var(--color-accent, #e94560);
+  color: white;
+}
+
+.cli-explanation-type-flag {
+  background: var(--color-info, #4dabf7);
+  color: #1a1a2e;
+}
+
+.cli-explanation-type-argument {
+  background: var(--color-success, #4ecca3);
+  color: #1a1a2e;
+}
+
+.cli-explanation-type-value {
+  background: var(--color-warning, #ffc107);
+  color: #1a1a2e;
+}
+
+.cli-explanation-type-separator {
+  background: var(--color-text2, #a0a0a0);
+  color: #1a1a2e;
+}
+
+.cli-explanation-text {
+  margin: 0;
+  color: var(--color-text, #eaeaea);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  font-family: var(--font-sans, system-ui, sans-serif);
+}
+
+.cli-explanation-warning {
+  color: var(--color-danger, #ff6b6b);
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

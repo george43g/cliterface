@@ -1,0 +1,87 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.cli-card {
+  background: var(--color-bg2, #16213e);
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid var(--color-bg3, #0f3460);
+  transition: all 0.2s ease;
+}
+
+.cli-card-clickable {
+  cursor: pointer;
+}
+
+.cli-card-clickable:hover {
+  border-color: var(--color-accent, #e94560);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.cli-card-full {
+  width: 100%;
+}
+
+.cli-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  gap: 12px;
+}
+
+.cli-card-title {
+  color: var(--color-text, #eaeaea);
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.cli-card-badge {
+  display: inline-flex;
+  padding: 3px 10px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.cli-card-badge-sip {
+  background: var(--color-warning, #ffc107);
+  color: #1a1a2e;
+}
+
+.cli-card-badge-safe {
+  background: var(--color-success, #4ecca3);
+  color: #1a1a2e;
+}
+
+.cli-card-badge-default {
+  background: var(--color-info, #4dabf7);
+  color: #1a1a2e;
+}
+
+.cli-card-content {
+  color: var(--color-text, #eaeaea);
+}
+
+/* Variant styles */
+.cli-card-accent {
+  border-left: 3px solid var(--color-accent, #e94560);
+}
+
+.cli-card-warning {
+  border-left: 3px solid var(--color-warning, #ffc107);
+}
+
+.cli-card-danger {
+  border-left: 3px solid var(--color-danger, #ff6b6b);
+}
+
+.cli-card-info {
+  border-left: 3px solid var(--color-info, #4dabf7);
+}

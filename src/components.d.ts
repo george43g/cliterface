@@ -5,12 +5,180 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
+import { ButtonSize, ButtonVariant } from "./components/ui/cli-button/cli-button";
+import { CardVariant } from "./components/ui/cli-card/cli-card";
+import { CommandSegment } from "./components/ui/cli-command-preview/cli-command-preview";
+import { ManPageContent } from "./components/ui/cli-man-page/cli-man-page";
+import { SelectOption } from "./components/ui/cli-select/cli-select";
+import { Tab } from "./components/ui/cli-tabs/cli-tabs";
+import { TooltipContent } from "./components/ui/cli-tooltip/cli-tooltip";
 import { CommandResult } from "./yabai/yabai-service";
+export { ButtonSize, ButtonVariant } from "./components/ui/cli-button/cli-button";
+export { CardVariant } from "./components/ui/cli-card/cli-card";
+export { CommandSegment } from "./components/ui/cli-command-preview/cli-command-preview";
+export { ManPageContent } from "./components/ui/cli-man-page/cli-man-page";
+export { SelectOption } from "./components/ui/cli-select/cli-select";
+export { Tab } from "./components/ui/cli-tabs/cli-tabs";
+export { TooltipContent } from "./components/ui/cli-tooltip/cli-tooltip";
 export { CommandResult } from "./yabai/yabai-service";
 export namespace Components {
     interface AppDashboard {
     }
+    interface CliButton {
+        "commandSegment"?: string;
+        "compatibleWith"?: string[];
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        /**
+          * @default 'md'
+         */
+        "size": ButtonSize;
+        "tooltip"?: string;
+        /**
+          * @default 'default'
+         */
+        "variant": ButtonVariant;
+    }
+    interface CliCard {
+        "badge"?: string;
+        /**
+          * @default 'default'
+         */
+        "badgeType": 'sip' | 'safe' | 'default';
+        "cardTitle"?: string;
+        /**
+          * @default false
+         */
+        "clickable": boolean;
+        /**
+          * @default false
+         */
+        "fullWidth": boolean;
+        /**
+          * @default 'default'
+         */
+        "variant": CardVariant;
+    }
+    interface CliChip {
+        "color"?: 'default' | 'success' | 'warning' | 'danger' | 'info';
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        /**
+          * @default ''
+         */
+        "label": string;
+        /**
+          * @default false
+         */
+        "removable": boolean;
+        /**
+          * @default false
+         */
+        "selected": boolean;
+    }
+    interface CliCommandPreview {
+        /**
+          * @default ''
+         */
+        "command": string;
+        "highlightedSegment"?: string;
+        /**
+          * @default []
+         */
+        "segments": CommandSegment[];
+        /**
+          * @default true
+         */
+        "showExplanation": boolean;
+    }
+    interface CliInput {
+        "commandSegment"?: string;
+        /**
+          * @default false
+         */
+        "monospace": boolean;
+        /**
+          * @default ''
+         */
+        "placeholder": string;
+        "tooltip"?: string;
+        /**
+          * @default 'text'
+         */
+        "type": 'text' | 'password' | 'number' | 'url' | 'email';
+        "validator"?: (value: string) => { valid: boolean; message?: string };
+        /**
+          * @default ''
+         */
+        "value": string;
+    }
+    interface CliLogViewer {
+        /**
+          * @default true
+         */
+        "autoScroll": boolean;
+        /**
+          * @default []
+         */
+        "logs": string[];
+        /**
+          * @default 1000
+         */
+        "maxLines": number;
+        /**
+          * @default true
+         */
+        "searchable": boolean;
+    }
+    interface CliManPage {
+        "content"?: ManPageContent;
+        /**
+          * @default ''
+         */
+        "searchQuery": string;
+    }
     interface CliRoot {
+    }
+    interface CliSelect {
+        "commandSegment"?: string;
+        /**
+          * @default []
+         */
+        "options": SelectOption[];
+        /**
+          * @default 'Select...'
+         */
+        "placeholder": string;
+        "tooltip"?: string;
+        /**
+          * @default ''
+         */
+        "value": string;
+    }
+    interface CliTabs {
+        /**
+          * @default ''
+         */
+        "activeTab": string;
+        /**
+          * @default []
+         */
+        "tabs": Tab[];
+    }
+    interface CliTooltip {
+        "content"?: TooltipContent;
+        /**
+          * @default 'bottom'
+         */
+        "position": 'top' | 'bottom' | 'left' | 'right';
+        /**
+          * @default false
+         */
+        "visible": boolean;
     }
     interface MyComponent {
         /**
@@ -33,6 +201,30 @@ export namespace Components {
         "version": string;
     }
 }
+export interface CliButtonCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLCliButtonElement;
+}
+export interface CliChipCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLCliChipElement;
+}
+export interface CliCommandPreviewCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLCliCommandPreviewElement;
+}
+export interface CliInputCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLCliInputElement;
+}
+export interface CliSelectCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLCliSelectElement;
+}
+export interface CliTabsCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLCliTabsElement;
+}
 export interface YabaiGuiCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLYabaiGuiElement;
@@ -44,11 +236,143 @@ declare global {
         prototype: HTMLAppDashboardElement;
         new (): HTMLAppDashboardElement;
     };
+    interface HTMLCliButtonElementEventMap {
+        "cliClick": void;
+        "cliHover": { segment: string; compatible: boolean };
+    }
+    interface HTMLCliButtonElement extends Components.CliButton, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLCliButtonElementEventMap>(type: K, listener: (this: HTMLCliButtonElement, ev: CliButtonCustomEvent<HTMLCliButtonElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLCliButtonElementEventMap>(type: K, listener: (this: HTMLCliButtonElement, ev: CliButtonCustomEvent<HTMLCliButtonElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLCliButtonElement: {
+        prototype: HTMLCliButtonElement;
+        new (): HTMLCliButtonElement;
+    };
+    interface HTMLCliCardElement extends Components.CliCard, HTMLStencilElement {
+    }
+    var HTMLCliCardElement: {
+        prototype: HTMLCliCardElement;
+        new (): HTMLCliCardElement;
+    };
+    interface HTMLCliChipElementEventMap {
+        "remove": void;
+        "chipClick": void;
+    }
+    interface HTMLCliChipElement extends Components.CliChip, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLCliChipElementEventMap>(type: K, listener: (this: HTMLCliChipElement, ev: CliChipCustomEvent<HTMLCliChipElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLCliChipElementEventMap>(type: K, listener: (this: HTMLCliChipElement, ev: CliChipCustomEvent<HTMLCliChipElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLCliChipElement: {
+        prototype: HTMLCliChipElement;
+        new (): HTMLCliChipElement;
+    };
+    interface HTMLCliCommandPreviewElementEventMap {
+        "segmentHover": { segment: CommandSegment; index: number };
+        "segmentLeave": void;
+    }
+    interface HTMLCliCommandPreviewElement extends Components.CliCommandPreview, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLCliCommandPreviewElementEventMap>(type: K, listener: (this: HTMLCliCommandPreviewElement, ev: CliCommandPreviewCustomEvent<HTMLCliCommandPreviewElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLCliCommandPreviewElementEventMap>(type: K, listener: (this: HTMLCliCommandPreviewElement, ev: CliCommandPreviewCustomEvent<HTMLCliCommandPreviewElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLCliCommandPreviewElement: {
+        prototype: HTMLCliCommandPreviewElement;
+        new (): HTMLCliCommandPreviewElement;
+    };
+    interface HTMLCliInputElementEventMap {
+        "valueChange": string;
+        "validationChange": { valid: boolean; message?: string };
+        "cliHover": { segment: string };
+    }
+    interface HTMLCliInputElement extends Components.CliInput, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLCliInputElementEventMap>(type: K, listener: (this: HTMLCliInputElement, ev: CliInputCustomEvent<HTMLCliInputElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLCliInputElementEventMap>(type: K, listener: (this: HTMLCliInputElement, ev: CliInputCustomEvent<HTMLCliInputElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLCliInputElement: {
+        prototype: HTMLCliInputElement;
+        new (): HTMLCliInputElement;
+    };
+    interface HTMLCliLogViewerElement extends Components.CliLogViewer, HTMLStencilElement {
+    }
+    var HTMLCliLogViewerElement: {
+        prototype: HTMLCliLogViewerElement;
+        new (): HTMLCliLogViewerElement;
+    };
+    interface HTMLCliManPageElement extends Components.CliManPage, HTMLStencilElement {
+    }
+    var HTMLCliManPageElement: {
+        prototype: HTMLCliManPageElement;
+        new (): HTMLCliManPageElement;
+    };
     interface HTMLCliRootElement extends Components.CliRoot, HTMLStencilElement {
     }
     var HTMLCliRootElement: {
         prototype: HTMLCliRootElement;
         new (): HTMLCliRootElement;
+    };
+    interface HTMLCliSelectElementEventMap {
+        "valueChange": string;
+        "cliHover": { segment: string };
+    }
+    interface HTMLCliSelectElement extends Components.CliSelect, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLCliSelectElementEventMap>(type: K, listener: (this: HTMLCliSelectElement, ev: CliSelectCustomEvent<HTMLCliSelectElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLCliSelectElementEventMap>(type: K, listener: (this: HTMLCliSelectElement, ev: CliSelectCustomEvent<HTMLCliSelectElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLCliSelectElement: {
+        prototype: HTMLCliSelectElement;
+        new (): HTMLCliSelectElement;
+    };
+    interface HTMLCliTabsElementEventMap {
+        "tabChange": string;
+    }
+    interface HTMLCliTabsElement extends Components.CliTabs, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLCliTabsElementEventMap>(type: K, listener: (this: HTMLCliTabsElement, ev: CliTabsCustomEvent<HTMLCliTabsElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLCliTabsElementEventMap>(type: K, listener: (this: HTMLCliTabsElement, ev: CliTabsCustomEvent<HTMLCliTabsElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLCliTabsElement: {
+        prototype: HTMLCliTabsElement;
+        new (): HTMLCliTabsElement;
+    };
+    interface HTMLCliTooltipElement extends Components.CliTooltip, HTMLStencilElement {
+    }
+    var HTMLCliTooltipElement: {
+        prototype: HTMLCliTooltipElement;
+        new (): HTMLCliTooltipElement;
     };
     interface HTMLMyComponentElement extends Components.MyComponent, HTMLStencilElement {
     }
@@ -75,7 +399,17 @@ declare global {
     };
     interface HTMLElementTagNameMap {
         "app-dashboard": HTMLAppDashboardElement;
+        "cli-button": HTMLCliButtonElement;
+        "cli-card": HTMLCliCardElement;
+        "cli-chip": HTMLCliChipElement;
+        "cli-command-preview": HTMLCliCommandPreviewElement;
+        "cli-input": HTMLCliInputElement;
+        "cli-log-viewer": HTMLCliLogViewerElement;
+        "cli-man-page": HTMLCliManPageElement;
         "cli-root": HTMLCliRootElement;
+        "cli-select": HTMLCliSelectElement;
+        "cli-tabs": HTMLCliTabsElement;
+        "cli-tooltip": HTMLCliTooltipElement;
         "my-component": HTMLMyComponentElement;
         "yabai-gui": HTMLYabaiGuiElement;
     }
@@ -83,7 +417,173 @@ declare global {
 declare namespace LocalJSX {
     interface AppDashboard {
     }
+    interface CliButton {
+        "commandSegment"?: string;
+        "compatibleWith"?: string[];
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        "onCliClick"?: (event: CliButtonCustomEvent<void>) => void;
+        "onCliHover"?: (event: CliButtonCustomEvent<{ segment: string; compatible: boolean }>) => void;
+        /**
+          * @default 'md'
+         */
+        "size"?: ButtonSize;
+        "tooltip"?: string;
+        /**
+          * @default 'default'
+         */
+        "variant"?: ButtonVariant;
+    }
+    interface CliCard {
+        "badge"?: string;
+        /**
+          * @default 'default'
+         */
+        "badgeType"?: 'sip' | 'safe' | 'default';
+        "cardTitle"?: string;
+        /**
+          * @default false
+         */
+        "clickable"?: boolean;
+        /**
+          * @default false
+         */
+        "fullWidth"?: boolean;
+        /**
+          * @default 'default'
+         */
+        "variant"?: CardVariant;
+    }
+    interface CliChip {
+        "color"?: 'default' | 'success' | 'warning' | 'danger' | 'info';
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
+          * @default ''
+         */
+        "label"?: string;
+        "onChipClick"?: (event: CliChipCustomEvent<void>) => void;
+        "onRemove"?: (event: CliChipCustomEvent<void>) => void;
+        /**
+          * @default false
+         */
+        "removable"?: boolean;
+        /**
+          * @default false
+         */
+        "selected"?: boolean;
+    }
+    interface CliCommandPreview {
+        /**
+          * @default ''
+         */
+        "command"?: string;
+        "highlightedSegment"?: string;
+        "onSegmentHover"?: (event: CliCommandPreviewCustomEvent<{ segment: CommandSegment; index: number }>) => void;
+        "onSegmentLeave"?: (event: CliCommandPreviewCustomEvent<void>) => void;
+        /**
+          * @default []
+         */
+        "segments"?: CommandSegment[];
+        /**
+          * @default true
+         */
+        "showExplanation"?: boolean;
+    }
+    interface CliInput {
+        "commandSegment"?: string;
+        /**
+          * @default false
+         */
+        "monospace"?: boolean;
+        "onCliHover"?: (event: CliInputCustomEvent<{ segment: string }>) => void;
+        "onValidationChange"?: (event: CliInputCustomEvent<{ valid: boolean; message?: string }>) => void;
+        "onValueChange"?: (event: CliInputCustomEvent<string>) => void;
+        /**
+          * @default ''
+         */
+        "placeholder"?: string;
+        "tooltip"?: string;
+        /**
+          * @default 'text'
+         */
+        "type"?: 'text' | 'password' | 'number' | 'url' | 'email';
+        "validator"?: (value: string) => { valid: boolean; message?: string };
+        /**
+          * @default ''
+         */
+        "value"?: string;
+    }
+    interface CliLogViewer {
+        /**
+          * @default true
+         */
+        "autoScroll"?: boolean;
+        /**
+          * @default []
+         */
+        "logs"?: string[];
+        /**
+          * @default 1000
+         */
+        "maxLines"?: number;
+        /**
+          * @default true
+         */
+        "searchable"?: boolean;
+    }
+    interface CliManPage {
+        "content"?: ManPageContent;
+        /**
+          * @default ''
+         */
+        "searchQuery"?: string;
+    }
     interface CliRoot {
+    }
+    interface CliSelect {
+        "commandSegment"?: string;
+        "onCliHover"?: (event: CliSelectCustomEvent<{ segment: string }>) => void;
+        "onValueChange"?: (event: CliSelectCustomEvent<string>) => void;
+        /**
+          * @default []
+         */
+        "options"?: SelectOption[];
+        /**
+          * @default 'Select...'
+         */
+        "placeholder"?: string;
+        "tooltip"?: string;
+        /**
+          * @default ''
+         */
+        "value"?: string;
+    }
+    interface CliTabs {
+        /**
+          * @default ''
+         */
+        "activeTab"?: string;
+        "onTabChange"?: (event: CliTabsCustomEvent<string>) => void;
+        /**
+          * @default []
+         */
+        "tabs"?: Tab[];
+    }
+    interface CliTooltip {
+        "content"?: TooltipContent;
+        /**
+          * @default 'bottom'
+         */
+        "position"?: 'top' | 'bottom' | 'left' | 'right';
+        /**
+          * @default false
+         */
+        "visible"?: boolean;
     }
     interface MyComponent {
         /**
@@ -107,6 +607,62 @@ declare namespace LocalJSX {
         "version"?: string;
     }
 
+    interface CliButtonAttributes {
+        "variant": ButtonVariant;
+        "size": ButtonSize;
+        "disabled": boolean;
+        "tooltip": string;
+        "commandSegment": string;
+    }
+    interface CliCardAttributes {
+        "cardTitle": string;
+        "badge": string;
+        "badgeType": 'sip' | 'safe' | 'default';
+        "variant": CardVariant;
+        "clickable": boolean;
+        "fullWidth": boolean;
+    }
+    interface CliChipAttributes {
+        "label": string;
+        "removable": boolean;
+        "selected": boolean;
+        "disabled": boolean;
+        "color": 'default' | 'success' | 'warning' | 'danger' | 'info';
+    }
+    interface CliCommandPreviewAttributes {
+        "command": string;
+        "showExplanation": boolean;
+        "highlightedSegment": string;
+    }
+    interface CliInputAttributes {
+        "value": string;
+        "placeholder": string;
+        "type": 'text' | 'password' | 'number' | 'url' | 'email';
+        "tooltip": string;
+        "commandSegment": string;
+        "monospace": boolean;
+    }
+    interface CliLogViewerAttributes {
+        "maxLines": number;
+        "autoScroll": boolean;
+        "searchable": boolean;
+    }
+    interface CliManPageAttributes {
+        "searchQuery": string;
+    }
+    interface CliSelectAttributes {
+        "value": string;
+        "placeholder": string;
+        "tooltip": string;
+        "commandSegment": string;
+    }
+    interface CliTabsAttributes {
+        "activeTab": string;
+    }
+    interface CliTooltipAttributes {
+        "visible": boolean;
+        "position": 'top' | 'bottom' | 'left' | 'right';
+    }
     interface MyComponentAttributes {
         "first": string;
         "middle": string;
@@ -118,7 +674,17 @@ declare namespace LocalJSX {
 
     interface IntrinsicElements {
         "app-dashboard": AppDashboard;
+        "cli-button": Omit<CliButton, keyof CliButtonAttributes> & { [K in keyof CliButton & keyof CliButtonAttributes]?: CliButton[K] } & { [K in keyof CliButton & keyof CliButtonAttributes as `attr:${K}`]?: CliButtonAttributes[K] } & { [K in keyof CliButton & keyof CliButtonAttributes as `prop:${K}`]?: CliButton[K] };
+        "cli-card": Omit<CliCard, keyof CliCardAttributes> & { [K in keyof CliCard & keyof CliCardAttributes]?: CliCard[K] } & { [K in keyof CliCard & keyof CliCardAttributes as `attr:${K}`]?: CliCardAttributes[K] } & { [K in keyof CliCard & keyof CliCardAttributes as `prop:${K}`]?: CliCard[K] };
+        "cli-chip": Omit<CliChip, keyof CliChipAttributes> & { [K in keyof CliChip & keyof CliChipAttributes]?: CliChip[K] } & { [K in keyof CliChip & keyof CliChipAttributes as `attr:${K}`]?: CliChipAttributes[K] } & { [K in keyof CliChip & keyof CliChipAttributes as `prop:${K}`]?: CliChip[K] };
+        "cli-command-preview": Omit<CliCommandPreview, keyof CliCommandPreviewAttributes> & { [K in keyof CliCommandPreview & keyof CliCommandPreviewAttributes]?: CliCommandPreview[K] } & { [K in keyof CliCommandPreview & keyof CliCommandPreviewAttributes as `attr:${K}`]?: CliCommandPreviewAttributes[K] } & { [K in keyof CliCommandPreview & keyof CliCommandPreviewAttributes as `prop:${K}`]?: CliCommandPreview[K] };
+        "cli-input": Omit<CliInput, keyof CliInputAttributes> & { [K in keyof CliInput & keyof CliInputAttributes]?: CliInput[K] } & { [K in keyof CliInput & keyof CliInputAttributes as `attr:${K}`]?: CliInputAttributes[K] } & { [K in keyof CliInput & keyof CliInputAttributes as `prop:${K}`]?: CliInput[K] };
+        "cli-log-viewer": Omit<CliLogViewer, keyof CliLogViewerAttributes> & { [K in keyof CliLogViewer & keyof CliLogViewerAttributes]?: CliLogViewer[K] } & { [K in keyof CliLogViewer & keyof CliLogViewerAttributes as `attr:${K}`]?: CliLogViewerAttributes[K] } & { [K in keyof CliLogViewer & keyof CliLogViewerAttributes as `prop:${K}`]?: CliLogViewer[K] };
+        "cli-man-page": Omit<CliManPage, keyof CliManPageAttributes> & { [K in keyof CliManPage & keyof CliManPageAttributes]?: CliManPage[K] } & { [K in keyof CliManPage & keyof CliManPageAttributes as `attr:${K}`]?: CliManPageAttributes[K] } & { [K in keyof CliManPage & keyof CliManPageAttributes as `prop:${K}`]?: CliManPage[K] };
         "cli-root": CliRoot;
+        "cli-select": Omit<CliSelect, keyof CliSelectAttributes> & { [K in keyof CliSelect & keyof CliSelectAttributes]?: CliSelect[K] } & { [K in keyof CliSelect & keyof CliSelectAttributes as `attr:${K}`]?: CliSelectAttributes[K] } & { [K in keyof CliSelect & keyof CliSelectAttributes as `prop:${K}`]?: CliSelect[K] };
+        "cli-tabs": Omit<CliTabs, keyof CliTabsAttributes> & { [K in keyof CliTabs & keyof CliTabsAttributes]?: CliTabs[K] } & { [K in keyof CliTabs & keyof CliTabsAttributes as `attr:${K}`]?: CliTabsAttributes[K] } & { [K in keyof CliTabs & keyof CliTabsAttributes as `prop:${K}`]?: CliTabs[K] };
+        "cli-tooltip": Omit<CliTooltip, keyof CliTooltipAttributes> & { [K in keyof CliTooltip & keyof CliTooltipAttributes]?: CliTooltip[K] } & { [K in keyof CliTooltip & keyof CliTooltipAttributes as `attr:${K}`]?: CliTooltipAttributes[K] } & { [K in keyof CliTooltip & keyof CliTooltipAttributes as `prop:${K}`]?: CliTooltip[K] };
         "my-component": Omit<MyComponent, keyof MyComponentAttributes> & { [K in keyof MyComponent & keyof MyComponentAttributes]?: MyComponent[K] } & { [K in keyof MyComponent & keyof MyComponentAttributes as `attr:${K}`]?: MyComponentAttributes[K] } & { [K in keyof MyComponent & keyof MyComponentAttributes as `prop:${K}`]?: MyComponent[K] };
         "yabai-gui": Omit<YabaiGui, keyof YabaiGuiAttributes> & { [K in keyof YabaiGui & keyof YabaiGuiAttributes]?: YabaiGui[K] } & { [K in keyof YabaiGui & keyof YabaiGuiAttributes as `attr:${K}`]?: YabaiGuiAttributes[K] } & { [K in keyof YabaiGui & keyof YabaiGuiAttributes as `prop:${K}`]?: YabaiGui[K] };
     }
@@ -128,7 +694,17 @@ declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
             "app-dashboard": LocalJSX.IntrinsicElements["app-dashboard"] & JSXBase.HTMLAttributes<HTMLAppDashboardElement>;
+            "cli-button": LocalJSX.IntrinsicElements["cli-button"] & JSXBase.HTMLAttributes<HTMLCliButtonElement>;
+            "cli-card": LocalJSX.IntrinsicElements["cli-card"] & JSXBase.HTMLAttributes<HTMLCliCardElement>;
+            "cli-chip": LocalJSX.IntrinsicElements["cli-chip"] & JSXBase.HTMLAttributes<HTMLCliChipElement>;
+            "cli-command-preview": LocalJSX.IntrinsicElements["cli-command-preview"] & JSXBase.HTMLAttributes<HTMLCliCommandPreviewElement>;
+            "cli-input": LocalJSX.IntrinsicElements["cli-input"] & JSXBase.HTMLAttributes<HTMLCliInputElement>;
+            "cli-log-viewer": LocalJSX.IntrinsicElements["cli-log-viewer"] & JSXBase.HTMLAttributes<HTMLCliLogViewerElement>;
+            "cli-man-page": LocalJSX.IntrinsicElements["cli-man-page"] & JSXBase.HTMLAttributes<HTMLCliManPageElement>;
             "cli-root": LocalJSX.IntrinsicElements["cli-root"] & JSXBase.HTMLAttributes<HTMLCliRootElement>;
+            "cli-select": LocalJSX.IntrinsicElements["cli-select"] & JSXBase.HTMLAttributes<HTMLCliSelectElement>;
+            "cli-tabs": LocalJSX.IntrinsicElements["cli-tabs"] & JSXBase.HTMLAttributes<HTMLCliTabsElement>;
+            "cli-tooltip": LocalJSX.IntrinsicElements["cli-tooltip"] & JSXBase.HTMLAttributes<HTMLCliTooltipElement>;
             "my-component": LocalJSX.IntrinsicElements["my-component"] & JSXBase.HTMLAttributes<HTMLMyComponentElement>;
             "yabai-gui": LocalJSX.IntrinsicElements["yabai-gui"] & JSXBase.HTMLAttributes<HTMLYabaiGuiElement>;
         }

@@ -1,0 +1,124 @@
+:host {
+  display: inline-block;
+}
+
+.cli-btn {
+  padding: 10px 16px;
+  background: var(--color-accent2, #533483);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.cli-btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left 0.5s ease;
+}
+
+.cli-btn:hover::before {
+  left: 100%;
+}
+
+.cli-btn:hover {
+  background: var(--color-accent, #e94560);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(233, 69, 96, 0.3);
+}
+
+.cli-btn:active {
+  transform: translateY(0);
+}
+
+.cli-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.cli-btn:disabled::before {
+  display: none;
+}
+
+/* Size variants */
+.cli-btn-sm {
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  border-radius: 6px;
+}
+
+.cli-btn-lg {
+  padding: 14px 24px;
+  font-size: 1rem;
+}
+
+/* Color variants */
+.cli-btn-success {
+  background: var(--color-success, #4ecca3);
+  color: #1a1a2e;
+}
+
+.cli-btn-success:hover {
+  background: #3db892;
+  box-shadow: 0 4px 12px rgba(78, 204, 163, 0.3);
+}
+
+.cli-btn-warning {
+  background: var(--color-warning, #ffc107);
+  color: #1a1a2e;
+}
+
+.cli-btn-warning:hover {
+  background: #e5ac00;
+  box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+}
+
+.cli-btn-danger {
+  background: var(--color-danger, #ff6b6b);
+}
+
+.cli-btn-danger:hover {
+  background: #ff5252;
+  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+}
+
+.cli-btn-info {
+  background: var(--color-info, #4dabf7);
+}
+
+.cli-btn-info:hover {
+  background: #339af0;
+  box-shadow: 0 4px 12px rgba(77, 171, 247, 0.3);
+}
+
+/* Highlight state for command compatibility */
+.cli-btn[data-highlight="true"] {
+  animation: pulse-border 1s ease-in-out;
+  border: 2px solid var(--color-accent, #e94560);
+}
+
+.cli-btn[data-compatible="false"] {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+@keyframes pulse-border {
+  0%,
+  100% {
+    border-color: transparent;
+  }
+  50% {
+    border-color: var(--color-accent, #e94560);
+  }
+}

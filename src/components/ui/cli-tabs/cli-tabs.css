@@ -1,0 +1,51 @@
+:host {
+  display: block;
+}
+
+.cli-tabs-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.cli-tab {
+  padding: 10px 18px;
+  background: var(--color-bg3, #0f3460);
+  border: none;
+  color: var(--color-text, #eaeaea);
+  cursor: pointer;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cli-tab:hover {
+  background: var(--color-accent2, #533483);
+  transform: translateY(-1px);
+}
+
+.cli-tab-active {
+  background: var(--color-accent, #e94560);
+  box-shadow: 0 2px 8px rgba(233, 69, 96, 0.4);
+}
+
+.cli-tab-active:hover {
+  background: var(--color-accent, #e94560);
+}
+
+.cli-tab-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 9px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
