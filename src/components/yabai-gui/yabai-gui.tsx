@@ -1,5 +1,5 @@
 import { Component, h, Event, EventEmitter, Prop, State } from '@stencil/core';
-import { type CommandStatus, yabai, type CommandResult, executeCommand } from '../../yabai/yabai-service';
+import { type CommandStatus, yabai, type CommandResult, executeCommand, SIGNAL_EVENTS } from '../../yabai/yabai-service';
 
 @Component({
   tag: 'yabai-gui',
@@ -15,11 +15,63 @@ export class YabaiGui {
   @State() output = 'Click any button to execute a command. Output will appear here.';
   @State() statusMessage = 'yabai GUI v1.0';
 
-  // Form states
+  // Query form states
   @State() queryFilterType = '';
   @State() queryFilterValue = '';
   @State() queryProps = '';
+
+  // Window form states
   @State() opacityValue = 1;
+  @State() winDisplay = 'prev';
+  @State() winSpace = 'prev';
+  @State() deminimizeId = '';
+  @State() gridVal = '';
+  @State() insertDir = 'north';
+  @State() scratchpadLabel = '';
+
+  // Space form states
+  @State() spaceToDisplay = 'prev';
+  @State() spaceLabel = '';
+  @State() createOnDisplay = '';
+  @State() paddingVal = '';
+  @State() paddingType = 'abs';
+  @State() gapVal = '';
+  @State() gapType = 'abs';
+
+  // Display form states
+  @State() sendSpaceSel = 'focused';
+  @State() sendToDisplay = 'prev';
+  @State() labelDisplay = 'focused';
+  @State() displayLabelVal = '';
+
+  // Rule form states
+  @State() ruleIndex = '';
+  @State() ruleLabel = '';
+  @State() ruleApp = '';
+  @State() ruleAppNeg = false;
+  @State() ruleTitle = '';
+  @State() ruleTitleNeg = false;
+  @State() ruleManage = '';
+  @State() ruleSticky = '';
+  @State() ruleLayer = '';
+  @State() ruleOpacity = '';
+  @State() ruleGrid = '';
+  @State() ruleScratchpad = '';
+  @State() ruleOneShot = false;
+  @State() rulePreview = 'yabai -m rule --add';
+
+  // Signal form states
+  @State() signalIndex = '';
+  @State() signalEvent = '';
+  @State() signalLabel = '';
+  @State() signalApp = '';
+  @State() signalAppNeg = false;
+  @State() signalTitle = '';
+  @State() signalTitleNeg = false;
+  @State() signalAction = '';
+  @State() signalPreview = 'yabai -m signal --add event=';
+
+  // Raw command
   @State() rawCommand = '';
 
   @Event() commandExecuted: EventEmitter<CommandResult>;
@@ -115,10 +167,51 @@ export class YabaiGui {
     await this.executeCmd(`yabai -m display ${args}`);
   }
 
-  // Config commands
+// Config commands
   async setConfig(key: string, value: string): Promise<void> {
     if (!value) return;
     await this.executeCmd(`yabai -m config ${key} ${value}`);
+  }
+
+  // Rule methods
+  updateRulePreview(): void {
+    const parts = ['yabai -m rule --add'];
+
+    if (this.ruleLabel) parts.push(`label=${this.ruleLabel}`);
+    if (this.ruleApp) parts.push(`app${this.ruleAppNeg ? '!' : ''}=${this.ruleApp}`);
+    if (this.ruleTitle) parts.push(`title${this.ruleTitleNeg ? '!' : ''}=${this.ruleTitle}`);
+    if (this.ruleManage) parts.push(`manage=${this.ruleManage}`);
+    if (this.ruleSticky) parts.push(`sticky=${this.ruleSticky}`);
+    if (this.ruleLayer) parts.push(`sub-layer=${this.ruleLayer}`);
+    if (this.ruleOpacity) parts.push(`opacity=${this.ruleOpacity}`);
+    if (this.ruleGrid) parts.push(`grid=${this.ruleGrid}`);
+    if (this.ruleScratchpad) parts.push(`scratchpad=${this.ruleScratchpad}`);
+    if (this.ruleOneShot) parts.push('--one-shot');
+
+    this.rulePreview = parts.join(' ');
+  }
+
+  async addRule(): Promise<void> {
+    this.updateRulePreview();
+    await this.executeCmd(this.rulePreview);
+  }
+
+  // Signal methods
+  updateSignalPreview(): void {
+    const parts = ['yabai -m signal --add'];
+
+    if (this.signalEvent) parts.push(`event=${this.signalEvent}`);
+    if (this.signalLabel) parts.push(`label=${this.signalLabel}`);
+    if (this.signalApp) parts.push(`app${this.signalAppNeg ? '!' : ''}=${this.signalApp}`);
+    if (this.signalTitle) parts.push(`title${this.signalTitleNeg ? '!' : ''}=${this.signalTitle}`);
+    if (this.signalAction) parts.push(`action="${this.signalAction}"`);
+
+    this.signalPreview = parts.join(' ');
+  }
+
+  async addSignal(): Promise<void> {
+    this.updateSignalPreview();
+    await this.executeCmd(this.signalPreview);
   }
 
   renderTabs(): Element[] {
@@ -199,84 +292,140 @@ export class YabaiGui {
     );
   }
 
-  renderWindowsTab(): Element {
+renderWindowsTab(): Element {
     return (
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         <div class="cli-card">
           <h3 class="text-text2 text-base mb-2">Focus & Navigation</h3>
           <div class="flex flex-wrap gap-2 my-2">
-            <button class="cli-btn" onClick={() => this.windowCmd('--focus prev')}>
-              ← Prev
-            </button>
-            <button class="cli-btn" onClick={() => this.windowCmd('--focus next')}>
-              Next →
-            </button>
-            <button class="cli-btn" onClick={() => this.windowCmd('--focus recent')}>
-              Recent
-            </button>
-            <button class="cli-btn" onClick={() => this.windowCmd('--focus mouse')}>
-              Under Mouse
-            </button>
+            <button class="cli-btn" onClick={() => this.windowCmd('--focus prev')}>← Prev</button>
+            <button class="cli-btn" onClick={() => this.windowCmd('--focus next')}>Next →</button>
+            <button class="cli-btn" onClick={() => this.windowCmd('--focus recent')}>Recent</button>
+            <button class="cli-btn" onClick={() => this.windowCmd('--focus mouse')}>Under Mouse</button>
           </div>
           <div class="flex flex-wrap gap-2 my-2">
-            <button class="cli-btn cli-btn-sm" onClick={() => this.windowCmd('--focus stack.prev')}>
-              Stack ↑
-            </button>
-            <button class="cli-btn cli-btn-sm" onClick={() => this.windowCmd('--focus stack.next')}>
-              Stack ↓
-            </button>
+            <button class="cli-btn cli-btn-sm" onClick={() => this.windowCmd('--focus stack.prev')}>Stack ↑</button>
+            <button class="cli-btn cli-btn-sm" onClick={() => this.windowCmd('--focus stack.next')}>Stack ↓</button>
+            <button class="cli-btn cli-btn-sm" onClick={() => this.windowCmd('--focus largest')}>Largest</button>
+            <button class="cli-btn cli-btn-sm" onClick={() => this.windowCmd('--focus smallest')}>Smallest</button>
           </div>
         </div>
 
         <div class="cli-card">
           <h3 class="text-text2 text-base mb-2">Window Actions</h3>
           <div class="flex flex-wrap gap-2 my-2">
-            <button class="cli-btn cli-btn-warning" onClick={() => this.windowCmd('--close')}>
-              Close
-            </button>
-            <button class="cli-btn" onClick={() => this.windowCmd('--minimize')}>
-              Minimize
-            </button>
+            <button class="cli-btn cli-btn-warning" onClick={() => this.windowCmd('--close')}>Close</button>
+            <button class="cli-btn" onClick={() => this.windowCmd('--minimize')}>Minimize</button>
+          </div>
+          <div class="flex gap-2 items-center my-2 flex-wrap">
+            <label class="text-text2 text-sm">Deminimize ID:</label>
+            <input type="text" class="cli-input" placeholder="window id" value={this.deminimizeId}
+              onInput={(e: Event) => (this.deminimizeId = (e.target as HTMLInputElement).value)} />
+            <button class="cli-btn cli-btn-sm" onClick={() => this.executeCmd(`yabai -m window --deminimize ${this.deminimizeId}`)}>Restore</button>
           </div>
         </div>
 
         <div class="cli-card">
-          <h3 class="text-text2 text-base mb-2">Toggles</h3>
+          <h3 class="text-text2 text-base mb-2">Move & Swap</h3>
           <div class="flex flex-wrap gap-2 my-2">
-            <button class="cli-btn cli-btn-sm" onClick={() => this.windowCmd('--toggle float')}>
-              Float
-            </button>
-            <button class="cli-btn cli-btn-sm" onClick={() => this.windowCmd('--toggle sticky')}>
-              Sticky
-            </button>
-            <button class="cli-btn cli-btn-sm" onClick={() => this.windowCmd('--toggle pip')}>
-              PiP
-            </button>
-            <button class="cli-btn cli-btn-sm" onClick={() => this.windowCmd('--toggle shadow')}>
-              Shadow
-            </button>
+            <button class="cli-btn" onClick={() => this.windowCmd('--swap prev')}>Swap ←</button>
+            <button class="cli-btn" onClick={() => this.windowCmd('--swap next')}>Swap →</button>
+            <button class="cli-btn" onClick={() => this.windowCmd('--swap largest')}>Swap Largest</button>
+          </div>
+          <div class="flex flex-wrap gap-2 my-2">
+            <button class="cli-btn cli-btn-sm" onClick={() => this.windowCmd('--warp prev')}>Warp ←</button>
+            <button class="cli-btn cli-btn-sm" onClick={() => this.windowCmd('--warp next')}>Warp →</button>
+            <button class="cli-btn cli-btn-sm" onClick={() => this.windowCmd('--stack prev')}>Stack on ←</button>
+            <button class="cli-btn cli-btn-sm" onClick={() => this.windowCmd('--stack next')}>Stack on →</button>
           </div>
         </div>
 
         <div class="cli-card">
           <h3 class="text-text2 text-base mb-2">
-            Opacity
+            Send To
             <span class="cli-badge-sip">SIP</span>
           </h3>
-          <div class="flex gap-2 items-center my-2">
-            <input
-              type="range"
-              min="0"
-              max="1"
-              step="0.1"
-              value={this.opacityValue}
-              onInput={(e: Event) => (this.opacityValue = parseFloat((e.target as HTMLInputElement).value))}
-              class="cli-input flex-1"
-            />
+          <div class="flex gap-2 items-center my-2 flex-wrap">
+            <label class="text-text2 text-sm">Display:</label>
+            <select class="cli-select" onChange={(e: Event) => (this.winDisplay = (e.target as HTMLSelectElement).value)}>
+              <option value="prev">Prev</option>
+              <option value="next">Next</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+            </select>
+            <button class="cli-btn cli-btn-sm" onClick={() => this.windowCmd(`--display ${this.winDisplay}`)}>Send</button>
+          </div>
+          <div class="flex gap-2 items-center my-2 flex-wrap">
+            <label class="text-text2 text-sm">Space:</label>
+            <select class="cli-select" onChange={(e: Event) => (this.winSpace = (e.target as HTMLSelectElement).value)}>
+              <option value="prev">Prev</option>
+              <option value="next">Next</option>
+              <option value="recent">Recent</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+            <button class="cli-btn cli-btn-sm" onClick={() => this.windowCmd(`--space ${this.winSpace}`)}>Send</button>
+          </div>
+        </div>
+
+        <div class="cli-card">
+          <h3 class="text-text2 text-base mb-2">
+            Toggles
+            <span class="cli-badge-sip">SIP</span>
+          </h3>
+          <div class="flex flex-wrap gap-2 my-2">
+            <button class="cli-btn cli-btn-sm" onClick={() => this.windowCmd('--toggle float')}>Float</button>
+            <button class="cli-btn cli-btn-sm" onClick={() => this.windowCmd('--toggle sticky')}>Sticky</button>
+            <button class="cli-btn cli-btn-sm" onClick={() => this.windowCmd('--toggle pip')}>PiP</button>
+            <button class="cli-btn cli-btn-sm" onClick={() => this.windowCmd('--toggle shadow')}>Shadow</button>
+            <button class="cli-btn cli-btn-sm" onClick={() => this.windowCmd('--toggle split')}>Split</button>
+          </div>
+          <div class="flex flex-wrap gap-2 my-2">
+            <button class="cli-btn cli-btn-sm" onClick={() => this.windowCmd('--toggle zoom-parent')}>Zoom Parent</button>
+            <button class="cli-btn cli-btn-sm" onClick={() => this.windowCmd('--toggle zoom-fullscreen')}>Zoom FS</button>
+            <button class="cli-btn cli-btn-sm" onClick={() => this.windowCmd('--toggle native-fullscreen')}>Native FS</button>
+          </div>
+        </div>
+
+        <div class="cli-card">
+          <h3 class="text-text2 text-base mb-2">
+            Advanced
+            <span class="cli-badge-sip">SIP</span>
+          </h3>
+          <div class="flex gap-2 items-center my-2 flex-wrap">
+            <label class="text-text2 text-sm">Grid:</label>
+            <input type="text" class="cli-input" style="width: 120px" placeholder="r:c:x:y:w:h" value={this.gridVal}
+              onInput={(e: Event) => (this.gridVal = (e.target as HTMLInputElement).value)} />
+            <button class="cli-btn cli-btn-sm" onClick={() => this.windowCmd(`--grid ${this.gridVal}`)}>Apply</button>
+          </div>
+          <div class="flex gap-2 items-center my-2 flex-wrap">
+            <label class="text-text2 text-sm">Insert:</label>
+            <select class="cli-select" onChange={(e: Event) => (this.insertDir = (e.target as HTMLSelectElement).value)}>
+              <option value="north">North</option>
+              <option value="east">East</option>
+              <option value="south">South</option>
+              <option value="west">West</option>
+              <option value="stack">Stack</option>
+            </select>
+            <button class="cli-btn cli-btn-sm" onClick={() => this.windowCmd(`--insert ${this.insertDir}`)}>Set</button>
+          </div>
+          <div class="flex gap-2 items-center my-2 flex-wrap">
+            <label class="text-text2 text-sm">Opacity:</label>
+            <input type="range" min="0" max="1" step="0.1" value={this.opacityValue}
+              onInput={(e: Event) => (this.opacityValue = parseFloat((e.target as HTMLInputElement).value))} class="cli-input flex-1" />
             <span class="text-text2 text-sm">{this.opacityValue.toFixed(1)}</span>
-            <button class="cli-btn cli-btn-sm" onClick={() => this.windowCmd(`--opacity ${this.opacityValue}`)}>
-              Set
-            </button>
+            <button class="cli-btn cli-btn-sm" onClick={() => this.windowCmd(`--opacity ${this.opacityValue}`)}>Set</button>
+          </div>
+          <div class="flex gap-2 items-center my-2 flex-wrap">
+            <label class="text-text2 text-sm">Scratchpad:</label>
+            <input type="text" class="cli-input" style="width: 80px" placeholder="label" value={this.scratchpadLabel}
+              onInput={(e: Event) => (this.scratchpadLabel = (e.target as HTMLInputElement).value)} />
+            <button class="cli-btn cli-btn-sm" onClick={() => this.windowCmd(`--scratchpad ${this.scratchpadLabel}`)}>Assign</button>
+            <button class="cli-btn cli-btn-sm" onClick={() => this.executeCmd('yabai -m window --scratchpad recover')}>Recover</button>
           </div>
         </div>
       </div>
