@@ -37,6 +37,9 @@
     "format:check": "biome format .",
     "check": "biome check --write ."
   },
+  "dependencies": {
+    "zod": "^3.23.8"
+  },
   "devDependencies": {
     "@biomejs/biome": "^2.4.10",
     "@stencil/core": "^4.27.1",
