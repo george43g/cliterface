@@ -1,4 +1,4 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
 /* ── Theme tokens ──────────────────────────────────────────── */
 @theme {
@@ -53,11 +53,24 @@
     background: var(--color-accent);
     transform: translateY(-1px);
   }
-  .cli-btn-sm { padding: 6px 12px; font-size: 0.8rem; }
-  .cli-btn-success { background: var(--color-success); color: #1a1a2e; }
-  .cli-btn-warning { background: var(--color-warning); color: #1a1a2e; }
-  .cli-btn-danger  { background: var(--color-danger); }
-  .cli-btn-info    { background: var(--color-info); }
+  .cli-btn-sm {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+  }
+  .cli-btn-success {
+    background: var(--color-success);
+    color: #1a1a2e;
+  }
+  .cli-btn-warning {
+    background: var(--color-warning);
+    color: #1a1a2e;
+  }
+  .cli-btn-danger {
+    background: var(--color-danger);
+  }
+  .cli-btn-info {
+    background: var(--color-info);
+  }
 
   .cli-input,
   .cli-select {
@@ -85,8 +98,12 @@
     font-size: 0.9rem;
     transition: background 0.2s;
   }
-  .cli-tab:hover  { background: var(--color-accent2); }
-  .cli-tab-active { background: var(--color-accent); }
+  .cli-tab:hover {
+    background: var(--color-accent2);
+  }
+  .cli-tab-active {
+    background: var(--color-accent);
+  }
 
   .cli-badge-sip {
     display: inline-block;

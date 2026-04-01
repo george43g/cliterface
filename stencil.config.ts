@@ -16,6 +16,10 @@ export const config: Config = {
       externalRuntime: false,
     },
     {
+      type: 'dist-hydrate-script',
+      dir: 'dist/hydrate',
+    },
+    {
       type: 'www',
       baseUrl: 'https://localhost/',
       serviceWorker: null,
