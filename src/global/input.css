@@ -31,12 +31,65 @@
 }
 
 /* ── Reusable component classes ────────────────────────────── */
+/* ── Animation keyframes ─────────────────────────────────── */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes slide-in {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes border-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(233, 69, 96, 0.4); }
+  50% { box-shadow: 0 0 0 4px rgba(233, 69, 96, 0.2); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+/* ── Layout utilities ────────────────────────────────────── */
+.cli-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.cli-grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
+.cli-grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
+.cli-grid-cols-4 { grid-template-columns: repeat(4, 1fr); }
+
+.cli-flex {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.cli-flex-wrap { flex-wrap: wrap; }
+.cli-flex-col { flex-direction: column; align-items: stretch; }
+
+/* ── Components ──────────────────────────────────────────── */
 @layer components {
   .cli-card {
     background: var(--color-bg2);
     border-radius: 12px;
     padding: 20px;
     border: 1px solid var(--color-bg3);
+    transition: all 0.2s ease;
+  }
+
+  .cli-card-hover:hover {
+    border-color: var(--color-accent);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
   }
 
   .cli-btn {
@@ -47,62 +100,109 @@
     border-radius: 8px;
     cursor: pointer;
     font-size: 0.9rem;
-    transition: all 0.2s;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
   }
+
+  .cli-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    transition: left 0.5s ease;
+  }
+
+  .cli-btn:hover::before {
+    left: 100%;
+  }
+
   .cli-btn:hover {
     background: var(--color-accent);
-    transform: translateY(-1px);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(233, 69, 96, 0.3);
   }
+
   .cli-btn-sm {
     padding: 6px 12px;
     font-size: 0.8rem;
+    border-radius: 6px;
   }
+
+  .cli-btn-lg {
+    padding: 14px 24px;
+    font-size: 1rem;
+  }
+
   .cli-btn-success {
     background: var(--color-success);
     color: #1a1a2e;
   }
+
   .cli-btn-warning {
     background: var(--color-warning);
     color: #1a1a2e;
   }
+
   .cli-btn-danger {
     background: var(--color-danger);
   }
+
   .cli-btn-info {
     background: var(--color-info);
+  }
+
+  /* Button with command segment highlighting */
+  .cli-btn[data-segment]:hover {
+    animation: border-glow 1s ease-in-out;
+  }
+
+  .cli-btn[data-highlight='true'] {
+    border: 2px solid var(--color-accent);
+    animation: pulse 1s ease-in-out infinite;
   }
 
   .cli-input,
   .cli-select {
     background: var(--color-bg3);
     color: var(--color-text);
-    border: 1px solid var(--color-accent2);
-    padding: 8px 12px;
-    border-radius: 6px;
+    border: 2px solid var(--color-accent2);
+    padding: 10px 14px;
+    border-radius: 8px;
     font-size: 0.9rem;
     min-width: 120px;
+    transition: all 0.2s ease;
+    outline: none;
   }
+
   .cli-input:focus,
   .cli-select:focus {
-    outline: none;
     border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px rgba(233, 69, 96, 0.2);
   }
 
   .cli-tab {
-    padding: 8px 16px;
+    padding: 10px 18px;
     background: var(--color-bg3);
     border: none;
     color: var(--color-text);
     cursor: pointer;
-    border-radius: 6px;
+    border-radius: 8px;
     font-size: 0.9rem;
-    transition: background 0.2s;
+    transition: all 0.2s ease;
   }
+
   .cli-tab:hover {
     background: var(--color-accent2);
+    transform: translateY(-1px);
   }
+
   .cli-tab-active {
     background: var(--color-accent);
+    box-shadow: 0 2px 8px rgba(233, 69, 96, 0.4);
   }
 
   .cli-badge-sip {
@@ -113,7 +213,11 @@
     background: var(--color-warning);
     color: #1a1a2e;
     margin-left: 8px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   }
+
   .cli-badge-safe {
     display: inline-block;
     padding: 2px 8px;
@@ -122,6 +226,22 @@
     background: var(--color-success);
     color: #1a1a2e;
     margin-left: 8px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .cli-badge-info {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    background: var(--color-info);
+    color: #1a1a2e;
+    margin-left: 8px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   }
 
   .cli-output {
@@ -136,14 +256,202 @@
     white-space: pre-wrap;
     font-size: 0.85rem;
     margin-top: 10px;
+    border: 1px solid var(--color-bg3);
   }
 
   .cli-cmd-preview {
     background: var(--color-bg3);
-    padding: 12px;
-    border-radius: 6px;
+    padding: 16px;
+    border-radius: 8px;
     font-family: var(--font-mono);
     margin: 10px 0;
     border-left: 3px solid var(--color-accent);
+    font-size: 0.9rem;
+    position: relative;
+  }
+
+  /* Command segment highlighting styles */
+  .cli-cmd-segment {
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    cursor: help;
+    border: 2px solid transparent;
+  }
+
+  .cli-cmd-segment:hover,
+  .cli-cmd-segment-highlighted {
+    background: rgba(233, 69, 96, 0.2);
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 4px rgba(233, 69, 96, 0.1);
+  }
+
+  .cli-cmd-segment-command { color: var(--color-accent); font-weight: 600; }
+  .cli-cmd-segment-flag { color: var(--color-info); }
+  .cli-cmd-segment-argument { color: var(--color-success); }
+  .cli-cmd-segment-value { color: var(--color-warning); }
+
+  /* Tooltip styles */
+  .cli-tooltip {
+    position: relative;
+  }
+
+  .cli-tooltip-content {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--color-bg2);
+    border: 1px solid var(--color-bg3);
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 0.85rem;
+    max-width: 300px;
+    z-index: 1000;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    animation: slide-in 0.2s ease;
+  }
+
+  /* Modal/overlay for man pages */
+  .cli-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .cli-modal {
+    background: var(--color-bg2);
+    border-radius: 16px;
+    max-width: 900px;
+    width: 100%;
+    max-height: 85vh;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    animation: slide-in 0.3s ease;
+  }
+
+  .cli-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--color-bg3);
+  }
+
+  .cli-modal-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-text);
+    margin: 0;
+  }
+
+  .cli-modal-close {
+    background: none;
+    border: none;
+    color: var(--color-text2);
+    font-size: 1.5rem;
+    cursor: pointer;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+  }
+
+  .cli-modal-close:hover {
+    background: var(--color-bg3);
+    color: var(--color-accent);
+  }
+
+  .cli-modal-content {
+    padding: 24px;
+    overflow-y: auto;
+    max-height: calc(85vh - 80px);
+  }
+
+  /* Help button floating action */
+  .cli-help-fab {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--color-accent);
+    color: white;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(233, 69, 96, 0.4);
+    transition: all 0.2s ease;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .cli-help-fab:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 24px rgba(233, 69, 96, 0.5);
+  }
+
+  /* Validation states */
+  .cli-input-valid {
+    border-color: var(--color-success);
+  }
+
+  .cli-input-valid:focus {
+    box-shadow: 0 0 0 3px rgba(78, 204, 163, 0.2);
+  }
+
+  .cli-input-invalid {
+    border-color: var(--color-danger);
+  }
+
+  .cli-input-invalid:focus {
+    box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.2);
+  }
+
+  .cli-validation-message {
+    font-size: 0.75rem;
+    margin-top: 4px;
+  }
+
+  .cli-validation-message.valid {
+    color: var(--color-success);
+  }
+
+  .cli-validation-message.invalid {
+    color: var(--color-danger);
+  }
+
+  /* Responsive breakpoints */
+  @media (max-width: 768px) {
+    .cli-grid-cols-2,
+    .cli-grid-cols-3,
+    .cli-grid-cols-4 {
+      grid-template-columns: 1fr;
+    }
+
+    .cli-modal {
+      max-width: 100%;
+      max-height: 100vh;
+      border-radius: 0;
+    }
+
+    .cli-modal-content {
+      max-height: calc(100vh - 80px);
+    }
   }
 }

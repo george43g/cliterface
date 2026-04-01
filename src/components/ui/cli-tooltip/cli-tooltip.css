@@ -1,0 +1,129 @@
+.cli-tooltip {
+  position: absolute;
+  z-index: 1000;
+  max-width: 400px;
+  animation: tooltip-fade-in 0.2s ease;
+}
+
+.cli-tooltip-top {
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: 8px;
+}
+
+.cli-tooltip-bottom {
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 8px;
+}
+
+.cli-tooltip-left {
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-right: 8px;
+}
+
+.cli-tooltip-right {
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-left: 8px;
+}
+
+.cli-tooltip-arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-style: solid;
+}
+
+.cli-tooltip-top .cli-tooltip-arrow {
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 6px 6px 0;
+  border-color: var(--color-bg2, #16213e) transparent transparent transparent;
+}
+
+.cli-tooltip-bottom .cli-tooltip-arrow {
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 0 6px 6px;
+  border-color: transparent transparent var(--color-bg2, #16213e) transparent;
+}
+
+.cli-tooltip-content {
+  background: var(--color-bg2, #16213e);
+  border: 1px solid var(--color-bg3, #0f3460);
+  border-radius: 8px;
+  padding: 12px 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.cli-tooltip-title {
+  color: var(--color-accent, #e94560);
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+}
+
+.cli-tooltip-description {
+  color: var(--color-text, #eaeaea);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  margin: 0 0 10px 0;
+}
+
+.cli-tooltip-examples {
+  margin-top: 10px;
+}
+
+.cli-tooltip-label {
+  color: var(--color-text2, #a0a0a0);
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.cli-tooltip-examples ul {
+  margin: 6px 0 0 0;
+  padding-left: 20px;
+}
+
+.cli-tooltip-examples li {
+  color: var(--color-success, #4ecca3);
+  font-size: 0.8rem;
+  font-family: var(--font-mono, monospace);
+  margin-bottom: 4px;
+}
+
+.cli-tooltip-examples code {
+  background: var(--color-bg3, #0f3460);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.cli-tooltip-see-also {
+  margin-top: 10px;
+  font-size: 0.8rem;
+}
+
+.cli-tooltip-see-also span:last-child {
+  color: var(--color-info, #4dabf7);
+}
+
+@keyframes tooltip-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

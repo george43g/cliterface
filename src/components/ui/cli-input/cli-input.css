@@ -1,0 +1,62 @@
+.cli-input-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cli-input {
+  background: var(--color-bg3, #0f3460);
+  color: var(--color-text, #eaeaea);
+  border: 2px solid var(--color-accent2, #533483);
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  min-width: 120px;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.cli-input:focus,
+.cli-input-focused {
+  border-color: var(--color-accent, #e94560);
+  box-shadow: 0 0 0 3px rgba(233, 69, 96, 0.2);
+}
+
+.cli-input::placeholder {
+  color: var(--color-text2, #a0a0a0);
+  opacity: 0.6;
+}
+
+.cli-input-mono {
+  font-family: var(--font-mono, "SF Mono", Monaco, monospace);
+}
+
+.cli-input-invalid {
+  border-color: var(--color-danger, #ff6b6b);
+}
+
+.cli-input-invalid:focus {
+  box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.2);
+}
+
+.cli-input-error {
+  color: var(--color-danger, #ff6b6b);
+  font-size: 0.75rem;
+  margin-top: 2px;
+}
+
+/* Highlight state for command preview */
+.cli-input[data-highlight="true"] {
+  animation: input-pulse 1s ease-in-out;
+  border-color: var(--color-accent, #e94560);
+}
+
+@keyframes input-pulse {
+  0%,
+  100% {
+    border-color: var(--color-accent2, #533483);
+  }
+  50% {
+    border-color: var(--color-accent, #e94560);
+  }
+}
