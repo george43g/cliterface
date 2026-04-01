@@ -24,6 +24,7 @@ console.log('\n\u{1f528} Building single-file app...\n');
 // With auto-define, each component file registers itself via customElements.define()
 // when imported. We create a virtual entry that imports them all.
 console.log('\u{1f4e6} Bundling JS...');
+
 import { readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -39,10 +40,7 @@ const componentFiles = readdirSync(ceDir)
   .map(f => join(ceDir, f));
 
 // Virtual entry that imports every component + the index (runtime)
-const virtualEntry = [
-  `import '${ceDir}/index.js';`,
-  ...componentFiles.map(f => `import './${f}';`),
-].join('\n');
+const virtualEntry = [`import '${ceDir}/index.js';`, ...componentFiles.map(f => `import './${f}';`)].join('\n');
 
 const bundleResult = await esbuild.build({
   stdin: {
@@ -62,9 +60,7 @@ console.log(`   ${(js.length / 1024).toFixed(1)} KB  (${componentFiles.length} c
 
 // ── Step 2: Read CSS ─────────────────────────────────────────────
 console.log('\u{1f3a8} Reading CSS...');
-const cssPath = existsSync('./www/build/cliterface.css')
-  ? './www/build/cliterface.css'
-  : './src/global/output.css';
+const cssPath = existsSync('./www/build/cliterface.css') ? './www/build/cliterface.css' : './src/global/output.css';
 const css = readFileSync(cssPath, 'utf-8');
 console.log(`   ${(css.length / 1024).toFixed(1)} KB`);
 
@@ -88,7 +84,7 @@ const shellHtml = `<!DOCTYPE html>
 const rendered = await renderToString(shellHtml, {
   prettyHtml: false,
   removeUnusedStyles: false,
-  removeScripts: true,      // we'll inject our own bundled JS
+  removeScripts: true, // we'll inject our own bundled JS
   removeHtmlComments: true,
 });
 

@@ -75,7 +75,11 @@ export class AppDashboard {
     const isAvailable = tool.status === 'available';
 
     return (
-      <div key={tool.id} class={`tool-card ${!isAvailable ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer hover:-translate-y-0.5 hover:border-accent'}`} onClick={() => isAvailable && this.selectTool(tool.id)}>
+      <div
+        key={tool.id}
+        class={`tool-card ${!isAvailable ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer hover:-translate-y-0.5 hover:border-accent'}`}
+        onClick={() => isAvailable && this.selectTool(tool.id)}
+      >
         <div class="flex items-start justify-between mb-2">
           <span class="text-3xl">{tool.icon}</span>
           {tool.version && <span class="text-xs text-text2 bg-bg3 px-2 py-1 rounded-md">{tool.version}</span>}

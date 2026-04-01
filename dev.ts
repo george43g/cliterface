@@ -4,8 +4,9 @@
  * Tailwind watch runs separately via concurrently (see package.json "dev" script).
  * When Tailwind regenerates output.css, this watcher picks it up and rebuilds.
  */
-import { watch } from 'node:fs';
+
 import { execSync } from 'node:child_process';
+import { watch } from 'node:fs';
 
 let building = false;
 let queued = false;
