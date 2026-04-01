@@ -1,0 +1,17 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+/* Custom grid layout for the panel */
+.yabai-query-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+@media (min-width: 1280px) {
+  .yabai-query-grid {
+    grid-template-columns: 1fr 2fr;
+  }
+}

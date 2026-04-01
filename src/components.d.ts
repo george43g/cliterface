@@ -200,6 +200,12 @@ export namespace Components {
          */
         "version": string;
     }
+    /**
+     * Yabai Query Panel - Uses UI component library
+     */
+    interface YabaiQueryPanel {
+        "executeCommand": (cmd: string) => Promise<void>;
+    }
 }
 export interface CliButtonCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -228,6 +234,10 @@ export interface CliTabsCustomEvent<T> extends CustomEvent<T> {
 export interface YabaiGuiCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLYabaiGuiElement;
+}
+export interface YabaiQueryPanelCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLYabaiQueryPanelElement;
 }
 declare global {
     interface HTMLAppDashboardElement extends Components.AppDashboard, HTMLStencilElement {
@@ -397,6 +407,26 @@ declare global {
         prototype: HTMLYabaiGuiElement;
         new (): HTMLYabaiGuiElement;
     };
+    interface HTMLYabaiQueryPanelElementEventMap {
+        "commandPreview": string;
+    }
+    /**
+     * Yabai Query Panel - Uses UI component library
+     */
+    interface HTMLYabaiQueryPanelElement extends Components.YabaiQueryPanel, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLYabaiQueryPanelElementEventMap>(type: K, listener: (this: HTMLYabaiQueryPanelElement, ev: YabaiQueryPanelCustomEvent<HTMLYabaiQueryPanelElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLYabaiQueryPanelElementEventMap>(type: K, listener: (this: HTMLYabaiQueryPanelElement, ev: YabaiQueryPanelCustomEvent<HTMLYabaiQueryPanelElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLYabaiQueryPanelElement: {
+        prototype: HTMLYabaiQueryPanelElement;
+        new (): HTMLYabaiQueryPanelElement;
+    };
     interface HTMLElementTagNameMap {
         "app-dashboard": HTMLAppDashboardElement;
         "cli-button": HTMLCliButtonElement;
@@ -412,6 +442,7 @@ declare global {
         "cli-tooltip": HTMLCliTooltipElement;
         "my-component": HTMLMyComponentElement;
         "yabai-gui": HTMLYabaiGuiElement;
+        "yabai-query-panel": HTMLYabaiQueryPanelElement;
     }
 }
 declare namespace LocalJSX {
@@ -606,6 +637,13 @@ declare namespace LocalJSX {
          */
         "version"?: string;
     }
+    /**
+     * Yabai Query Panel - Uses UI component library
+     */
+    interface YabaiQueryPanel {
+        "executeCommand": (cmd: string) => Promise<void>;
+        "onCommandPreview"?: (event: YabaiQueryPanelCustomEvent<string>) => void;
+    }
 
     interface CliButtonAttributes {
         "variant": ButtonVariant;
@@ -687,6 +725,7 @@ declare namespace LocalJSX {
         "cli-tooltip": Omit<CliTooltip, keyof CliTooltipAttributes> & { [K in keyof CliTooltip & keyof CliTooltipAttributes]?: CliTooltip[K] } & { [K in keyof CliTooltip & keyof CliTooltipAttributes as `attr:${K}`]?: CliTooltipAttributes[K] } & { [K in keyof CliTooltip & keyof CliTooltipAttributes as `prop:${K}`]?: CliTooltip[K] };
         "my-component": Omit<MyComponent, keyof MyComponentAttributes> & { [K in keyof MyComponent & keyof MyComponentAttributes]?: MyComponent[K] } & { [K in keyof MyComponent & keyof MyComponentAttributes as `attr:${K}`]?: MyComponentAttributes[K] } & { [K in keyof MyComponent & keyof MyComponentAttributes as `prop:${K}`]?: MyComponent[K] };
         "yabai-gui": Omit<YabaiGui, keyof YabaiGuiAttributes> & { [K in keyof YabaiGui & keyof YabaiGuiAttributes]?: YabaiGui[K] } & { [K in keyof YabaiGui & keyof YabaiGuiAttributes as `attr:${K}`]?: YabaiGuiAttributes[K] } & { [K in keyof YabaiGui & keyof YabaiGuiAttributes as `prop:${K}`]?: YabaiGui[K] };
+        "yabai-query-panel": YabaiQueryPanel;
     }
 }
 export { LocalJSX as JSX };
@@ -707,6 +746,10 @@ declare module "@stencil/core" {
             "cli-tooltip": LocalJSX.IntrinsicElements["cli-tooltip"] & JSXBase.HTMLAttributes<HTMLCliTooltipElement>;
             "my-component": LocalJSX.IntrinsicElements["my-component"] & JSXBase.HTMLAttributes<HTMLMyComponentElement>;
             "yabai-gui": LocalJSX.IntrinsicElements["yabai-gui"] & JSXBase.HTMLAttributes<HTMLYabaiGuiElement>;
+            /**
+             * Yabai Query Panel - Uses UI component library
+             */
+            "yabai-query-panel": LocalJSX.IntrinsicElements["yabai-query-panel"] & JSXBase.HTMLAttributes<HTMLYabaiQueryPanelElement>;
         }
     }
 }
