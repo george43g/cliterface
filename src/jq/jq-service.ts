@@ -9,6 +9,13 @@ export const jqService = {
   /**
    * Execute a jq filter on JSON input
    */
+  async execute(args: string): Promise<CommandResult> {
+    return executeCommand(`jq ${args}`);
+  },
+
+  /**
+   * Execute a jq filter on JSON input
+   */
   async filter(
     filter: string,
     input: string,

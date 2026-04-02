@@ -31,7 +31,8 @@ export class AppDashboard {
       name: 'jq',
       description: 'Command-line JSON processor',
       icon: '📋',
-      status: 'coming-soon',
+      version: '1.7',
+      status: 'available',
     },
     {
       id: 'docker',
@@ -114,6 +115,8 @@ export class AppDashboard {
     switch (this.selectedTool) {
       case 'yabai':
         return <yabai-gui />;
+      case 'jq':
+        return <jq-gui />;
       default:
         return (
           <div class="p-8 text-center">

@@ -1,0 +1,36 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+/* Command segment styles for hover tooltips */
+.cmd-segment {
+  display: inline-block;
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+  transition: background-color 0.15s ease;
+  cursor: help;
+}
+
+.cmd-segment-command {
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+.cmd-segment-subcommand {
+  color: var(--color-info);
+}
+
+.cmd-segment-flag {
+  color: var(--color-warning);
+}
+
+.cmd-segment-value {
+  color: var(--color-success);
+}
+
+.cmd-segment-highlight {
+  background-color: var(--color-accent2);
+  outline: 2px solid var(--color-accent);
+  outline-offset: 1px;
+}
