@@ -13,7 +13,8 @@ import { SelectOption } from "./components/ui/cli-select/cli-select";
 import { Tab } from "./components/ui/cli-tabs/cli-tabs";
 import { TooltipContent } from "./components/ui/cli-tooltip/cli-tooltip";
 import { CommandResult } from "./jq/jq-service";
-import { CommandResult as CommandResult1 } from "./yabai/yabai-service";
+import { CommandResult as CommandResult1 } from "./sed/sed-service";
+import { CommandResult as CommandResult2 } from "./yabai/yabai-service";
 export { ButtonSize, ButtonVariant } from "./components/ui/cli-button/cli-button";
 export { CardVariant } from "./components/ui/cli-card/cli-card";
 export { CommandSegment } from "./components/ui/cli-command-preview/cli-command-preview";
@@ -22,7 +23,8 @@ export { SelectOption } from "./components/ui/cli-select/cli-select";
 export { Tab } from "./components/ui/cli-tabs/cli-tabs";
 export { TooltipContent } from "./components/ui/cli-tooltip/cli-tooltip";
 export { CommandResult } from "./jq/jq-service";
-export { CommandResult as CommandResult1 } from "./yabai/yabai-service";
+export { CommandResult as CommandResult1 } from "./sed/sed-service";
+export { CommandResult as CommandResult2 } from "./yabai/yabai-service";
 export namespace Components {
     interface AppDashboard {
     }
@@ -202,6 +204,8 @@ export namespace Components {
          */
         "middle": string;
     }
+    interface SedGui {
+    }
     interface YabaiGui {
         /**
           * @default 'v7.1.17'
@@ -242,6 +246,10 @@ export interface CliTabsCustomEvent<T> extends CustomEvent<T> {
 export interface JqGuiCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLJqGuiElement;
+}
+export interface SedGuiCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLSedGuiElement;
 }
 export interface YabaiGuiCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -419,8 +427,25 @@ declare global {
         prototype: HTMLMyComponentElement;
         new (): HTMLMyComponentElement;
     };
-    interface HTMLYabaiGuiElementEventMap {
+    interface HTMLSedGuiElementEventMap {
         "commandExecuted": CommandResult1;
+    }
+    interface HTMLSedGuiElement extends Components.SedGui, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLSedGuiElementEventMap>(type: K, listener: (this: HTMLSedGuiElement, ev: SedGuiCustomEvent<HTMLSedGuiElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLSedGuiElementEventMap>(type: K, listener: (this: HTMLSedGuiElement, ev: SedGuiCustomEvent<HTMLSedGuiElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLSedGuiElement: {
+        prototype: HTMLSedGuiElement;
+        new (): HTMLSedGuiElement;
+    };
+    interface HTMLYabaiGuiElementEventMap {
+        "commandExecuted": CommandResult2;
     }
     interface HTMLYabaiGuiElement extends Components.YabaiGui, HTMLStencilElement {
         addEventListener<K extends keyof HTMLYabaiGuiElementEventMap>(type: K, listener: (this: HTMLYabaiGuiElement, ev: YabaiGuiCustomEvent<HTMLYabaiGuiElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -471,6 +496,7 @@ declare global {
         "cli-tooltip": HTMLCliTooltipElement;
         "jq-gui": HTMLJqGuiElement;
         "my-component": HTMLMyComponentElement;
+        "sed-gui": HTMLSedGuiElement;
         "yabai-gui": HTMLYabaiGuiElement;
         "yabai-query-panel": HTMLYabaiQueryPanelElement;
     }
@@ -667,8 +693,11 @@ declare namespace LocalJSX {
          */
         "middle"?: string;
     }
+    interface SedGui {
+        "onCommandExecuted"?: (event: SedGuiCustomEvent<CommandResult1>) => void;
+    }
     interface YabaiGui {
-        "onCommandExecuted"?: (event: YabaiGuiCustomEvent<CommandResult1>) => void;
+        "onCommandExecuted"?: (event: YabaiGuiCustomEvent<CommandResult2>) => void;
         /**
           * @default 'v7.1.17'
          */
@@ -765,6 +794,7 @@ declare namespace LocalJSX {
         "cli-tooltip": Omit<CliTooltip, keyof CliTooltipAttributes> & { [K in keyof CliTooltip & keyof CliTooltipAttributes]?: CliTooltip[K] } & { [K in keyof CliTooltip & keyof CliTooltipAttributes as `attr:${K}`]?: CliTooltipAttributes[K] } & { [K in keyof CliTooltip & keyof CliTooltipAttributes as `prop:${K}`]?: CliTooltip[K] };
         "jq-gui": Omit<JqGui, keyof JqGuiAttributes> & { [K in keyof JqGui & keyof JqGuiAttributes]?: JqGui[K] } & { [K in keyof JqGui & keyof JqGuiAttributes as `attr:${K}`]?: JqGuiAttributes[K] } & { [K in keyof JqGui & keyof JqGuiAttributes as `prop:${K}`]?: JqGui[K] };
         "my-component": Omit<MyComponent, keyof MyComponentAttributes> & { [K in keyof MyComponent & keyof MyComponentAttributes]?: MyComponent[K] } & { [K in keyof MyComponent & keyof MyComponentAttributes as `attr:${K}`]?: MyComponentAttributes[K] } & { [K in keyof MyComponent & keyof MyComponentAttributes as `prop:${K}`]?: MyComponent[K] };
+        "sed-gui": SedGui;
         "yabai-gui": Omit<YabaiGui, keyof YabaiGuiAttributes> & { [K in keyof YabaiGui & keyof YabaiGuiAttributes]?: YabaiGui[K] } & { [K in keyof YabaiGui & keyof YabaiGuiAttributes as `attr:${K}`]?: YabaiGuiAttributes[K] } & { [K in keyof YabaiGui & keyof YabaiGuiAttributes as `prop:${K}`]?: YabaiGui[K] };
         "yabai-query-panel": YabaiQueryPanel;
     }
@@ -787,6 +817,7 @@ declare module "@stencil/core" {
             "cli-tooltip": LocalJSX.IntrinsicElements["cli-tooltip"] & JSXBase.HTMLAttributes<HTMLCliTooltipElement>;
             "jq-gui": LocalJSX.IntrinsicElements["jq-gui"] & JSXBase.HTMLAttributes<HTMLJqGuiElement>;
             "my-component": LocalJSX.IntrinsicElements["my-component"] & JSXBase.HTMLAttributes<HTMLMyComponentElement>;
+            "sed-gui": LocalJSX.IntrinsicElements["sed-gui"] & JSXBase.HTMLAttributes<HTMLSedGuiElement>;
             "yabai-gui": LocalJSX.IntrinsicElements["yabai-gui"] & JSXBase.HTMLAttributes<HTMLYabaiGuiElement>;
             /**
              * Yabai Query Panel - Uses UI component library

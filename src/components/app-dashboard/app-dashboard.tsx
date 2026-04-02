@@ -31,7 +31,13 @@ export class AppDashboard {
       name: 'jq',
       description: 'Command-line JSON processor',
       icon: '📋',
-      version: '1.7',
+      status: 'available',
+    },
+    {
+      id: 'sed',
+      name: 'sed',
+      description: 'Stream editor for text processing',
+      icon: '📝',
       status: 'available',
     },
     {
@@ -117,6 +123,8 @@ export class AppDashboard {
         return <yabai-gui />;
       case 'jq':
         return <jq-gui />;
+      case 'sed':
+        return <sed-gui />;
       default:
         return (
           <div class="p-8 text-center">
