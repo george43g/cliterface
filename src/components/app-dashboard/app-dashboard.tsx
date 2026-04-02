@@ -78,15 +78,9 @@ export class AppDashboard {
     this.selectedTool = null;
   }
 
-  renderToolCard(tool: ToolInfo): Element {
-    const isAvailable = tool.status === 'available';
-
+  renderToolCardContent(tool: ToolInfo): Element {
     return (
-      <div
-        key={tool.id}
-        class={`tool-card ${!isAvailable ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer hover:-translate-y-0.5 hover:border-accent'}`}
-        onClick={() => isAvailable && this.selectTool(tool.id)}
-      >
+      <>
         <div class="flex items-start justify-between mb-2">
           <span class="text-3xl">{tool.icon}</span>
           {tool.version && <span class="text-xs text-text2 bg-bg3 px-2 py-1 rounded-md">{tool.version}</span>}
@@ -96,6 +90,25 @@ export class AppDashboard {
         {tool.status !== 'available' && (
           <span class="inline-block mt-2 text-xs px-2 py-1 rounded-md bg-accent2 text-white">{tool.status === 'coming-soon' ? 'Coming Soon' : 'Beta'}</span>
         )}
+      </>
+    );
+  }
+
+  renderToolCard(tool: ToolInfo): Element {
+    const isAvailable = tool.status === 'available';
+    const cardClass = `tool-card ${!isAvailable ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer hover:-translate-y-0.5 hover:border-accent'}`;
+
+    if (isAvailable) {
+      return (
+        <button key={tool.id} type="button" class={cardClass} onClick={() => this.selectTool(tool.id)}>
+          {this.renderToolCardContent(tool)}
+        </button>
+      );
+    }
+
+    return (
+      <div key={tool.id} class={cardClass}>
+        {this.renderToolCardContent(tool)}
       </div>
     );
   }
@@ -129,7 +142,7 @@ export class AppDashboard {
         return (
           <div class="p-8 text-center">
             <p class="text-text2">Tool interface not yet implemented</p>
-            <button class="mt-4 px-4 py-2 bg-accent2 text-white rounded-lg hover:bg-accent transition-colors" onClick={() => this.goBack()}>
+            <button type="button" class="mt-4 px-4 py-2 bg-accent2 text-white rounded-lg hover:bg-accent transition-colors" onClick={() => this.goBack()}>
               ← Back to Dashboard
             </button>
           </div>
@@ -142,7 +155,7 @@ export class AppDashboard {
       <div class="min-h-screen p-4">
         {this.selectedTool ? (
           <div>
-            <button class="mb-4 px-3 py-1.5 text-sm bg-accent2 text-white rounded-lg hover:bg-accent transition-colors" onClick={() => this.goBack()}>
+            <button type="button" class="mb-4 px-3 py-1.5 text-sm bg-accent2 text-white rounded-lg hover:bg-accent transition-colors" onClick={() => this.goBack()}>
               ← Back
             </button>
             {this.renderToolInterface()}
