@@ -1,4 +1,4 @@
-import { Component, h, State } from '@stencil/core';
+import { Component, Fragment, h, State } from '@stencil/core';
 
 interface ToolInfo {
   id: string;
@@ -109,7 +109,7 @@ export class AppDashboard {
 
   renderToolCardContent(tool: ToolInfo): Element {
     return (
-      <>
+      <Fragment>
         <div class="flex items-start justify-between mb-2">
           <span class="text-3xl">{tool.icon}</span>
           {tool.version && <span class="text-xs text-text2 bg-bg3 px-2 py-1 rounded-md">{tool.version}</span>}
@@ -119,7 +119,7 @@ export class AppDashboard {
         {tool.status !== 'available' && (
           <span class="inline-block mt-2 text-xs px-2 py-1 rounded-md bg-accent2 text-white">{tool.status === 'coming-soon' ? 'Coming Soon' : 'Beta'}</span>
         )}
-      </>
+      </Fragment>
     );
   }
 
