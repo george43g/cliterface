@@ -11,6 +11,7 @@ on:
 permissions:
   contents: read
   actions: read
+  issues: write
   pull-requests: write
 
 concurrency:
@@ -19,16 +20,18 @@ concurrency:
 
 jobs:
   build-and-upload:
-    name: Build dist/index.html and upload artifact
+    name: Build dist/index.html and upload artifacts
     runs-on: ubuntu-latest
 
     outputs:
-      artifact_url: ${{ steps.meta.outputs.artifact_url }}
-      artifact_name: ${{ steps.meta.outputs.artifact_name }}
+      html_artifact_name: ${{ steps.meta.outputs.html_artifact_name }}
+      html_artifact_url: ${{ steps.meta.outputs.html_artifact_url }}
+      screenshot_artifact_name: ${{ steps.meta.outputs.screenshot_artifact_name }}
+      screenshot_artifact_url: ${{ steps.meta.outputs.screenshot_artifact_url }}
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
@@ -41,47 +44,88 @@ jobs:
       - name: Build
         run: bun run build
 
+      - name: Install Playwright Chromium
+        run: bunx --bun playwright install --with-deps chromium
+
+      - name: Capture UI screenshot
+        run: |
+          mkdir -p artifacts scripts
+          cat > scripts/ci-screenshot.mjs <<'JS'
+          import { chromium } from 'playwright';
+          import { pathToFileURL } from 'node:url';
+          import path from 'node:path';
+
+          const browser = await chromium.launch({ headless: true });
+          const page = await browser.newPage({ viewport: { width: 1440, height: 1024 } });
+          const fileUrl = pathToFileURL(path.resolve('dist/index.html')).href;
+
+          await page.goto(fileUrl, { waitUntil: 'domcontentloaded' });
+          await page.waitForTimeout(1200);
+          await page.screenshot({ path: 'artifacts/app-dashboard.png', fullPage: true });
+          await browser.close();
+          JS
+
+          node scripts/ci-screenshot.mjs
+
       - name: Upload HTML artifact
-        id: upload
-        uses: actions/upload-artifact@v4
+        id: upload_html
+        uses: actions/upload-artifact@v6
         with:
           name: dist-index-html-${{ github.run_number }}-${{ github.run_attempt }}
           path: dist/index.html
           if-no-files-found: error
           retention-days: 14
 
+      - name: Upload screenshot artifact
+        id: upload_screenshot
+        uses: actions/upload-artifact@v6
+        with:
+          name: ui-screenshots-${{ github.run_number }}-${{ github.run_attempt }}
+          path: artifacts/app-dashboard.png
+          if-no-files-found: error
+          retention-days: 14
+
       - name: Build artifact metadata
         id: meta
         env:
-          ARTIFACT_ID: ${{ steps.upload.outputs.artifact-id }}
+          HTML_ARTIFACT_ID: ${{ steps.upload_html.outputs.artifact-id }}
+          SCREENSHOT_ARTIFACT_ID: ${{ steps.upload_screenshot.outputs.artifact-id }}
         run: |
-          artifact_name="dist-index-html-${{ github.run_number }}-${{ github.run_attempt }}"
-          artifact_url="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts/${ARTIFACT_ID}"
+          html_artifact_name="dist-index-html-${{ github.run_number }}-${{ github.run_attempt }}"
+          screenshot_artifact_name="ui-screenshots-${{ github.run_number }}-${{ github.run_attempt }}"
+
+          html_artifact_url="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts/${HTML_ARTIFACT_ID}"
+          screenshot_artifact_url="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts/${SCREENSHOT_ARTIFACT_ID}"
 
           {
-            echo "artifact_name=${artifact_name}"
-            echo "artifact_url=${artifact_url}"
+            echo "html_artifact_name=${html_artifact_name}"
+            echo "html_artifact_url=${html_artifact_url}"
+            echo "screenshot_artifact_name=${screenshot_artifact_name}"
+            echo "screenshot_artifact_url=${screenshot_artifact_url}"
           } >> "$GITHUB_OUTPUT"
 
-      - name: Add artifact link to run summary
+      - name: Add artifact links to run summary
         run: |
-          echo "### Build artifact" >> "$GITHUB_STEP_SUMMARY"
-          echo "- HTML artifact: [${{ steps.meta.outputs.artifact_name }}](${{ steps.meta.outputs.artifact_url }})" >> "$GITHUB_STEP_SUMMARY"
+          echo "### Build artifacts" >> "$GITHUB_STEP_SUMMARY"
+          echo "- HTML: [${{ steps.meta.outputs.html_artifact_name }}](${{ steps.meta.outputs.html_artifact_url }})" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Screenshot: [${{ steps.meta.outputs.screenshot_artifact_name }}](${{ steps.meta.outputs.screenshot_artifact_url }})" >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Add artifact link to logs notice
-        run: echo "::notice title=Build artifact::${{ steps.meta.outputs.artifact_url }}"
+      - name: Add artifact links to logs notice
+        run: |
+          echo "::notice title=HTML artifact::${{ steps.meta.outputs.html_artifact_url }}"
+          echo "::notice title=Screenshot artifact::${{ steps.meta.outputs.screenshot_artifact_url }}"
 
-  comment-artifact-link:
-    name: Comment artifact permalink on PR
+  comment-artifact-links:
+    name: Comment artifact permalinks on PR
     runs-on: ubuntu-latest
     needs: build-and-upload
-    if: ${{ github.event_name == 'pull_request' || github.event_name == 'push' }}
+    if: ${{ github.event_name == 'push' || (github.event_name == 'pull_request' && !github.event.pull_request.head.repo.fork) }}
 
     steps:
       - name: Find PR number for push events
         id: pr_for_push
         if: ${{ github.event_name == 'push' }}
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const branch = context.ref.replace('refs/heads/', '');
@@ -106,20 +150,23 @@ jobs:
             echo "number=${{ steps.pr_for_push.outputs.number }}" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Upsert PR comment with artifact permalink
+      - name: Upsert PR comment with artifact permalinks
         if: ${{ steps.pr.outputs.number != '' }}
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         env:
           PR_NUMBER: ${{ steps.pr.outputs.number }}
-          ARTIFACT_URL: ${{ needs.build-and-upload.outputs.artifact_url }}
-          ARTIFACT_NAME: ${{ needs.build-and-upload.outputs.artifact_name }}
+          HTML_ARTIFACT_URL: ${{ needs.build-and-upload.outputs.html_artifact_url }}
+          HTML_ARTIFACT_NAME: ${{ needs.build-and-upload.outputs.html_artifact_name }}
+          SCREENSHOT_ARTIFACT_URL: ${{ needs.build-and-upload.outputs.screenshot_artifact_url }}
+          SCREENSHOT_ARTIFACT_NAME: ${{ needs.build-and-upload.outputs.screenshot_artifact_name }}
         with:
           script: |
-            const marker = '<!-- cliterface-build-artifact-link -->';
+            const marker = '<!-- cliterface-build-artifact-links -->';
             const body = `${marker}
-            ✅ Build artifact for \\`${context.sha.slice(0, 7)}\\`:
+            ✅ Build artifacts for \`${context.sha.slice(0, 7)}\`:
 
-            - [${process.env.ARTIFACT_NAME}](${process.env.ARTIFACT_URL})
+            - HTML: [${process.env.HTML_ARTIFACT_NAME}](${process.env.HTML_ARTIFACT_URL})
+            - Screenshot: [${process.env.SCREENSHOT_ARTIFACT_NAME}](${process.env.SCREENSHOT_ARTIFACT_URL})
 
             _Workflow run: https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}_`;
 
