@@ -35,6 +35,20 @@ export class AppDashboard {
       status: 'available',
     },
     {
+      id: 'sed',
+      name: 'sed',
+      description: 'Stream editor for text processing',
+      icon: '📝',
+      status: 'available',
+    },
+    {
+      id: 'awk',
+      name: 'awk',
+      description: 'Pattern scanning and processing language',
+      icon: '🔪',
+      status: 'available',
+    },
+    {
       id: 'docker',
       name: 'Docker',
       description: 'Container management',
@@ -138,6 +152,10 @@ export class AppDashboard {
         return <yabai-gui />;
       case 'jq':
         return <jq-gui />;
+      case 'sed':
+        return <sed-gui />;
+      case 'awk':
+        return <awk-gui />;
       default:
         return (
           <div class="p-8 text-center">

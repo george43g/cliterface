@@ -5,6 +5,7 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
+import { CommandResult } from "./awk/awk-service";
 import { ButtonSize, ButtonVariant } from "./components/ui/cli-button/cli-button";
 import { CardVariant } from "./components/ui/cli-card/cli-card";
 import { CommandSegment } from "./components/ui/cli-command-preview/cli-command-preview";
@@ -12,8 +13,9 @@ import { ManPageContent } from "./components/ui/cli-man-page/cli-man-page";
 import { SelectOption } from "./components/ui/cli-select/cli-select";
 import { Tab } from "./components/ui/cli-tabs/cli-tabs";
 import { TooltipContent } from "./components/ui/cli-tooltip/cli-tooltip";
-import { CommandResult } from "./jq/jq-service";
-import { CommandResult as CommandResult1 } from "./yabai/yabai-service";
+import { CommandResult as CommandResult1 } from "./jq/jq-service";
+import { CommandResult as CommandResult2 } from "./yabai/yabai-service";
+export { CommandResult } from "./awk/awk-service";
 export { ButtonSize, ButtonVariant } from "./components/ui/cli-button/cli-button";
 export { CardVariant } from "./components/ui/cli-card/cli-card";
 export { CommandSegment } from "./components/ui/cli-command-preview/cli-command-preview";
@@ -21,10 +23,16 @@ export { ManPageContent } from "./components/ui/cli-man-page/cli-man-page";
 export { SelectOption } from "./components/ui/cli-select/cli-select";
 export { Tab } from "./components/ui/cli-tabs/cli-tabs";
 export { TooltipContent } from "./components/ui/cli-tooltip/cli-tooltip";
-export { CommandResult } from "./jq/jq-service";
-export { CommandResult as CommandResult1 } from "./yabai/yabai-service";
+export { CommandResult as CommandResult1 } from "./jq/jq-service";
+export { CommandResult as CommandResult2 } from "./yabai/yabai-service";
 export namespace Components {
     interface AppDashboard {
+    }
+    interface AwkGui {
+        /**
+          * @default '4.2'
+         */
+        "version": string;
     }
     interface CliButton {
         "commandSegment"?: string;
@@ -215,6 +223,10 @@ export namespace Components {
         "executeCommand": (cmd: string) => Promise<void>;
     }
 }
+export interface AwkGuiCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLAwkGuiElement;
+}
 export interface CliButtonCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLCliButtonElement;
@@ -257,6 +269,23 @@ declare global {
     var HTMLAppDashboardElement: {
         prototype: HTMLAppDashboardElement;
         new (): HTMLAppDashboardElement;
+    };
+    interface HTMLAwkGuiElementEventMap {
+        "commandExecuted": CommandResult;
+    }
+    interface HTMLAwkGuiElement extends Components.AwkGui, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLAwkGuiElementEventMap>(type: K, listener: (this: HTMLAwkGuiElement, ev: AwkGuiCustomEvent<HTMLAwkGuiElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLAwkGuiElementEventMap>(type: K, listener: (this: HTMLAwkGuiElement, ev: AwkGuiCustomEvent<HTMLAwkGuiElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLAwkGuiElement: {
+        prototype: HTMLAwkGuiElement;
+        new (): HTMLAwkGuiElement;
     };
     interface HTMLCliButtonElementEventMap {
         "cliClick": void;
@@ -397,7 +426,7 @@ declare global {
         new (): HTMLCliTooltipElement;
     };
     interface HTMLJqGuiElementEventMap {
-        "commandExecuted": CommandResult;
+        "commandExecuted": CommandResult1;
     }
     interface HTMLJqGuiElement extends Components.JqGui, HTMLStencilElement {
         addEventListener<K extends keyof HTMLJqGuiElementEventMap>(type: K, listener: (this: HTMLJqGuiElement, ev: JqGuiCustomEvent<HTMLJqGuiElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -420,7 +449,7 @@ declare global {
         new (): HTMLMyComponentElement;
     };
     interface HTMLYabaiGuiElementEventMap {
-        "commandExecuted": CommandResult1;
+        "commandExecuted": CommandResult2;
     }
     interface HTMLYabaiGuiElement extends Components.YabaiGui, HTMLStencilElement {
         addEventListener<K extends keyof HTMLYabaiGuiElementEventMap>(type: K, listener: (this: HTMLYabaiGuiElement, ev: YabaiGuiCustomEvent<HTMLYabaiGuiElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -458,6 +487,7 @@ declare global {
     };
     interface HTMLElementTagNameMap {
         "app-dashboard": HTMLAppDashboardElement;
+        "awk-gui": HTMLAwkGuiElement;
         "cli-button": HTMLCliButtonElement;
         "cli-card": HTMLCliCardElement;
         "cli-chip": HTMLCliChipElement;
@@ -477,6 +507,13 @@ declare global {
 }
 declare namespace LocalJSX {
     interface AppDashboard {
+    }
+    interface AwkGui {
+        "onCommandExecuted"?: (event: AwkGuiCustomEvent<CommandResult>) => void;
+        /**
+          * @default '4.2'
+         */
+        "version"?: string;
     }
     interface CliButton {
         "commandSegment"?: string;
@@ -647,7 +684,7 @@ declare namespace LocalJSX {
         "visible"?: boolean;
     }
     interface JqGui {
-        "onCommandExecuted"?: (event: JqGuiCustomEvent<CommandResult>) => void;
+        "onCommandExecuted"?: (event: JqGuiCustomEvent<CommandResult1>) => void;
         /**
           * @default '1.7'
          */
@@ -668,7 +705,7 @@ declare namespace LocalJSX {
         "middle"?: string;
     }
     interface YabaiGui {
-        "onCommandExecuted"?: (event: YabaiGuiCustomEvent<CommandResult1>) => void;
+        "onCommandExecuted"?: (event: YabaiGuiCustomEvent<CommandResult2>) => void;
         /**
           * @default 'v7.1.17'
          */
@@ -682,6 +719,9 @@ declare namespace LocalJSX {
         "onCommandPreview"?: (event: YabaiQueryPanelCustomEvent<string>) => void;
     }
 
+    interface AwkGuiAttributes {
+        "version": string;
+    }
     interface CliButtonAttributes {
         "variant": ButtonVariant;
         "size": ButtonSize;
@@ -752,6 +792,7 @@ declare namespace LocalJSX {
 
     interface IntrinsicElements {
         "app-dashboard": AppDashboard;
+        "awk-gui": Omit<AwkGui, keyof AwkGuiAttributes> & { [K in keyof AwkGui & keyof AwkGuiAttributes]?: AwkGui[K] } & { [K in keyof AwkGui & keyof AwkGuiAttributes as `attr:${K}`]?: AwkGuiAttributes[K] } & { [K in keyof AwkGui & keyof AwkGuiAttributes as `prop:${K}`]?: AwkGui[K] };
         "cli-button": Omit<CliButton, keyof CliButtonAttributes> & { [K in keyof CliButton & keyof CliButtonAttributes]?: CliButton[K] } & { [K in keyof CliButton & keyof CliButtonAttributes as `attr:${K}`]?: CliButtonAttributes[K] } & { [K in keyof CliButton & keyof CliButtonAttributes as `prop:${K}`]?: CliButton[K] };
         "cli-card": Omit<CliCard, keyof CliCardAttributes> & { [K in keyof CliCard & keyof CliCardAttributes]?: CliCard[K] } & { [K in keyof CliCard & keyof CliCardAttributes as `attr:${K}`]?: CliCardAttributes[K] } & { [K in keyof CliCard & keyof CliCardAttributes as `prop:${K}`]?: CliCard[K] };
         "cli-chip": Omit<CliChip, keyof CliChipAttributes> & { [K in keyof CliChip & keyof CliChipAttributes]?: CliChip[K] } & { [K in keyof CliChip & keyof CliChipAttributes as `attr:${K}`]?: CliChipAttributes[K] } & { [K in keyof CliChip & keyof CliChipAttributes as `prop:${K}`]?: CliChip[K] };
@@ -774,6 +815,7 @@ declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
             "app-dashboard": LocalJSX.IntrinsicElements["app-dashboard"] & JSXBase.HTMLAttributes<HTMLAppDashboardElement>;
+            "awk-gui": LocalJSX.IntrinsicElements["awk-gui"] & JSXBase.HTMLAttributes<HTMLAwkGuiElement>;
             "cli-button": LocalJSX.IntrinsicElements["cli-button"] & JSXBase.HTMLAttributes<HTMLCliButtonElement>;
             "cli-card": LocalJSX.IntrinsicElements["cli-card"] & JSXBase.HTMLAttributes<HTMLCliCardElement>;
             "cli-chip": LocalJSX.IntrinsicElements["cli-chip"] & JSXBase.HTMLAttributes<HTMLCliChipElement>;
