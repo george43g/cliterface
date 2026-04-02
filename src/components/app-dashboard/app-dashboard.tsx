@@ -61,6 +61,27 @@ export class AppDashboard {
       icon: '🔥',
       status: 'coming-soon',
     },
+    {
+      id: 'codex',
+      name: 'Codex CLI',
+      description: 'OpenAI coding and agent workflows',
+      icon: '🧠',
+      status: 'coming-soon',
+    },
+    {
+      id: 'oz',
+      name: 'Oz CLI',
+      description: 'Agent-friendly automation command toolkit',
+      icon: '🪄',
+      status: 'coming-soon',
+    },
+    {
+      id: 'cursor-agent',
+      name: 'Cursor Agent CLI',
+      description: 'Cursor cloud agent task runner',
+      icon: '☁️',
+      status: 'coming-soon',
+    },
   ];
 
   selectTool(toolId: string): void {
@@ -118,7 +139,7 @@ export class AppDashboard {
         return (
           <div class="p-8 text-center">
             <p class="text-text2">Tool interface not yet implemented</p>
-            <button class="mt-4 px-4 py-2 bg-accent2 text-white rounded-lg hover:bg-accent transition-colors" onClick={() => this.goBack()}>
+            <button type="button" class="mt-4 px-4 py-2 bg-accent2 text-white rounded-lg hover:bg-accent transition-colors" onClick={() => this.goBack()}>
               ← Back to Dashboard
             </button>
           </div>
@@ -131,7 +152,7 @@ export class AppDashboard {
       <div class="min-h-screen p-4">
         {this.selectedTool ? (
           <div>
-            <button class="mb-4 px-3 py-1.5 text-sm bg-accent2 text-white rounded-lg hover:bg-accent transition-colors" onClick={() => this.goBack()}>
+            <button type="button" class="mb-4 px-3 py-1.5 text-sm bg-accent2 text-white rounded-lg hover:bg-accent transition-colors" onClick={() => this.goBack()}>
               ← Back
             </button>
             {this.renderToolInterface()}
