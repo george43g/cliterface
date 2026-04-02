@@ -18,6 +18,9 @@ concurrency:
   group: build-artifact-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  TOOL_SCREENSHOT_DIR: .agent-artifacts/tool-screenshots
+
 jobs:
   build-and-upload:
     name: Build dist/index.html and upload artifacts
@@ -28,6 +31,7 @@ jobs:
       html_artifact_url: ${{ steps.meta.outputs.html_artifact_url }}
       screenshot_artifact_name: ${{ steps.meta.outputs.screenshot_artifact_name }}
       screenshot_artifact_url: ${{ steps.meta.outputs.screenshot_artifact_url }}
+      screenshot_embed_markdown: ${{ steps.meta.outputs.screenshot_embed_markdown }}
 
     steps:
       - name: Checkout
@@ -44,28 +48,8 @@ jobs:
       - name: Build
         run: bun run build
 
-      - name: Install Playwright Chromium
-        run: bunx --bun playwright install --with-deps chromium
-
-      - name: Capture UI screenshot
-        run: |
-          mkdir -p artifacts scripts
-          cat > scripts/ci-screenshot.mjs <<'JS'
-          import { chromium } from 'playwright';
-          import { pathToFileURL } from 'node:url';
-          import path from 'node:path';
-
-          const browser = await chromium.launch({ headless: true });
-          const page = await browser.newPage({ viewport: { width: 1440, height: 1024 } });
-          const fileUrl = pathToFileURL(path.resolve('dist/index.html')).href;
-
-          await page.goto(fileUrl, { waitUntil: 'domcontentloaded' });
-          await page.waitForTimeout(1200);
-          await page.screenshot({ path: 'artifacts/app-dashboard.png', fullPage: true });
-          await browser.close();
-          JS
-
-          node scripts/ci-screenshot.mjs
+      - name: Ensure tool screenshot directory exists
+        run: mkdir -p "${TOOL_SCREENSHOT_DIR}"
 
       - name: Upload HTML artifact
         id: upload_html
@@ -76,13 +60,13 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
-      - name: Upload screenshot artifact
+      - name: Upload tool screenshot artifacts
         id: upload_screenshot
         uses: actions/upload-artifact@v6
         with:
-          name: ui-screenshots-${{ github.run_number }}-${{ github.run_attempt }}
-          path: artifacts/app-dashboard.png
-          if-no-files-found: error
+          name: tool-screenshots-${{ github.run_number }}-${{ github.run_attempt }}
+          path: ${{ env.TOOL_SCREENSHOT_DIR }}
+          if-no-files-found: warn
           retention-days: 14
 
       - name: Build artifact metadata
@@ -92,28 +76,43 @@ jobs:
           SCREENSHOT_ARTIFACT_ID: ${{ steps.upload_screenshot.outputs.artifact-id }}
         run: |
           html_artifact_name="dist-index-html-${{ github.run_number }}-${{ github.run_attempt }}"
-          screenshot_artifact_name="ui-screenshots-${{ github.run_number }}-${{ github.run_attempt }}"
+          screenshot_artifact_name="tool-screenshots-${{ github.run_number }}-${{ github.run_attempt }}"
 
           html_artifact_url="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts/${HTML_ARTIFACT_ID}"
-          screenshot_artifact_url="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts/${SCREENSHOT_ARTIFACT_ID}"
+
+          screenshot_artifact_url=""
+          screenshot_embed_markdown=""
+          if [ -n "${SCREENSHOT_ARTIFACT_ID}" ]; then
+            screenshot_artifact_url="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts/${SCREENSHOT_ARTIFACT_ID}"
+            screenshot_embed_markdown="![Tool screenshot artifact](${screenshot_artifact_url})"
+          fi
 
           {
             echo "html_artifact_name=${html_artifact_name}"
             echo "html_artifact_url=${html_artifact_url}"
             echo "screenshot_artifact_name=${screenshot_artifact_name}"
             echo "screenshot_artifact_url=${screenshot_artifact_url}"
+            echo "screenshot_embed_markdown=${screenshot_embed_markdown}"
           } >> "$GITHUB_OUTPUT"
 
       - name: Add artifact links to run summary
         run: |
           echo "### Build artifacts" >> "$GITHUB_STEP_SUMMARY"
           echo "- HTML: [${{ steps.meta.outputs.html_artifact_name }}](${{ steps.meta.outputs.html_artifact_url }})" >> "$GITHUB_STEP_SUMMARY"
-          echo "- Screenshot: [${{ steps.meta.outputs.screenshot_artifact_name }}](${{ steps.meta.outputs.screenshot_artifact_url }})" >> "$GITHUB_STEP_SUMMARY"
+          if [ -n "${{ steps.meta.outputs.screenshot_artifact_url }}" ]; then
+            echo "- Tool screenshots: [${{ steps.meta.outputs.screenshot_artifact_name }}](${{ steps.meta.outputs.screenshot_artifact_url }})" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "- Tool screenshots: none found in \`${TOOL_SCREENSHOT_DIR}\` for this run" >> "$GITHUB_STEP_SUMMARY"
+          fi
 
       - name: Add artifact links to logs notice
         run: |
           echo "::notice title=HTML artifact::${{ steps.meta.outputs.html_artifact_url }}"
-          echo "::notice title=Screenshot artifact::${{ steps.meta.outputs.screenshot_artifact_url }}"
+          if [ -n "${{ steps.meta.outputs.screenshot_artifact_url }}" ]; then
+            echo "::notice title=Tool screenshots artifact::${{ steps.meta.outputs.screenshot_artifact_url }}"
+          else
+            echo "::notice title=Tool screenshots artifact::No screenshots found in ${TOOL_SCREENSHOT_DIR}"
+          fi
 
   comment-artifact-links:
     name: Comment artifact permalinks on PR
@@ -159,14 +158,19 @@ jobs:
           HTML_ARTIFACT_NAME: ${{ needs.build-and-upload.outputs.html_artifact_name }}
           SCREENSHOT_ARTIFACT_URL: ${{ needs.build-and-upload.outputs.screenshot_artifact_url }}
           SCREENSHOT_ARTIFACT_NAME: ${{ needs.build-and-upload.outputs.screenshot_artifact_name }}
+          SCREENSHOT_EMBED_MARKDOWN: ${{ needs.build-and-upload.outputs.screenshot_embed_markdown }}
         with:
           script: |
             const marker = '<!-- cliterface-build-artifact-links -->';
+            const screenshotSection = process.env.SCREENSHOT_ARTIFACT_URL
+              ? `- Tool screenshots: [${process.env.SCREENSHOT_ARTIFACT_NAME}](${process.env.SCREENSHOT_ARTIFACT_URL})\n\n${process.env.SCREENSHOT_EMBED_MARKDOWN}\n\n> If GitHub does not render the image inline, use the artifact link above.`
+              : `- Tool screenshots: none found in \`${process.env.TOOL_SCREENSHOT_DIR || '.agent-artifacts/tool-screenshots'}\` for this run`;
+
             const body = `${marker}
             ✅ Build artifacts for \`${context.sha.slice(0, 7)}\`:
 
             - HTML: [${process.env.HTML_ARTIFACT_NAME}](${process.env.HTML_ARTIFACT_URL})
-            - Screenshot: [${process.env.SCREENSHOT_ARTIFACT_NAME}](${process.env.SCREENSHOT_ARTIFACT_URL})
+            ${screenshotSection}
 
             _Workflow run: https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}_`;
 
