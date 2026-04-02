@@ -1,0 +1,48 @@
+/* awk-gui scoped styles */
+
+:host {
+  display: block;
+}
+
+.tab-content {
+  padding: 1rem 0;
+}
+
+.cmd-segment {
+  display: inline;
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+  cursor: help;
+  transition: background-color 0.2s ease;
+}
+
+.cmd-segment-command {
+  color: var(--color-accent);
+  font-weight: 500;
+}
+
+.cmd-segment-flag {
+  color: var(--color-info);
+}
+
+.cmd-segment-argument {
+  color: var(--color-success);
+}
+
+.cmd-segment-value {
+  color: var(--color-warning);
+}
+
+.cmd-segment-separator {
+  color: var(--color-text2);
+}
+
+.cmd-segment-highlight {
+  background-color: rgba(255, 255, 255, 0.1);
+  outline: 1px solid var(--color-accent);
+}
+
+pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+}

@@ -31,6 +31,7 @@ export class AppDashboard {
       name: 'jq',
       description: 'Command-line JSON processor',
       icon: '📋',
+      version: '1.7',
       status: 'available',
     },
     {
@@ -38,6 +39,13 @@ export class AppDashboard {
       name: 'sed',
       description: 'Stream editor for text processing',
       icon: '📝',
+      status: 'available',
+    },
+    {
+      id: 'awk',
+      name: 'awk',
+      description: 'Pattern scanning and processing language',
+      icon: '🔪',
       status: 'available',
     },
     {
@@ -66,6 +74,27 @@ export class AppDashboard {
       name: 'Firebase',
       description: 'Firebase CLI tools',
       icon: '🔥',
+      status: 'coming-soon',
+    },
+    {
+      id: 'codex',
+      name: 'Codex CLI',
+      description: 'OpenAI coding and agent workflows',
+      icon: '🧠',
+      status: 'coming-soon',
+    },
+    {
+      id: 'oz',
+      name: 'Oz CLI',
+      description: 'Agent-friendly automation command toolkit',
+      icon: '🪄',
+      status: 'coming-soon',
+    },
+    {
+      id: 'cursor-agent',
+      name: 'Cursor Agent CLI',
+      description: 'Cursor cloud agent task runner',
+      icon: '☁️',
       status: 'coming-soon',
     },
   ];
@@ -138,6 +167,8 @@ export class AppDashboard {
         return <jq-gui />;
       case 'sed':
         return <sed-gui />;
+      case 'awk':
+        return <awk-gui />;
       default:
         return (
           <div class="p-8 text-center">
