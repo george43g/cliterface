@@ -12,7 +12,8 @@ import { ManPageContent } from "./components/ui/cli-man-page/cli-man-page";
 import { SelectOption } from "./components/ui/cli-select/cli-select";
 import { Tab } from "./components/ui/cli-tabs/cli-tabs";
 import { TooltipContent } from "./components/ui/cli-tooltip/cli-tooltip";
-import { CommandResult } from "./yabai/yabai-service";
+import { CommandResult } from "./jq/jq-service";
+import { CommandResult as CommandResult1 } from "./yabai/yabai-service";
 export { ButtonSize, ButtonVariant } from "./components/ui/cli-button/cli-button";
 export { CardVariant } from "./components/ui/cli-card/cli-card";
 export { CommandSegment } from "./components/ui/cli-command-preview/cli-command-preview";
@@ -20,7 +21,8 @@ export { ManPageContent } from "./components/ui/cli-man-page/cli-man-page";
 export { SelectOption } from "./components/ui/cli-select/cli-select";
 export { Tab } from "./components/ui/cli-tabs/cli-tabs";
 export { TooltipContent } from "./components/ui/cli-tooltip/cli-tooltip";
-export { CommandResult } from "./yabai/yabai-service";
+export { CommandResult } from "./jq/jq-service";
+export { CommandResult as CommandResult1 } from "./yabai/yabai-service";
 export namespace Components {
     interface AppDashboard {
     }
@@ -180,6 +182,12 @@ export namespace Components {
          */
         "visible": boolean;
     }
+    interface JqGui {
+        /**
+          * @default '1.7'
+         */
+        "version": string;
+    }
     interface MyComponent {
         /**
           * The first name
@@ -230,6 +238,10 @@ export interface CliSelectCustomEvent<T> extends CustomEvent<T> {
 export interface CliTabsCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLCliTabsElement;
+}
+export interface JqGuiCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLJqGuiElement;
 }
 export interface YabaiGuiCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -384,6 +396,23 @@ declare global {
         prototype: HTMLCliTooltipElement;
         new (): HTMLCliTooltipElement;
     };
+    interface HTMLJqGuiElementEventMap {
+        "commandExecuted": CommandResult;
+    }
+    interface HTMLJqGuiElement extends Components.JqGui, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLJqGuiElementEventMap>(type: K, listener: (this: HTMLJqGuiElement, ev: JqGuiCustomEvent<HTMLJqGuiElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLJqGuiElementEventMap>(type: K, listener: (this: HTMLJqGuiElement, ev: JqGuiCustomEvent<HTMLJqGuiElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLJqGuiElement: {
+        prototype: HTMLJqGuiElement;
+        new (): HTMLJqGuiElement;
+    };
     interface HTMLMyComponentElement extends Components.MyComponent, HTMLStencilElement {
     }
     var HTMLMyComponentElement: {
@@ -391,7 +420,7 @@ declare global {
         new (): HTMLMyComponentElement;
     };
     interface HTMLYabaiGuiElementEventMap {
-        "commandExecuted": CommandResult;
+        "commandExecuted": CommandResult1;
     }
     interface HTMLYabaiGuiElement extends Components.YabaiGui, HTMLStencilElement {
         addEventListener<K extends keyof HTMLYabaiGuiElementEventMap>(type: K, listener: (this: HTMLYabaiGuiElement, ev: YabaiGuiCustomEvent<HTMLYabaiGuiElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -440,6 +469,7 @@ declare global {
         "cli-select": HTMLCliSelectElement;
         "cli-tabs": HTMLCliTabsElement;
         "cli-tooltip": HTMLCliTooltipElement;
+        "jq-gui": HTMLJqGuiElement;
         "my-component": HTMLMyComponentElement;
         "yabai-gui": HTMLYabaiGuiElement;
         "yabai-query-panel": HTMLYabaiQueryPanelElement;
@@ -616,6 +646,13 @@ declare namespace LocalJSX {
          */
         "visible"?: boolean;
     }
+    interface JqGui {
+        "onCommandExecuted"?: (event: JqGuiCustomEvent<CommandResult>) => void;
+        /**
+          * @default '1.7'
+         */
+        "version"?: string;
+    }
     interface MyComponent {
         /**
           * The first name
@@ -631,7 +668,7 @@ declare namespace LocalJSX {
         "middle"?: string;
     }
     interface YabaiGui {
-        "onCommandExecuted"?: (event: YabaiGuiCustomEvent<CommandResult>) => void;
+        "onCommandExecuted"?: (event: YabaiGuiCustomEvent<CommandResult1>) => void;
         /**
           * @default 'v7.1.17'
          */
@@ -701,6 +738,9 @@ declare namespace LocalJSX {
         "visible": boolean;
         "position": 'top' | 'bottom' | 'left' | 'right';
     }
+    interface JqGuiAttributes {
+        "version": string;
+    }
     interface MyComponentAttributes {
         "first": string;
         "middle": string;
@@ -723,6 +763,7 @@ declare namespace LocalJSX {
         "cli-select": Omit<CliSelect, keyof CliSelectAttributes> & { [K in keyof CliSelect & keyof CliSelectAttributes]?: CliSelect[K] } & { [K in keyof CliSelect & keyof CliSelectAttributes as `attr:${K}`]?: CliSelectAttributes[K] } & { [K in keyof CliSelect & keyof CliSelectAttributes as `prop:${K}`]?: CliSelect[K] };
         "cli-tabs": Omit<CliTabs, keyof CliTabsAttributes> & { [K in keyof CliTabs & keyof CliTabsAttributes]?: CliTabs[K] } & { [K in keyof CliTabs & keyof CliTabsAttributes as `attr:${K}`]?: CliTabsAttributes[K] } & { [K in keyof CliTabs & keyof CliTabsAttributes as `prop:${K}`]?: CliTabs[K] };
         "cli-tooltip": Omit<CliTooltip, keyof CliTooltipAttributes> & { [K in keyof CliTooltip & keyof CliTooltipAttributes]?: CliTooltip[K] } & { [K in keyof CliTooltip & keyof CliTooltipAttributes as `attr:${K}`]?: CliTooltipAttributes[K] } & { [K in keyof CliTooltip & keyof CliTooltipAttributes as `prop:${K}`]?: CliTooltip[K] };
+        "jq-gui": Omit<JqGui, keyof JqGuiAttributes> & { [K in keyof JqGui & keyof JqGuiAttributes]?: JqGui[K] } & { [K in keyof JqGui & keyof JqGuiAttributes as `attr:${K}`]?: JqGuiAttributes[K] } & { [K in keyof JqGui & keyof JqGuiAttributes as `prop:${K}`]?: JqGui[K] };
         "my-component": Omit<MyComponent, keyof MyComponentAttributes> & { [K in keyof MyComponent & keyof MyComponentAttributes]?: MyComponent[K] } & { [K in keyof MyComponent & keyof MyComponentAttributes as `attr:${K}`]?: MyComponentAttributes[K] } & { [K in keyof MyComponent & keyof MyComponentAttributes as `prop:${K}`]?: MyComponent[K] };
         "yabai-gui": Omit<YabaiGui, keyof YabaiGuiAttributes> & { [K in keyof YabaiGui & keyof YabaiGuiAttributes]?: YabaiGui[K] } & { [K in keyof YabaiGui & keyof YabaiGuiAttributes as `attr:${K}`]?: YabaiGuiAttributes[K] } & { [K in keyof YabaiGui & keyof YabaiGuiAttributes as `prop:${K}`]?: YabaiGui[K] };
         "yabai-query-panel": YabaiQueryPanel;
@@ -744,6 +785,7 @@ declare module "@stencil/core" {
             "cli-select": LocalJSX.IntrinsicElements["cli-select"] & JSXBase.HTMLAttributes<HTMLCliSelectElement>;
             "cli-tabs": LocalJSX.IntrinsicElements["cli-tabs"] & JSXBase.HTMLAttributes<HTMLCliTabsElement>;
             "cli-tooltip": LocalJSX.IntrinsicElements["cli-tooltip"] & JSXBase.HTMLAttributes<HTMLCliTooltipElement>;
+            "jq-gui": LocalJSX.IntrinsicElements["jq-gui"] & JSXBase.HTMLAttributes<HTMLJqGuiElement>;
             "my-component": LocalJSX.IntrinsicElements["my-component"] & JSXBase.HTMLAttributes<HTMLMyComponentElement>;
             "yabai-gui": LocalJSX.IntrinsicElements["yabai-gui"] & JSXBase.HTMLAttributes<HTMLYabaiGuiElement>;
             /**
