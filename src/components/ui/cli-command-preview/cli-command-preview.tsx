@@ -1,4 +1,4 @@
-import { Component, h, Prop, Event, type EventEmitter, State } from '@stencil/core';
+import { Component, Event, type EventEmitter, h, Prop, State } from '@stencil/core';
 
 export interface CommandSegment {
   text: string;

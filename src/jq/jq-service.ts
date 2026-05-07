@@ -1,6 +1,6 @@
-import { executeCommand, type CommandResult } from '../yabai/yabai-service';
+import { type CommandResult, executeCommand } from '../yabai/yabai-service';
 
-export { type CommandResult };
+export type { CommandResult };
 
 /**
  * jq execution service

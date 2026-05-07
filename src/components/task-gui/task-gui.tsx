@@ -1,13 +1,5 @@
 import { Component, h, State } from '@stencil/core';
 import {
-  executeCommand,
-  taskService,
-  type CommandResult,
-  type TaskPriority,
-  MOCK_PROJECTS,
-  MOCK_TAGS,
-} from '../../task/task-service';
-import {
   buildAddCommand,
   buildFilterString,
   buildModifyCommand,
@@ -16,6 +8,7 @@ import {
   type TaskFilterOptions,
   type TaskModOptions,
 } from '../../task/task-command-builders';
+import { type CommandResult, executeCommand, MOCK_PROJECTS, MOCK_TAGS, type TaskPriority, taskService } from '../../task/task-service';
 
 // ── Constants ────────────────────────────────────────────────────────────────
 
@@ -207,7 +200,7 @@ export class TaskGui {
 
   private buildFilterCommand(): string {
     const filterStr = buildFilterString(this.buildFilterOpts());
-    return `task ${filterStr ? filterStr + ' ' : ''}${this.filterCommand}`;
+    return `task ${filterStr ? `${filterStr} ` : ''}${this.filterCommand}`;
   }
 
   private buildModifyCmd(): string {
@@ -268,11 +261,7 @@ export class TaskGui {
             ))}
           </div>
 
-          <button
-            type="button"
-            class="cli-btn cli-btn-success"
-            onClick={() => this.run(this.buildInboxCommand())}
-          >
+          <button type="button" class="cli-btn cli-btn-success" onClick={() => this.run(this.buildInboxCommand())}>
             Run Report
           </button>
         </div>
@@ -295,44 +284,19 @@ export class TaskGui {
           </label>
 
           <div class="flex flex-wrap gap-2">
-            <button
-              type="button"
-              class="cli-btn cli-btn-sm cli-btn-success"
-              onClick={() => this.run(`task ${this.inboxTaskId} done`)}
-              disabled={!this.inboxTaskId.trim()}
-            >
+            <button type="button" class="cli-btn cli-btn-sm cli-btn-success" onClick={() => this.run(`task ${this.inboxTaskId} done`)} disabled={!this.inboxTaskId.trim()}>
               Mark Done
             </button>
-            <button
-              type="button"
-              class="cli-btn cli-btn-sm"
-              onClick={() => this.run(`task ${this.inboxTaskId} start`)}
-              disabled={!this.inboxTaskId.trim()}
-            >
+            <button type="button" class="cli-btn cli-btn-sm" onClick={() => this.run(`task ${this.inboxTaskId} start`)} disabled={!this.inboxTaskId.trim()}>
               Start
             </button>
-            <button
-              type="button"
-              class="cli-btn cli-btn-sm"
-              onClick={() => this.run(`task ${this.inboxTaskId} stop`)}
-              disabled={!this.inboxTaskId.trim()}
-            >
+            <button type="button" class="cli-btn cli-btn-sm" onClick={() => this.run(`task ${this.inboxTaskId} stop`)} disabled={!this.inboxTaskId.trim()}>
               Stop
             </button>
-            <button
-              type="button"
-              class="cli-btn cli-btn-sm"
-              onClick={() => this.run(`task ${this.inboxTaskId} information`)}
-              disabled={!this.inboxTaskId.trim()}
-            >
+            <button type="button" class="cli-btn cli-btn-sm" onClick={() => this.run(`task ${this.inboxTaskId} information`)} disabled={!this.inboxTaskId.trim()}>
               Info
             </button>
-            <button
-              type="button"
-              class="cli-btn cli-btn-sm"
-              onClick={() => this.run(`task ${this.inboxTaskId} duplicate`)}
-              disabled={!this.inboxTaskId.trim()}
-            >
+            <button type="button" class="cli-btn cli-btn-sm" onClick={() => this.run(`task ${this.inboxTaskId} duplicate`)} disabled={!this.inboxTaskId.trim()}>
               Duplicate
             </button>
             <button
@@ -394,7 +358,9 @@ export class TaskGui {
                 }}
               />
               <datalist id="task-projects-list">
-                {MOCK_PROJECTS.map(p => <option value={p} key={p} />)}
+                {MOCK_PROJECTS.map(p => (
+                  <option value={p} key={p} />
+                ))}
               </datalist>
             </label>
 
@@ -499,12 +465,7 @@ export class TaskGui {
           </div>
 
           <div class="flex flex-wrap gap-2">
-            <button
-              type="button"
-              class="cli-btn cli-btn-success"
-              onClick={() => this.run(this.buildAddCommand())}
-              disabled={!this.addDescription.trim()}
-            >
+            <button type="button" class="cli-btn cli-btn-success" onClick={() => this.run(this.buildAddCommand())} disabled={!this.addDescription.trim()}>
               Add Task
             </button>
             <button
@@ -558,11 +519,7 @@ export class TaskGui {
           <div class="mt-6 pt-4 border-t border-bg3">
             <h3 class="text-text2 text-base mb-3">Undo Last Change</h3>
             <p class="text-xs text-text2 mb-3">Reverts the most recent task modification.</p>
-            <button
-              type="button"
-              class="cli-btn cli-btn-warning"
-              onClick={() => this.runDestructive('task undo', 'Undo the last task operation?')}
-            >
+            <button type="button" class="cli-btn cli-btn-warning" onClick={() => this.runDestructive('task undo', 'Undo the last task operation?')}>
               Undo
             </button>
           </div>
@@ -608,7 +565,9 @@ export class TaskGui {
                 }}
               />
               <datalist id="task-filter-projects">
-                {MOCK_PROJECTS.map(p => <option value={p} key={p} />)}
+                {MOCK_PROJECTS.map(p => (
+                  <option value={p} key={p} />
+                ))}
               </datalist>
             </label>
 
@@ -717,11 +676,7 @@ export class TaskGui {
           </div>
 
           <div class="flex flex-wrap gap-2">
-            <button
-              type="button"
-              class="cli-btn cli-btn-success"
-              onClick={() => this.run(this.buildFilterCommand())}
-            >
+            <button type="button" class="cli-btn cli-btn-success" onClick={() => this.run(this.buildFilterCommand())}>
               Run Query
             </button>
             <button
@@ -736,10 +691,12 @@ export class TaskGui {
             <button
               type="button"
               class="cli-btn cli-btn-sm cli-btn-danger"
-              onClick={() => this.runDestructive(
-                buildFilterString(this.buildFilterOpts()) ? `task ${buildFilterString(this.buildFilterOpts())} delete` : 'task delete',
-                'Delete all tasks matching this filter?'
-              )}
+              onClick={() =>
+                this.runDestructive(
+                  buildFilterString(this.buildFilterOpts()) ? `task ${buildFilterString(this.buildFilterOpts())} delete` : 'task delete',
+                  'Delete all tasks matching this filter?',
+                )
+              }
             >
               Delete Matching
             </button>
@@ -789,7 +746,9 @@ export class TaskGui {
                 >
                   <option value="">No change</option>
                   {PRIORITIES.map(p => (
-                    <option value={p.value} key={p.value}>{p.label}</option>
+                    <option value={p.value} key={p.value}>
+                      {p.label}
+                    </option>
                   ))}
                 </select>
               </label>
@@ -833,11 +792,7 @@ export class TaskGui {
               </label>
             </div>
 
-            <button
-              type="button"
-              class="cli-btn"
-              onClick={() => this.run(this.buildModifyCmd())}
-            >
+            <button type="button" class="cli-btn" onClick={() => this.run(this.buildModifyCmd())}>
               Apply Modifications
             </button>
           </div>
@@ -899,11 +854,7 @@ export class TaskGui {
               <h3 class="text-text2 text-base mb-1">{selected.name}</h3>
               <p class="text-xs text-text2 mb-3">{selected.description}</p>
               <div class="cli-cmd-preview mb-4">{selected.command}</div>
-              <button
-                type="button"
-                class="cli-btn cli-btn-success"
-                onClick={() => this.run(selected.command)}
-              >
+              <button type="button" class="cli-btn cli-btn-success" onClick={() => this.run(selected.command)}>
                 Run Report
               </button>
             </div>
@@ -973,18 +924,10 @@ export class TaskGui {
           </div>
 
           <div class="flex flex-wrap gap-2">
-            <button
-              type="button"
-              class="cli-btn cli-btn-success"
-              onClick={() => this.run(buildCalCmd())}
-            >
+            <button type="button" class="cli-btn cli-btn-success" onClick={() => this.run(buildCalCmd())}>
               Show Calendar
             </button>
-            <button
-              type="button"
-              class="cli-btn cli-btn-sm"
-              onClick={() => this.run('task calendar due')}
-            >
+            <button type="button" class="cli-btn cli-btn-sm" onClick={() => this.run('task calendar due')}>
               Earliest Due
             </button>
           </div>
@@ -1001,22 +944,15 @@ export class TaskGui {
         <div class="cli-card">
           <h3 class="text-text2 text-base mb-3">Sync with Taskserver</h3>
           <p class="text-xs text-text2 mb-4">
-            Taskwarrior syncs with a Taskserver (e.g., Inthe.AM, FreeCinc, or self-hosted). Configure <code>taskserver.server</code>, <code>taskserver.credentials</code>, and <code>taskserver.ca.cert</code> in your <code>~/.taskrc</code>.
+            Taskwarrior syncs with a Taskserver (e.g., Inthe.AM, FreeCinc, or self-hosted). Configure <code>taskserver.server</code>, <code>taskserver.credentials</code>, and{' '}
+            <code>taskserver.ca.cert</code> in your <code>~/.taskrc</code>.
           </p>
 
           <div class="flex flex-wrap gap-2 mb-6">
-            <button
-              type="button"
-              class="cli-btn cli-btn-success"
-              onClick={() => this.run('task sync')}
-            >
+            <button type="button" class="cli-btn cli-btn-success" onClick={() => this.run('task sync')}>
               Sync Now
             </button>
-            <button
-              type="button"
-              class="cli-btn cli-btn-sm"
-              onClick={() => this.run('task diagnostics')}
-            >
+            <button type="button" class="cli-btn cli-btn-sm" onClick={() => this.run('task diagnostics')}>
               Diagnostics
             </button>
           </div>
@@ -1024,18 +960,10 @@ export class TaskGui {
           <div class="pt-4 border-t border-bg3">
             <h4 class="text-sm text-text2 mb-2">Import / Export</h4>
             <div class="flex flex-wrap gap-2">
-              <button
-                type="button"
-                class="cli-btn cli-btn-sm"
-                onClick={() => this.run('task export')}
-              >
+              <button type="button" class="cli-btn cli-btn-sm" onClick={() => this.run('task export')}>
                 Export All (JSON)
               </button>
-              <button
-                type="button"
-                class="cli-btn cli-btn-sm"
-                onClick={() => this.run('task import-v2')}
-              >
+              <button type="button" class="cli-btn cli-btn-sm" onClick={() => this.run('task import-v2')}>
                 Import v2 Format
               </button>
             </div>
@@ -1068,11 +996,7 @@ export class TaskGui {
             />
           </label>
 
-          <button
-            type="button"
-            class="cli-btn cli-btn-success"
-            onClick={() => this.run(this.configSearchKey === 'default' ? 'task show' : `task show ${this.configSearchKey}`)}
-          >
+          <button type="button" class="cli-btn cli-btn-success" onClick={() => this.run(this.configSearchKey === 'default' ? 'task show' : `task show ${this.configSearchKey}`)}>
             Show Config
           </button>
         </div>
@@ -1080,8 +1004,10 @@ export class TaskGui {
         <div class="cli-card">
           <h3 class="text-text2 text-base mb-3">Set / Remove Configuration</h3>
           <p class="text-xs text-text2 mb-3">
-            Set a value: <code>task config name value</code><br />
-            Clear a value: <code>task config name ''</code><br />
+            Set a value: <code>task config name value</code>
+            <br />
+            Clear a value: <code>task config name ''</code>
+            <br />
             Remove a key: <code>task config name</code>
           </p>
 
@@ -1115,12 +1041,7 @@ export class TaskGui {
           </div>
 
           <div class="flex flex-wrap gap-2">
-            <button
-              type="button"
-              class="cli-btn"
-              onClick={() => this.run(`task config ${this.configKey} ${this.configValue}`.trim())}
-              disabled={!this.configKey.trim()}
-            >
+            <button type="button" class="cli-btn" onClick={() => this.run(`task config ${this.configKey} ${this.configValue}`.trim())} disabled={!this.configKey.trim()}>
               Set Config
             </button>
             <button
@@ -1136,7 +1057,9 @@ export class TaskGui {
 
         <div class="cli-card">
           <h3 class="text-text2 text-base mb-3">Context</h3>
-          <p class="text-xs text-text2 mb-3">Contexts filter all task reports. Defined with <code>task context define &lt;name&gt; &lt;filter&gt;</code>.</p>
+          <p class="text-xs text-text2 mb-3">
+            Contexts filter all task reports. Defined with <code>task context define &lt;name&gt; &lt;filter&gt;</code>.
+          </p>
 
           <div class="flex flex-wrap gap-2 mb-3">
             <button type="button" class="cli-btn cli-btn-sm cli-btn-success" onClick={() => this.run('task context list')}>
@@ -1253,11 +1176,7 @@ export class TaskGui {
               if (e.key === 'Enter') this.run(this.rawCommand);
             }}
           />
-          <button
-            type="button"
-            class="cli-btn cli-btn-success"
-            onClick={() => this.run(this.rawCommand)}
-          >
+          <button type="button" class="cli-btn cli-btn-success" onClick={() => this.run(this.rawCommand)}>
             Run
           </button>
         </div>
@@ -1281,11 +1200,13 @@ export class TaskGui {
             <button
               type="button"
               class="cli-btn cli-btn-sm"
-              onClick={() => taskService.diagnostics().then(r => {
-                this.output = r.stdout;
-                this.lastCommand = 'task diagnostics';
-                this.status = 'success';
-              })}
+              onClick={() =>
+                taskService.diagnostics().then(r => {
+                  this.output = r.stdout;
+                  this.lastCommand = 'task diagnostics';
+                  this.status = 'success';
+                })
+              }
             >
               Diagnostics
             </button>

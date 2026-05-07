@@ -19,10 +19,7 @@ export interface AwkOptions {
   file?: string;
 }
 
-export function buildAwkCommand(
-  programs: AwkProgram[],
-  options: AwkOptions = {},
-): string {
+export function buildAwkCommand(programs: AwkProgram[], options: AwkOptions = {}): string {
   const parts: string[] = ['awk'];
 
   // Add field separator
@@ -42,7 +39,7 @@ export function buildAwkCommand(
 
   for (const prog of programs) {
     let stmt = '';
-    
+
     if (prog.isBegin) {
       stmt = `BEGIN { ${prog.action} }`;
     } else if (prog.isEnd) {
@@ -52,7 +49,7 @@ export function buildAwkCommand(
     } else {
       stmt = `{ ${prog.action} }`;
     }
-    
+
     programParts.push(stmt);
   }
 

@@ -13,18 +13,18 @@
 
 import { Component, h, State } from '@stencil/core';
 import {
-  type CommandResult,
   type AgentMode,
-  type OutputFormat,
-  type SandboxMode,
-  cursorAgentService,
-  buildRunCommand,
   buildListCommand,
-  buildResumeCommand,
   buildListModelsCommand,
-  buildStatusCommand,
   buildLoginCommand,
   buildLogoutCommand,
+  buildResumeCommand,
+  buildRunCommand,
+  buildStatusCommand,
+  type CommandResult,
+  cursorAgentService,
+  type OutputFormat,
+  type SandboxMode,
 } from '../../cursor-agent/cursor-agent-service';
 
 // ── Tab definitions ──────────────────────────────────────────────────────────
@@ -76,11 +76,7 @@ export class CursorAgentGui {
 
   // ── Helpers ───────────────────────────────────────────────────────────────
 
-  private setStatus(
-    running: boolean,
-    message: string,
-    cmd: string,
-  ): void {
+  private setStatus(running: boolean, message: string, cmd: string): void {
     this.status = running ? 'running' : 'idle';
     this.statusMessage = message;
     this.lastCommand = cmd;
@@ -96,15 +92,11 @@ export class CursorAgentGui {
   }
 
   private applyResult(result: CommandResult, cmd: string): void {
-    const parts = [
-      result.stdout?.trim(),
-      result.stderr?.trim() ? `stderr:\n${result.stderr.trim()}` : '',
-    ].filter(Boolean);
+    const parts = [result.stdout?.trim(), result.stderr?.trim() ? `stderr:\n${result.stderr.trim()}` : ''].filter(Boolean);
 
     this.output = parts.join('\n\n') || JSON.stringify(result, null, 2);
     this.status = result.exitCode === 0 ? 'success' : 'error';
-    this.statusMessage =
-      result.exitCode === 0 ? 'Completed' : `Failed (exit ${result.exitCode})`;
+    this.statusMessage = result.exitCode === 0 ? 'Completed' : `Failed (exit ${result.exitCode})`;
     this.lastCommand = cmd;
   }
 
@@ -189,11 +181,7 @@ export class CursorAgentGui {
 
   async resumeSession(): Promise<void> {
     const cmd = buildResumeCommand(this.resumeId || undefined);
-    if (
-      !window.confirm(
-        `Resume session${this.resumeId ? ` ${this.resumeId}` : ' (latest)'}?\n\n${cmd}`,
-      )
-    ) {
+    if (!window.confirm(`Resume session${this.resumeId ? ` ${this.resumeId}` : ' (latest)'}?\n\n${cmd}`)) {
       return;
     }
     this.setStatus(true, 'Resuming…', cmd);
@@ -299,14 +287,7 @@ export class CursorAgentGui {
   }
 
   renderStatusBadge() {
-    const colorClass =
-      this.status === 'error'
-        ? 'text-danger'
-        : this.status === 'success'
-          ? 'text-success'
-          : this.status === 'running'
-            ? 'text-warning'
-            : 'text-text2';
+    const colorClass = this.status === 'error' ? 'text-danger' : this.status === 'success' ? 'text-success' : this.status === 'running' ? 'text-warning' : 'text-text2';
     return (
       <span class={colorClass}>
         {this.status === 'running' ? '⏳ ' : ''}
@@ -319,18 +300,12 @@ export class CursorAgentGui {
     return (
       <div class="cli-card">
         <div class="flex justify-between items-center mb-2">
-          <h3 class="text-text2 text-base">
-            Output — {this.renderStatusBadge()}
-          </h3>
+          <h3 class="text-text2 text-base">Output — {this.renderStatusBadge()}</h3>
           <div class="flex gap-2">
             <button type="button" class="cli-btn cli-btn-sm" onClick={() => this.copyOutput()}>
               Copy
             </button>
-            <button
-              type="button"
-              class="cli-btn cli-btn-sm cli-btn-warning"
-              onClick={() => this.clearOutput()}
-            >
+            <button type="button" class="cli-btn cli-btn-sm cli-btn-warning" onClick={() => this.clearOutput()}>
               Clear
             </button>
           </div>
@@ -441,12 +416,7 @@ export class CursorAgentGui {
           </div>
 
           <div class="flex flex-wrap gap-2">
-            <button
-              type="button"
-              class="cli-btn cli-btn-success"
-              onClick={() => this.runAgent()}
-              disabled={this.status === 'running'}
-            >
+            <button type="button" class="cli-btn cli-btn-success" onClick={() => this.runAgent()} disabled={this.status === 'running'}>
               {this.status === 'running' ? 'Running…' : '▶ Run Agent'}
             </button>
           </div>
@@ -476,8 +446,7 @@ export class CursorAgentGui {
         <div class="cli-card">
           <h3 class="text-text2 text-base mb-3">Past Sessions</h3>
           <p class="text-sm text-text2 mb-4">
-            Fetch the list of previous agent conversations (equivalent to{' '}
-            <code>cursor agent ls</code>).
+            Fetch the list of previous agent conversations (equivalent to <code>cursor agent ls</code>).
           </p>
           <div class="cli-cmd-preview mb-4">{buildListCommand()}</div>
           <button
@@ -497,8 +466,7 @@ export class CursorAgentGui {
         <div class="cli-card">
           <h3 class="text-text2 text-base mb-3">Resume Session</h3>
           <p class="text-sm text-text2 mb-3">
-            Resume the latest session or specify a chat ID (from{' '}
-            <code>cursor agent ls</code>).
+            Resume the latest session or specify a chat ID (from <code>cursor agent ls</code>).
           </p>
 
           <label class="flex flex-col gap-1 text-sm text-text2 mb-4">
@@ -514,16 +482,9 @@ export class CursorAgentGui {
             />
           </label>
 
-          <div class="cli-cmd-preview mb-4">
-            {buildResumeCommand(this.resumeId || undefined)}
-          </div>
+          <div class="cli-cmd-preview mb-4">{buildResumeCommand(this.resumeId || undefined)}</div>
 
-          <button
-            type="button"
-            class="cli-btn cli-btn-warning"
-            onClick={() => this.resumeSession()}
-            disabled={this.status === 'running'}
-          >
+          <button type="button" class="cli-btn cli-btn-warning" onClick={() => this.resumeSession()} disabled={this.status === 'running'}>
             Resume Session
           </button>
         </div>
@@ -543,16 +504,10 @@ export class CursorAgentGui {
         <div class="cli-card">
           <h3 class="text-text2 text-base mb-3">Auth Status</h3>
           <p class="text-sm text-text2 mb-3">
-            Show the currently authenticated user and session info (
-            <code>cursor status</code>).
+            Show the currently authenticated user and session info (<code>cursor status</code>).
           </p>
           <div class="cli-cmd-preview mb-4">{buildStatusCommand()}</div>
-          <button
-            type="button"
-            class="cli-btn"
-            onClick={() => this.fetchStatus()}
-            disabled={this.status === 'running'}
-          >
+          <button type="button" class="cli-btn" onClick={() => this.fetchStatus()} disabled={this.status === 'running'}>
             Check Status
           </button>
         </div>
@@ -561,16 +516,10 @@ export class CursorAgentGui {
         <div class="cli-card">
           <h3 class="text-text2 text-base mb-3">Available Models</h3>
           <p class="text-sm text-text2 mb-3">
-            List models you can use via <code>--model</code> (
-            <code>cursor models</code>).
+            List models you can use via <code>--model</code> (<code>cursor models</code>).
           </p>
           <div class="cli-cmd-preview mb-4">{buildListModelsCommand()}</div>
-          <button
-            type="button"
-            class="cli-btn"
-            onClick={() => this.fetchModels()}
-            disabled={this.status === 'running'}
-          >
+          <button type="button" class="cli-btn" onClick={() => this.fetchModels()} disabled={this.status === 'running'}>
             List Models
           </button>
         </div>
@@ -589,8 +538,7 @@ export class CursorAgentGui {
         <div class="cli-card">
           <h3 class="text-text2 text-base mb-4">Global Defaults</h3>
           <p class="text-sm text-text2 mb-4">
-            These defaults are applied to every Run invocation. Adjust per-run
-            on the <strong>Run</strong> tab.
+            These defaults are applied to every Run invocation. Adjust per-run on the <strong>Run</strong> tab.
           </p>
 
           <label class="flex flex-col gap-1 text-sm text-text2 mb-4">
@@ -630,8 +578,7 @@ export class CursorAgentGui {
           </label>
 
           <label class="flex flex-col gap-1 text-sm text-text2 mb-4">
-            Sandbox (<code>--sandbox</code>)
-            {/* NOTE: exact sandbox flag behaviour confirmed from docs */}
+            Sandbox (<code>--sandbox</code>){/* NOTE: exact sandbox flag behaviour confirmed from docs */}
             <select
               class="cli-select w-full"
               onChange={(e: Event) => {
@@ -666,9 +613,7 @@ export class CursorAgentGui {
 
         <div class="cli-card">
           <h3 class="text-text2 text-base mb-3">Preview with Defaults</h3>
-          <p class="text-sm text-text2 mb-3">
-            Shows how the Run command will look with the current config applied.
-          </p>
+          <p class="text-sm text-text2 mb-3">Shows how the Run command will look with the current config applied.</p>
           <div class="cli-cmd-preview">{this.buildPreview()}</div>
 
           <div class="mt-4 p-3 bg-bg3 rounded-lg text-sm text-text2">
@@ -681,8 +626,7 @@ export class CursorAgentGui {
                 Cloud agent (<code>&amp;</code>) pushes tasks to cursor.com/agents.
               </li>
               <li>
-                <code>--worktree</code> creates an isolated Git worktree in{' '}
-                <code>~/.cursor/worktrees</code>.
+                <code>--worktree</code> creates an isolated Git worktree in <code>~/.cursor/worktrees</code>.
               </li>
               <li>
                 Set <code>CURSOR_API_KEY</code> env var for headless/CI auth.
@@ -703,17 +647,10 @@ export class CursorAgentGui {
         <div class="cli-card">
           <h3 class="text-text2 text-base mb-3">Login</h3>
           <p class="text-sm text-text2 mb-3">
-            Authenticate with your Cursor account. Opens a browser window for
-            OAuth. Also supports <code>CURSOR_API_KEY</code> env var for
-            headless/CI auth.
+            Authenticate with your Cursor account. Opens a browser window for OAuth. Also supports <code>CURSOR_API_KEY</code> env var for headless/CI auth.
           </p>
           <div class="cli-cmd-preview mb-4">{buildLoginCommand()}</div>
-          <button
-            type="button"
-            class="cli-btn cli-btn-success"
-            onClick={() => this.doLogin()}
-            disabled={this.status === 'running'}
-          >
+          <button type="button" class="cli-btn cli-btn-success" onClick={() => this.doLogin()} disabled={this.status === 'running'}>
             Login
           </button>
         </div>
@@ -721,17 +658,9 @@ export class CursorAgentGui {
         {/* Logout */}
         <div class="cli-card">
           <h3 class="text-text2 text-base mb-3">Logout</h3>
-          <p class="text-sm text-text2 mb-3">
-            Sign out of your current Cursor session. You will need to log in
-            again before running agents.
-          </p>
+          <p class="text-sm text-text2 mb-3">Sign out of your current Cursor session. You will need to log in again before running agents.</p>
           <div class="cli-cmd-preview mb-4">{buildLogoutCommand()}</div>
-          <button
-            type="button"
-            class="cli-btn cli-btn-danger"
-            onClick={() => this.doLogout()}
-            disabled={this.status === 'running'}
-          >
+          <button type="button" class="cli-btn cli-btn-danger" onClick={() => this.doLogout()} disabled={this.status === 'running'}>
             Logout
           </button>
         </div>
@@ -739,13 +668,8 @@ export class CursorAgentGui {
         {/* Status quick-check */}
         <div class="cli-card xl:col-span-2">
           <h3 class="text-text2 text-base mb-3">API Key Auth (Headless / CI)</h3>
-          <p class="text-sm text-text2 mb-2">
-            For non-interactive environments set the environment variable before
-            running:
-          </p>
-          <div class="cli-cmd-preview">
-            {`export CURSOR_API_KEY="your-api-key"\ncursor agent --print --trust 'your task here'`}
-          </div>
+          <p class="text-sm text-text2 mb-2">For non-interactive environments set the environment variable before running:</p>
+          <div class="cli-cmd-preview">{`export CURSOR_API_KEY="your-api-key"\ncursor agent --print --trust 'your task here'`}</div>
           {/* NOTE: API key parameter name confirmed from docs: --api-key / CURSOR_API_KEY */}
           <p class="text-xs text-text2 mt-2">
             Alternatively pass <code>--api-key &lt;key&gt;</code> directly on the command line.
@@ -767,14 +691,10 @@ export class CursorAgentGui {
           <h2 class="text-xl font-semibold flex items-center gap-2">
             <span>☁️</span> Cursor Agent CLI
           </h2>
-          <p class="text-text2 text-sm">
-            Cursor cloud agent task runner — launch, list, and manage AI agent sessions
-          </p>
+          <p class="text-text2 text-sm">Cursor cloud agent task runner — launch, list, and manage AI agent sessions</p>
         </header>
 
-        <div class="border-b border-accent2 mb-4 flex flex-wrap gap-1">
-          {this.renderTabs()}
-        </div>
+        <div class="border-b border-accent2 mb-4 flex flex-wrap gap-1">{this.renderTabs()}</div>
 
         <div class="tab-content">
           {this.activeTab === 'run' && this.renderRunTab()}

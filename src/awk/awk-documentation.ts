@@ -1,4 +1,4 @@
-import { registerToolTips, type ManPageData } from '../utils/tooltip-registry';
+import { type ManPageData, registerToolTips } from '../utils/tooltip-registry';
 
 /**
  * awk documentation and tooltip registry
@@ -96,7 +96,7 @@ export function registerAwkDocumentation(): void {
       description: 'Number of fields in current record.',
       examples: ['NF > 0', '$NF (last field)'],
     },
-    'if': {
+    if: {
       title: 'if Statement',
       description: 'Conditional execution. Can include else clause.',
       examples: ['if (NF > 5) print', 'if ($1 > 10) { print "big" } else { print "small" }'],
@@ -198,13 +198,13 @@ exit [expr] Exit with optional status`,
     },
   ],
   examples: [
-    { command: 'awk \'{ print $1 }\' file.txt', description: 'Print first column' },
-    { command: 'awk -F: \'{ print $1 }\' /etc/passwd', description: 'Print usernames from passwd' },
+    { command: "awk '{ print $1 }' file.txt", description: 'Print first column' },
+    { command: "awk -F: '{ print $1 }' /etc/passwd", description: 'Print usernames from passwd' },
     { command: 'awk \'/error/ { print NR": "$0 }\' log.txt', description: 'Print lines with "error" and line numbers' },
-    { command: 'awk \'{ sum += $1 } END { print sum }\' numbers.txt', description: 'Sum first column' },
+    { command: "awk '{ sum += $1 } END { print sum }' numbers.txt", description: 'Sum first column' },
     { command: 'awk \'BEGIN { print "Header" } { print } END { print "Footer" }\'', description: 'Add header and footer' },
-    { command: 'awk \'{ count[$1]++ } END { for (w in count) print w, count[w] }\'', description: 'Count occurrences' },
-    { command: 'awk \'NF > 0 { print }\'', description: 'Remove blank lines' },
+    { command: "awk '{ count[$1]++ } END { for (w in count) print w, count[w] }'", description: 'Count occurrences' },
+    { command: "awk 'NF > 0 { print }'", description: 'Remove blank lines' },
     { command: 'awk \'gsub(/old/, "new"); print\'', description: 'Replace text globally' },
   ],
 };

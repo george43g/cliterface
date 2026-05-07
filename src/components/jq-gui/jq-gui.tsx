@@ -1,8 +1,8 @@
 import { Component, Event, type EventEmitter, h, Prop, State } from '@stencil/core';
-import { jqService, type CommandResult, executeJqCommand } from '../../jq/jq-service';
-import { jqFilterPresets, jqExamples, buildJqCommand, type JqFilter, type JqVariable } from '../../jq/jq-command-builders';
+import { buildJqCommand, type JqFilter, type JqVariable, jqExamples, jqFilterPresets } from '../../jq/jq-command-builders';
 import { getJqManPage } from '../../jq/jq-documentation';
-import { parseCommandIntoSegments, type CommandSegment } from '../../utils/command-builder';
+import { type CommandResult, executeJqCommand, jqService } from '../../jq/jq-service';
+import { type CommandSegment, parseCommandIntoSegments } from '../../utils/command-builder';
 
 const TAB_DEFINITIONS = [
   { id: 'filter', label: 'Filter Builder' },
@@ -104,10 +104,7 @@ export class JqGui {
 
     try {
       const result = await executeJqCommand(this.filterInput, this.jsonInput, this.rawOutput);
-      const sections = [
-        result.stdout?.trim(),
-        result.stderr?.trim() ? `stderr:\n${result.stderr.trim()}` : ''
-      ].filter(Boolean);
+      const sections = [result.stdout?.trim(), result.stderr?.trim() ? `stderr:\n${result.stderr.trim()}` : ''].filter(Boolean);
 
       this.output = sections.join('\n\n') || JSON.stringify(result, null, 2);
       this.status = result.exitCode === 0 ? 'success' : 'error';
@@ -131,10 +128,7 @@ export class JqGui {
 
     try {
       const result = await jqService.execute(trimmedCmd);
-      const sections = [
-        result.stdout?.trim(),
-        result.stderr?.trim() ? `stderr:\n${result.stderr.trim()}` : ''
-      ].filter(Boolean);
+      const sections = [result.stdout?.trim(), result.stderr?.trim() ? `stderr:\n${result.stderr.trim()}` : ''].filter(Boolean);
 
       this.output = sections.join('\n\n') || JSON.stringify(result, null, 2);
       this.status = result.exitCode === 0 ? 'success' : 'error';
@@ -176,10 +170,7 @@ export class JqGui {
 
   addVariable(): void {
     if (!this.newVarName.trim()) return;
-    this.variables = [
-      ...this.variables,
-      { name: this.newVarName, value: this.newVarValue, isString: this.newVarIsString }
-    ];
+    this.variables = [...this.variables, { name: this.newVarName, value: this.newVarValue, isString: this.newVarIsString }];
     this.newVarName = '';
     this.newVarValue = '';
     this.updateCommandSegments();
@@ -214,12 +205,7 @@ export class JqGui {
 
   renderTabs() {
     return TAB_DEFINITIONS.map(tab => (
-      <button
-        type="button"
-        key={tab.id}
-        class={`cli-tab ${this.activeTab === tab.id ? 'cli-tab-active' : ''}`}
-        onClick={() => this.activeTab = tab.id}
-      >
+      <button type="button" key={tab.id} class={`cli-tab ${this.activeTab === tab.id ? 'cli-tab-active' : ''}`} onClick={() => (this.activeTab = tab.id)}>
         {tab.label}
       </button>
     ));
@@ -307,7 +293,7 @@ export class JqGui {
                 max="8"
                 value={this.indentSize}
                 onInput={(e: Event) => {
-                  this.indentSize = parseInt((e.target as HTMLInputElement).value) || 2;
+                  this.indentSize = parseInt((e.target as HTMLInputElement).value, 10) || 2;
                   this.updateCommandSegments();
                 }}
               />
@@ -332,7 +318,9 @@ export class JqGui {
           {this.renderCommandPreview()}
 
           <div class="mt-4">
-            <h4 class="text-sm text-text2 mb-2">Status: <span class={this.status === 'error' ? 'text-danger' : this.status === 'success' ? 'text-success' : ''}>{this.statusMessage}</span></h4>
+            <h4 class="text-sm text-text2 mb-2">
+              Status: <span class={this.status === 'error' ? 'text-danger' : this.status === 'success' ? 'text-success' : ''}>{this.statusMessage}</span>
+            </h4>
           </div>
 
           <div class="mt-4">
@@ -355,22 +343,18 @@ export class JqGui {
               class="cli-input"
               placeholder="Variable name"
               value={this.newVarName}
-              onInput={(e: Event) => this.newVarName = (e.target as HTMLInputElement).value}
+              onInput={(e: Event) => (this.newVarName = (e.target as HTMLInputElement).value)}
             />
             <input
               type="text"
               class="cli-input md:col-span-2"
               placeholder="Value"
               value={this.newVarValue}
-              onInput={(e: Event) => this.newVarValue = (e.target as HTMLInputElement).value}
+              onInput={(e: Event) => (this.newVarValue = (e.target as HTMLInputElement).value)}
             />
             <div class="flex gap-2">
               <label class="flex items-center gap-2 text-sm text-text2">
-                <input
-                  type="checkbox"
-                  checked={this.newVarIsString}
-                  onChange={(e: Event) => this.newVarIsString = (e.target as HTMLInputElement).checked}
-                />
+                <input type="checkbox" checked={this.newVarIsString} onChange={(e: Event) => (this.newVarIsString = (e.target as HTMLInputElement).checked)} />
                 String
               </label>
               <button type="button" class="cli-btn cli-btn-sm cli-btn-success" onClick={() => this.addVariable()}>
@@ -383,8 +367,12 @@ export class JqGui {
             <div class="flex flex-wrap gap-2">
               {this.variables.map((v, i) => (
                 <span key={i} class="inline-flex items-center gap-2 px-2 py-1 bg-bg3 rounded text-sm">
-                  <code>{v.isString ? '--arg' : '--argjson'} {v.name} {v.value}</code>
-                  <button class="text-danger hover:text-text" onClick={() => this.removeVariable(i)}>×</button>
+                  <code>
+                    {v.isString ? '--arg' : '--argjson'} {v.name} {v.value}
+                  </code>
+                  <button class="text-danger hover:text-text" onClick={() => this.removeVariable(i)}>
+                    ×
+                  </button>
                 </span>
               ))}
             </div>
@@ -422,11 +410,7 @@ export class JqGui {
               <div key={i} class="p-3 bg-bg3 rounded-lg">
                 <div class="flex justify-between items-start mb-1">
                   <span class="font-medium">{example.name}</span>
-                  <button
-                    type="button"
-                    class="cli-btn cli-btn-sm"
-                    onClick={() => this.loadExample(example.filter)}
-                  >
+                  <button type="button" class="cli-btn cli-btn-sm" onClick={() => this.loadExample(example.filter)}>
                     Try it
                   </button>
                 </div>
@@ -445,16 +429,25 @@ export class JqGui {
       <div class="grid grid-cols-1 gap-5">
         <div class="cli-card">
           <h3 class="text-text2 text-base mb-3">JSON Input</h3>
-          <textarea
-            class="cli-input w-full font-mono h-64"
-            value={this.jsonInput}
-            onInput={(e: Event) => this.jsonInput = (e.target as HTMLTextAreaElement).value}
-          />
+          <textarea class="cli-input w-full font-mono h-64" value={this.jsonInput} onInput={(e: Event) => (this.jsonInput = (e.target as HTMLTextAreaElement).value)} />
           <div class="flex flex-wrap gap-2 mt-3">
-            <button type="button" class="cli-btn cli-btn-sm" onClick={() => { this.jsonInput = SAMPLE_JSON; this.setTemporaryStatus('Sample JSON loaded'); }}>
+            <button
+              type="button"
+              class="cli-btn cli-btn-sm"
+              onClick={() => {
+                this.jsonInput = SAMPLE_JSON;
+                this.setTemporaryStatus('Sample JSON loaded');
+              }}
+            >
               Load Sample
             </button>
-            <button type="button" class="cli-btn cli-btn-sm" onClick={() => { this.jsonInput = '{}'; }}>
+            <button
+              type="button"
+              class="cli-btn cli-btn-sm"
+              onClick={() => {
+                this.jsonInput = '{}';
+              }}
+            >
               Clear
             </button>
             <button type="button" class="cli-btn cli-btn-sm cli-btn-warning" onClick={() => this.validateJson()}>
@@ -510,13 +503,15 @@ export class JqGui {
               class="cli-input w-full font-mono"
               placeholder="jq '.' data.json"
               onInput={() => {}}
-              ref={(el) => { if (el) (el as HTMLInputElement).dataset.rawCommand = (el as HTMLInputElement).value; }}
+              ref={el => {
+                if (el) (el as HTMLInputElement).dataset.rawCommand = (el as HTMLInputElement).value;
+              }}
             />
           </label>
           <button
             type="button"
             class="cli-btn cli-btn-success"
-            onClick={(e) => {
+            onClick={e => {
               const input = (e.target as HTMLElement).closest('.cli-card')?.querySelector('input');
               if (input) this.executeRawCmd((input as HTMLInputElement).value);
             }}

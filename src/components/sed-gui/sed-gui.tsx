@@ -1,11 +1,5 @@
-import { Component, h, State, Event, type EventEmitter } from '@stencil/core';
-import {
-  executeCommand,
-  SED_PRESETS,
-  type SedCommand,
-  type AddressType,
-  type CommandResult,
-} from '../../sed/sed-service';
+import { Component, Event, type EventEmitter, h, State } from '@stencil/core';
+import { type AddressType, type CommandResult, executeCommand, SED_PRESETS, type SedCommand } from '../../sed/sed-service';
 
 const SAMPLE_TEXT = `Hello World
 This is a test line with numbers 123
@@ -215,9 +209,7 @@ export class SedGui {
         addr = this.addressValue;
         break;
       case 'range':
-        addr = this.addressValue && this.addressEndValue
-          ? `${this.addressValue},${this.addressEndValue}`
-          : this.addressValue;
+        addr = this.addressValue && this.addressEndValue ? `${this.addressValue},${this.addressEndValue}` : this.addressValue;
         break;
       case 'regex':
         addr = this.addressValue ? `/${this.addressValue}/` : '';
@@ -345,7 +337,7 @@ export class SedGui {
     // Parse the preset script to set appropriate state
     const script = preset.script;
 
-    if (script.includes("s/")) {
+    if (script.includes('s/')) {
       this.selectedCommand = 'substitute';
       const match = script.match(/s\/(.+?)\/(.+?)\/([gimnp]*)?/);
       if (match) {
@@ -353,21 +345,21 @@ export class SedGui {
         this.replacement = match[2] || '';
         this.flags = match[3] ? match[3].split('') : [];
       }
-    } else if (script.includes("y/")) {
+    } else if (script.includes('y/')) {
       this.selectedCommand = 'transform';
       const match = script.match(/y\/(.+?)\/(.+?)\//);
       if (match) {
         this.pattern = match[1] || '';
         this.replacement = match[2] || '';
       }
-    } else if (script.includes("/d")) {
+    } else if (script.includes('/d')) {
       this.selectedCommand = 'delete';
       const match = script.match(/^\/?(.+?)\/d$/);
       if (match) {
         this.addressType = 'regex';
         this.addressValue = match[1];
       }
-    } else if (script.includes("p")) {
+    } else if (script.includes('p')) {
       this.selectedCommand = 'print';
     }
 
@@ -406,8 +398,8 @@ export class SedGui {
               key={index}
               class={`command-segment segment-${segment.type} ${this.highlightedSegmentIndex === index ? 'segment-highlighted' : ''}`}
               title={segment.tooltip}
-              onMouseEnter={() => this.highlightedSegmentIndex = index}
-              onMouseLeave={() => this.highlightedSegmentIndex = -1}
+              onMouseEnter={() => (this.highlightedSegmentIndex = index)}
+              onMouseLeave={() => (this.highlightedSegmentIndex = -1)}
             >
               {segment.value}
             </span>
@@ -424,7 +416,7 @@ export class SedGui {
           <input
             type="checkbox"
             checked={this.quiet}
-            onChange={(e) => {
+            onChange={e => {
               this.quiet = (e.target as HTMLInputElement).checked;
               this.updateCommandSegments();
             }}
@@ -435,7 +427,7 @@ export class SedGui {
           <input
             type="checkbox"
             checked={this.extendedRegex}
-            onChange={(e) => {
+            onChange={e => {
               this.extendedRegex = (e.target as HTMLInputElement).checked;
               this.updateCommandSegments();
             }}
@@ -446,7 +438,7 @@ export class SedGui {
           <input
             type="checkbox"
             checked={this.inPlace}
-            onChange={(e) => {
+            onChange={e => {
               this.inPlace = (e.target as HTMLInputElement).checked;
               this.updateCommandSegments();
             }}
@@ -459,7 +451,7 @@ export class SedGui {
             class="cli-input w-full"
             placeholder="backup suffix (optional)"
             value={this.inPlaceSuffix}
-            onInput={(e) => {
+            onInput={e => {
               this.inPlaceSuffix = (e.target as HTMLInputElement).value;
               this.updateCommandSegments();
             }}
@@ -469,7 +461,7 @@ export class SedGui {
           <input
             type="checkbox"
             checked={this.separate}
-            onChange={(e) => {
+            onChange={e => {
               this.separate = (e.target as HTMLInputElement).checked;
               this.updateCommandSegments();
             }}
@@ -480,7 +472,7 @@ export class SedGui {
           <input
             type="checkbox"
             checked={this.unbuffered}
-            onChange={(e) => {
+            onChange={e => {
               this.unbuffered = (e.target as HTMLInputElement).checked;
               this.updateCommandSegments();
             }}
@@ -491,7 +483,7 @@ export class SedGui {
           <input
             type="checkbox"
             checked={this.nullData}
-            onChange={(e) => {
+            onChange={e => {
               this.nullData = (e.target as HTMLInputElement).checked;
               this.updateCommandSegments();
             }}
@@ -516,7 +508,7 @@ export class SedGui {
                 Command Type
                 <select
                   class="cli-select"
-                  onChange={(e) => {
+                  onChange={e => {
                     this.selectedCommand = (e.target as HTMLSelectElement).value as SedCommand;
                     this.updateCommandSegments();
                   }}
@@ -528,9 +520,7 @@ export class SedGui {
                   ))}
                 </select>
               </label>
-              {currentCommand && (
-                <p class="text-xs text-text2 mt-1">{currentCommand.description}</p>
-              )}
+              {currentCommand && <p class="text-xs text-text2 mt-1">{currentCommand.description}</p>}
             </div>
 
             <div>
@@ -538,7 +528,7 @@ export class SedGui {
                 Address Type
                 <select
                   class="cli-select"
-                  onChange={(e) => {
+                  onChange={e => {
                     this.addressType = (e.target as HTMLSelectElement).value as AddressType;
                     this.updateCommandSegments();
                   }}
@@ -562,7 +552,7 @@ export class SedGui {
                   class="cli-input w-full"
                   placeholder="e.g., 5"
                   value={this.addressValue}
-                  onInput={(e) => {
+                  onInput={e => {
                     this.addressValue = (e.target as HTMLInputElement).value;
                     this.updateCommandSegments();
                   }}
@@ -580,7 +570,7 @@ export class SedGui {
                   class="cli-input w-full"
                   placeholder="e.g., 1 or $"
                   value={this.addressValue}
-                  onInput={(e) => {
+                  onInput={e => {
                     this.addressValue = (e.target as HTMLInputElement).value;
                     this.updateCommandSegments();
                   }}
@@ -593,7 +583,7 @@ export class SedGui {
                   class="cli-input w-full"
                   placeholder="e.g., 10 or $"
                   value={this.addressEndValue}
-                  onInput={(e) => {
+                  onInput={e => {
                     this.addressEndValue = (e.target as HTMLInputElement).value;
                     this.updateCommandSegments();
                   }}
@@ -611,7 +601,7 @@ export class SedGui {
                   class="cli-input w-full"
                   placeholder="e.g., pattern or ^start"
                   value={this.addressValue}
-                  onInput={(e) => {
+                  onInput={e => {
                     this.addressValue = (e.target as HTMLInputElement).value;
                     this.updateCommandSegments();
                   }}
@@ -620,7 +610,7 @@ export class SedGui {
             </div>
           )}
 
-          {(this.selectedCommand === 'substitute') && (
+          {this.selectedCommand === 'substitute' && (
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
               <label class="flex flex-col gap-1 text-sm text-text2">
                 Pattern to Find
@@ -629,7 +619,7 @@ export class SedGui {
                   class="cli-input w-full"
                   placeholder="e.g., old or regex"
                   value={this.pattern}
-                  onInput={(e) => {
+                  onInput={e => {
                     this.pattern = (e.target as HTMLInputElement).value;
                     this.updateCommandSegments();
                   }}
@@ -642,7 +632,7 @@ export class SedGui {
                   class="cli-input w-full"
                   placeholder="e.g., new"
                   value={this.replacement}
-                  onInput={(e) => {
+                  onInput={e => {
                     this.replacement = (e.target as HTMLInputElement).value;
                     this.updateCommandSegments();
                   }}
@@ -651,7 +641,7 @@ export class SedGui {
             </div>
           )}
 
-          {(this.selectedCommand === 'transform') && (
+          {this.selectedCommand === 'transform' && (
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
               <label class="flex flex-col gap-1 text-sm text-text2">
                 Characters to Replace
@@ -660,7 +650,7 @@ export class SedGui {
                   class="cli-input w-full"
                   placeholder="e.g., abc"
                   value={this.pattern}
-                  onInput={(e) => {
+                  onInput={e => {
                     this.pattern = (e.target as HTMLInputElement).value;
                     this.updateCommandSegments();
                   }}
@@ -673,7 +663,7 @@ export class SedGui {
                   class="cli-input w-full"
                   placeholder="e.g., XYZ"
                   value={this.replacement}
-                  onInput={(e) => {
+                  onInput={e => {
                     this.replacement = (e.target as HTMLInputElement).value;
                     this.updateCommandSegments();
                   }}
@@ -691,7 +681,7 @@ export class SedGui {
                   rows={3}
                   placeholder="Enter text here..."
                   value={this.text}
-                  onInput={(e) => {
+                  onInput={e => {
                     this.text = (e.target as HTMLTextAreaElement).value;
                     this.updateCommandSegments();
                   }}
@@ -709,7 +699,7 @@ export class SedGui {
                   class="cli-input w-full"
                   placeholder="e.g., /path/to/file"
                   value={this.file}
-                  onInput={(e) => {
+                  onInput={e => {
                     this.file = (e.target as HTMLInputElement).value;
                     this.updateCommandSegments();
                   }}
@@ -727,7 +717,7 @@ export class SedGui {
                     <input
                       type="checkbox"
                       checked={this.flags.includes(flag.value)}
-                      onChange={(e) => {
+                      onChange={e => {
                         if ((e.target as HTMLInputElement).checked) {
                           this.flags = [...this.flags, flag.value];
                         } else {
@@ -744,17 +734,10 @@ export class SedGui {
           )}
 
           <div class="flex flex-wrap gap-2 mt-6">
-            <cli-button
-              variant="success"
-              tooltip="Execute sed on sample text"
-              onCliClick={() => this.executeScript(this.buildScriptFromBuilder(), true)}
-            >
+            <cli-button variant="success" tooltip="Execute sed on sample text" onCliClick={() => this.executeScript(this.buildScriptFromBuilder(), true)}>
               Execute on Sample
             </cli-button>
-            <cli-button
-              tooltip="Clear output"
-              onCliClick={() => this.clearOutput()}
-            >
+            <cli-button tooltip="Clear output" onCliClick={() => this.clearOutput()}>
               Clear
             </cli-button>
           </div>
@@ -769,13 +752,7 @@ export class SedGui {
     return (
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {SED_PRESETS.map((preset, index) => (
-          <cli-card
-            key={index}
-            cardTitle={preset.name}
-            variant={this.selectedPreset === index ? 'accent' : 'default'}
-            clickable
-            onClick={() => this.applyPreset(index)}
-          >
+          <cli-card key={index} cardTitle={preset.name} variant={this.selectedPreset === index ? 'accent' : 'default'} clickable onClick={() => this.applyPreset(index)}>
             <p class="text-sm text-text2 mb-2">{preset.description}</p>
             <code class="text-xs bg-bg3 p-1 rounded">{preset.script}</code>
             <div class="mt-3">
@@ -802,16 +779,10 @@ export class SedGui {
         <div class="flex justify-between items-center mb-2">
           <h3 class="text-text2 text-base">Sample Text Input</h3>
           <div class="flex gap-2">
-            <cli-button
-              size="sm"
-              onCliClick={() => this.textInput = SAMPLE_TEXT}
-            >
+            <cli-button size="sm" onCliClick={() => (this.textInput = SAMPLE_TEXT)}>
               Reset Sample
             </cli-button>
-            <cli-button
-              size="sm"
-              onCliClick={() => this.textInput = ''}
-            >
+            <cli-button size="sm" onCliClick={() => (this.textInput = '')}>
               Clear
             </cli-button>
           </div>
@@ -820,7 +791,7 @@ export class SedGui {
           class="cli-input w-full font-mono"
           rows={15}
           value={this.textInput}
-          onInput={(e) => this.textInput = (e.target as HTMLTextAreaElement).value}
+          onInput={e => (this.textInput = (e.target as HTMLTextAreaElement).value)}
           placeholder="Enter your text here..."
         />
       </div>
@@ -956,24 +927,17 @@ export class SedGui {
               class="cli-input w-full font-mono"
               placeholder="e.g., sed -n '5,10p' file.txt"
               value={this.rawCommand}
-              onInput={(e) => this.rawCommand = (e.target as HTMLInputElement).value}
+              onInput={e => (this.rawCommand = (e.target as HTMLInputElement).value)}
             />
           </label>
           <p class="text-xs text-text2 mt-1">Enter the complete sed command as you would in a terminal.</p>
         </div>
 
         <div class="flex flex-wrap gap-2">
-          <cli-button
-            variant="success"
-            onCliClick={() => this.executeRaw()}
-          >
+          <cli-button variant="success" onCliClick={() => this.executeRaw()}>
             Execute Command
           </cli-button>
-          <cli-button
-            onCliClick={() => this.rawCommand = ''}
-          >
-            Clear
-          </cli-button>
+          <cli-button onCliClick={() => (this.rawCommand = '')}>Clear</cli-button>
         </div>
       </div>
     );

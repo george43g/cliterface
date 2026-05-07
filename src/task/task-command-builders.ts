@@ -18,9 +18,9 @@ export interface TaskAddOptions {
 }
 
 export interface TaskFilterOptions {
-  ids?: string;          // e.g. "1 2 3" or "1-5"
+  ids?: string; // e.g. "1 2 3" or "1-5"
   project?: string;
-  tags?: string[];       // +tag to include, use excludeTags for -tag
+  tags?: string[]; // +tag to include, use excludeTags for -tag
   excludeTags?: string[];
   priority?: TaskPriority;
   status?: string;
@@ -93,7 +93,7 @@ export interface TaskModOptions {
   due?: string;
   scheduled?: string;
   wait?: string;
-  tags?: string[];       // tags to add (+tag)
+  tags?: string[]; // tags to add (+tag)
   removeTags?: string[]; // tags to remove (-tag)
   depends?: string;
 }

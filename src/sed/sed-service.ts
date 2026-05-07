@@ -140,7 +140,7 @@ function buildCommandScript(cmd: SedCommandEntry): string {
     case 'exchange':
       return `${addr}x`;
     case 'branch':
-      return `${cmd.label ? cmd.label + ':' : ''}b${cmd.label || ''}`;
+      return `${cmd.label ? `${cmd.label}:` : ''}b${cmd.label || ''}`;
     case 'test':
       return `t${cmd.label || ''}`;
     default:
@@ -177,32 +177,32 @@ export const SED_PRESETS = [
   {
     name: 'Basic Substitution',
     description: 'Replace first occurrence of pattern on each line',
-    script: "s/old/new/",
+    script: 's/old/new/',
   },
   {
     name: 'Global Substitution',
     description: 'Replace all occurrences of pattern',
-    script: "s/old/new/g",
+    script: 's/old/new/g',
   },
   {
     name: 'Case-Insensitive Substitution',
     description: 'Replace regardless of case',
-    script: "s/old/new/gi",
+    script: 's/old/new/gi',
   },
   {
     name: 'Delete Blank Lines',
     description: 'Remove empty lines from output',
-    script: "/^$/d",
+    script: '/^$/d',
   },
   {
     name: 'Delete Lines Matching Pattern',
     description: 'Remove lines containing a pattern',
-    script: "/pattern/d",
+    script: '/pattern/d',
   },
   {
     name: 'Print Line Numbers',
     description: 'Show line numbers with = command',
-    script: "=",
+    script: '=',
   },
   {
     name: 'Extract Specific Lines',
@@ -212,37 +212,37 @@ export const SED_PRESETS = [
   {
     name: 'Uppercase Conversion',
     description: 'Convert lowercase to uppercase',
-    script: "y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/",
+    script: 'y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/',
   },
   {
     name: 'Remove HTML Tags',
     description: 'Strip HTML/XML tags from text',
-    script: "s/<[^>]*>//g",
+    script: 's/<[^>]*>//g',
   },
   {
     name: 'Trim Leading Whitespace',
     description: 'Remove whitespace from start of lines',
-    script: "s/^[[:space:]]*//",
+    script: 's/^[[:space:]]*//',
   },
   {
     name: 'Trim Trailing Whitespace',
     description: 'Remove whitespace from end of lines',
-    script: "s/[[:space:]]*$//",
+    script: 's/[[:space:]]*$//',
   },
   {
     name: 'Collapse Multiple Spaces',
     description: 'Replace multiple spaces with single space',
-    script: "s/  */ /g",
+    script: 's/  */ /g',
   },
   {
     name: 'Add Line Numbers',
     description: 'Prepend line numbers to each line',
-    script: "=; N; s/\\n/ /",
+    script: '=; N; s/\\n/ /',
   },
   {
     name: 'Reverse File Lines',
     description: 'Print lines in reverse order (tac)',
-    script: "1!G; h; $p",
+    script: '1!G; h; $p',
   },
   {
     name: 'Print Last Line',
@@ -252,7 +252,7 @@ export const SED_PRESETS = [
   {
     name: 'Duplicate Each Line',
     description: 'Print each line twice',
-    script: "p",
+    script: 'p',
   },
 ];
 

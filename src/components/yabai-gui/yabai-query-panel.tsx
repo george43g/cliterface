@@ -1,4 +1,4 @@
-import { Component, h, Prop, State, Event, type EventEmitter } from '@stencil/core';
+import { Component, Event, type EventEmitter, h, Prop, State } from '@stencil/core';
 
 /**
  * Yabai Query Panel - Uses UI component library

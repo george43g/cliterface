@@ -1,4 +1,4 @@
-import { registerToolTips, type ManPageData } from '../utils/tooltip-registry';
+import { type ManPageData, registerToolTips } from '../utils/tooltip-registry';
 
 /**
  * Yabai documentation and tooltip registry
@@ -91,12 +91,12 @@ export function registerYabaiDocumentation(): void {
     rule: {
       title: 'Window Rules',
       description: 'Define automatic window behavior rules',
-      examples: ['yabai -m rule --add app=\"Safari\" manage=off'],
+      examples: ['yabai -m rule --add app="Safari" manage=off'],
     },
     'rule.add': {
       title: 'Add Rule',
       description: 'Add a new window management rule',
-      examples: ['yabai -m rule --add app=\"Firefox\" space=2'],
+      examples: ['yabai -m rule --add app="Firefox" space=2'],
     },
     'rule.remove': {
       title: 'Remove Rule',
@@ -108,7 +108,7 @@ export function registerYabaiDocumentation(): void {
     signal: {
       title: 'Event Signals',
       description: 'Subscribe to window manager events',
-      examples: ['yabai -m signal --add event=window_focused action=\"echo focused\"'],
+      examples: ['yabai -m signal --add event=window_focused action="echo focused"'],
     },
   });
 }

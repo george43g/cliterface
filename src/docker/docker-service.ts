@@ -121,13 +121,21 @@ export async function executeCommand(command: string): Promise<CommandResult> {
     return { stdout: MOCK_INFO, exitCode: 0 };
   }
   if (sub === 'system' && sub2 === 'df') {
-    return { stdout: 'TYPE            TOTAL     ACTIVE    SIZE      RECLAIMABLE\nImages          5         3         990.9MB   400MB (40%)\nContainers      3         2         0B        0B\nLocal Volumes   3         2         1.23GB    615MB (50%)', exitCode: 0 };
+    return {
+      stdout:
+        'TYPE            TOTAL     ACTIVE    SIZE      RECLAIMABLE\nImages          5         3         990.9MB   400MB (40%)\nContainers      3         2         0B        0B\nLocal Volumes   3         2         1.23GB    615MB (50%)',
+      exitCode: 0,
+    };
   }
   if (sub === 'version') {
     return { stdout: 'Docker version 24.0.7, build afdd53b', exitCode: 0 };
   }
   if (sub === 'search') {
-    return { stdout: 'NAME                                         DESCRIPTION                                     STARS\nnginx                                        Official build of Nginx.                        19234\nubuntu                                       Ubuntu is a Debian-based Linux operating sy…    16123\nnode                                         Node.js is a JavaScript-based platform for…     13456', exitCode: 0 };
+    return {
+      stdout:
+        'NAME                                         DESCRIPTION                                     STARS\nnginx                                        Official build of Nginx.                        19234\nubuntu                                       Ubuntu is a Debian-based Linux operating sy…    16123\nnode                                         Node.js is a JavaScript-based platform for…     13456',
+      exitCode: 0,
+    };
   }
 
   // All mutating / destructive ops describe themselves
@@ -208,30 +216,36 @@ export const dockerService = {
 
   // Build
   async buildImage(contextPath: string, tag: string, dockerfile: string, buildArgs: string[]): Promise<CommandResult> {
-    const argFlags = buildArgs.filter(Boolean).map(a => `--build-arg ${a}`).join(' ');
+    const argFlags = buildArgs
+      .filter(Boolean)
+      .map(a => `--build-arg ${a}`)
+      .join(' ');
     const dockerfileFlag = dockerfile ? `-f ${dockerfile}` : '';
     return executeCommand(`docker build ${dockerfileFlag} ${argFlags} -t ${tag} ${contextPath}`.replace(/\s+/g, ' ').trim());
   },
 
   // Run
-  async runContainer(image: string, opts: {
-    name?: string;
-    ports?: string[];
-    volumes?: string[];
-    envs?: string[];
-    detach?: boolean;
-    rm?: boolean;
-    network?: string;
-    entrypoint?: string;
-    command?: string;
-  }): Promise<CommandResult> {
+  async runContainer(
+    image: string,
+    opts: {
+      name?: string;
+      ports?: string[];
+      volumes?: string[];
+      envs?: string[];
+      detach?: boolean;
+      rm?: boolean;
+      network?: string;
+      entrypoint?: string;
+      command?: string;
+    },
+  ): Promise<CommandResult> {
     const parts = ['docker run'];
     if (opts.detach) parts.push('-d');
     if (opts.rm) parts.push('--rm');
     if (opts.name) parts.push(`--name ${opts.name}`);
-    for (const p of (opts.ports ?? [])) parts.push(`-p ${p}`);
-    for (const v of (opts.volumes ?? [])) parts.push(`-v ${v}`);
-    for (const e of (opts.envs ?? [])) parts.push(`-e ${e}`);
+    for (const p of opts.ports ?? []) parts.push(`-p ${p}`);
+    for (const v of opts.volumes ?? []) parts.push(`-v ${v}`);
+    for (const e of opts.envs ?? []) parts.push(`-e ${e}`);
     if (opts.network) parts.push(`--network ${opts.network}`);
     if (opts.entrypoint) parts.push(`--entrypoint ${opts.entrypoint}`);
     parts.push(image);
@@ -283,7 +297,7 @@ export const dockerService = {
 
   // Registry
   async login(server: string, username: string, password: string): Promise<CommandResult> {
-    return executeCommand(`docker login ${server ? server + ' ' : ''}-u ${username} -p ${password}`.trim());
+    return executeCommand(`docker login ${server ? `${server} ` : ''}-u ${username} -p ${password}`.trim());
   },
   async logout(server = ''): Promise<CommandResult> {
     return executeCommand(`docker logout ${server}`.trim());

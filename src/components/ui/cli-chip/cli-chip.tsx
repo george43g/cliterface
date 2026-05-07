@@ -1,4 +1,4 @@
-import { Component, h, Prop, Event, type EventEmitter } from '@stencil/core';
+import { Component, Event, type EventEmitter, h, Prop } from '@stencil/core';
 
 @Component({
   tag: 'cli-chip',

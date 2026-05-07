@@ -1,4 +1,4 @@
-import { registerToolTips, type ManPageData } from '../utils/tooltip-registry';
+import { type ManPageData, registerToolTips } from '../utils/tooltip-registry';
 
 /**
  * jq documentation and tooltip registry
@@ -125,7 +125,7 @@ endswith(s)     Check string suffix`,
     { command: 'jq . data.json', description: 'Pretty print JSON file' },
     { command: 'jq ".items[] | .name" data.json', description: 'Extract all item names' },
     { command: 'jq "select(.active) | .id" data.json', description: 'Get IDs of active items' },
-    { command: 'jq -r ".items | map(.name) | join(\\", \")" data.json', description: 'Get comma-separated names' },
+    { command: 'jq -r ".items | map(.name) | join(\\", ")" data.json', description: 'Get comma-separated names' },
     { command: 'jq "[.[] | {id, name}]" data.json', description: 'Transform to array of objects' },
   ],
 };

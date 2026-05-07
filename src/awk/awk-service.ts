@@ -1,6 +1,6 @@
-import { executeCommand, type CommandResult } from '../yabai/yabai-service';
+import { type CommandResult, executeCommand } from '../yabai/yabai-service';
 
-export { type CommandResult };
+export type { CommandResult };
 
 /**
  * awk execution service
@@ -73,11 +73,7 @@ function buildAwkCliCommand(
   return parts.join(' ');
 }
 
-export async function executeAwkCommand(
-  program: string,
-  input: string = '',
-  fieldSeparator: string = '',
-): Promise<CommandResult> {
+export async function executeAwkCommand(program: string, input: string = '', fieldSeparator: string = ''): Promise<CommandResult> {
   const fsArg = fieldSeparator ? `-F '${fieldSeparator}'` : '';
   const cmd = `echo '${input.replace(/'/g, "'\"'\"'")}' | awk ${fsArg} '${program}'`.trim();
   return executeCommand(cmd);

@@ -298,7 +298,7 @@ export class FirecrawlGui {
               value={this.scrapeWaitFor || ''}
               placeholder="0"
               onInput={(e: Event) => {
-                this.scrapeWaitFor = parseInt((e.target as HTMLInputElement).value) || 0;
+                this.scrapeWaitFor = parseInt((e.target as HTMLInputElement).value, 10) || 0;
               }}
             />
           </label>
@@ -459,7 +459,7 @@ export class FirecrawlGui {
                 max="100"
                 value={this.searchLimit}
                 onInput={(e: Event) => {
-                  this.searchLimit = parseInt((e.target as HTMLInputElement).value) || 5;
+                  this.searchLimit = parseInt((e.target as HTMLInputElement).value, 10) || 5;
                 }}
               />
             </label>
@@ -616,7 +616,7 @@ export class FirecrawlGui {
                 placeholder="unlimited"
                 value={this.mapLimit || ''}
                 onInput={(e: Event) => {
-                  const v = parseInt((e.target as HTMLInputElement).value) || 0;
+                  const v = parseInt((e.target as HTMLInputElement).value, 10) || 0;
                   const err = v ? validateLimit(v) : null;
                   if (!err) this.mapLimit = v;
                 }}
@@ -747,7 +747,7 @@ export class FirecrawlGui {
                 placeholder="unlimited"
                 value={this.crawlLimit || ''}
                 onInput={(e: Event) => {
-                  this.crawlLimit = parseInt((e.target as HTMLInputElement).value) || 0;
+                  this.crawlLimit = parseInt((e.target as HTMLInputElement).value, 10) || 0;
                 }}
               />
             </label>
@@ -761,7 +761,7 @@ export class FirecrawlGui {
                 placeholder="unlimited"
                 value={this.crawlMaxDepth || ''}
                 onInput={(e: Event) => {
-                  const v = parseInt((e.target as HTMLInputElement).value) || 0;
+                  const v = parseInt((e.target as HTMLInputElement).value, 10) || 0;
                   this.crawlMaxDepth = v;
                   this.crawlDepthError = v ? validateDepth(v) : null;
                 }}
@@ -856,7 +856,7 @@ export class FirecrawlGui {
                 placeholder="0"
                 value={this.crawlDelay || ''}
                 onInput={(e: Event) => {
-                  this.crawlDelay = parseInt((e.target as HTMLInputElement).value) || 0;
+                  this.crawlDelay = parseInt((e.target as HTMLInputElement).value, 10) || 0;
                 }}
               />
             </label>
@@ -869,7 +869,7 @@ export class FirecrawlGui {
                 placeholder="default"
                 value={this.crawlMaxConcurrency || ''}
                 onInput={(e: Event) => {
-                  this.crawlMaxConcurrency = parseInt((e.target as HTMLInputElement).value) || 0;
+                  this.crawlMaxConcurrency = parseInt((e.target as HTMLInputElement).value, 10) || 0;
                 }}
               />
             </label>
@@ -992,7 +992,7 @@ export class FirecrawlGui {
               placeholder="unlimited"
               value={this.agentMaxCredits || ''}
               onInput={(e: Event) => {
-                this.agentMaxCredits = parseInt((e.target as HTMLInputElement).value) || 0;
+                this.agentMaxCredits = parseInt((e.target as HTMLInputElement).value, 10) || 0;
               }}
             />
           </label>

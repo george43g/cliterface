@@ -1,6 +1,6 @@
 import { Component, h, State } from '@stencil/core';
-import { rsyncService, buildRsyncCommand, type RsyncOptions } from '../../rsync/rsync-service';
-import { RSYNC_PRESETS, validateSizeString, validatePath, getCommandIntent, describeOptions } from '../../rsync/rsync-command-builders';
+import { describeOptions, getCommandIntent, RSYNC_PRESETS, validatePath, validateSizeString } from '../../rsync/rsync-command-builders';
+import { buildRsyncCommand, type RsyncOptions, rsyncService } from '../../rsync/rsync-service';
 
 const TAB_DEFINITIONS = [
   { id: 'builder', label: 'Builder' },
@@ -137,10 +137,7 @@ export class RsyncGui {
 
     try {
       const result = await rsyncService.execute(cmd);
-      const sections = [
-        result.stdout?.trim(),
-        result.stderr?.trim() ? `stderr:\n${result.stderr.trim()}` : '',
-      ].filter(Boolean);
+      const sections = [result.stdout?.trim(), result.stderr?.trim() ? `stderr:\n${result.stderr.trim()}` : ''].filter(Boolean);
       this.output = sections.join('\n\n') || JSON.stringify(result, null, 2);
       this.status = result.exitCode === 0 ? 'success' : 'error';
       this.statusMessage = result.exitCode === 0 ? 'Completed' : `Failed (exit ${result.exitCode})`;
@@ -234,7 +231,10 @@ export class RsyncGui {
     const badgeClass = intent === 'danger' ? 'cli-badge-danger' : intent === 'query' ? 'cli-badge-safe' : 'cli-badge-info';
 
     return (
-      <div class={`cli-cmd-preview rsync-preview-${intent}`} style={{ borderLeftColor: intent === 'danger' ? 'var(--color-danger)' : intent === 'query' ? 'var(--color-success)' : 'var(--color-info)' }}>
+      <div
+        class={`cli-cmd-preview rsync-preview-${intent}`}
+        style={{ borderLeftColor: intent === 'danger' ? 'var(--color-danger)' : intent === 'query' ? 'var(--color-success)' : 'var(--color-info)' }}
+      >
         <div class="flex items-center gap-2 mb-2">
           <span class="text-text2 text-xs">Command</span>
           <span class={badgeClass}>{intentLabel}</span>
@@ -254,9 +254,8 @@ export class RsyncGui {
         <div class="rsync-confirm-box">
           <div class="text-danger text-lg font-bold mb-2">Destructive Operation Warning</div>
           <p class="text-text2 text-sm mb-3">
-            This command includes flags that can permanently delete or move files
-            (<code>--delete</code>, <code>--delete-after</code>, <code>--delete-excluded</code>,
-            or <code>--remove-source-files</code>). Are you sure?
+            This command includes flags that can permanently delete or move files (<code>--delete</code>, <code>--delete-after</code>, <code>--delete-excluded</code>, or{' '}
+            <code>--remove-source-files</code>). Are you sure?
           </p>
           <div class="flex gap-3">
             <button type="button" class="cli-btn cli-btn-danger" onClick={() => this.executeCommand(false)}>
@@ -279,10 +278,7 @@ export class RsyncGui {
       <div class="cli-card">
         <div class="flex items-center justify-between mb-2">
           <span class="text-text2 text-sm">
-            Status:{' '}
-            <span class={this.status === 'error' ? 'text-danger' : this.status === 'success' ? 'text-success' : 'text-text2'}>
-              {this.statusMessage}
-            </span>
+            Status: <span class={this.status === 'error' ? 'text-danger' : this.status === 'success' ? 'text-success' : 'text-text2'}>{this.statusMessage}</span>
           </span>
           <button type="button" class="cli-btn cli-btn-sm" onClick={() => this.copyOutput()}>
             Copy output
@@ -346,11 +342,7 @@ export class RsyncGui {
         <div class="cli-card">
           <h3 class="text-text2 text-base mb-3">Mode Flags</h3>
           <label class="flex items-center gap-2 text-sm mb-3">
-            <input
-              type="checkbox"
-              checked={archiveChecked}
-              onChange={(e: Event) => this.setOpts({ archive: (e.target as HTMLInputElement).checked })}
-            />
+            <input type="checkbox" checked={archiveChecked} onChange={(e: Event) => this.setOpts({ archive: (e.target as HTMLInputElement).checked })} />
             <span class="font-medium">-a archive</span>
             <span class="text-text2 text-xs">(= -rlptgoD)</span>
           </label>
@@ -368,11 +360,7 @@ export class RsyncGui {
                 ] as Array<{ key: keyof RsyncOptions; flag: string; label: string }>
               ).map(item => (
                 <label key={item.key} class="flex items-center gap-2 text-sm text-text2">
-                  <input
-                    type="checkbox"
-                    checked={!!this.opts[item.key]}
-                    onChange={(e: Event) => this.setOpts({ [item.key]: (e.target as HTMLInputElement).checked })}
-                  />
+                  <input type="checkbox" checked={!!this.opts[item.key]} onChange={(e: Event) => this.setOpts({ [item.key]: (e.target as HTMLInputElement).checked })} />
                   <code>{item.flag}</code> {item.label}
                 </label>
               ))}
@@ -394,11 +382,7 @@ export class RsyncGui {
                 ] as Array<{ key: keyof RsyncOptions; flag: string; label: string }>
               ).map(item => (
                 <label key={item.key} class="flex items-center gap-2 text-sm text-text2">
-                  <input
-                    type="checkbox"
-                    checked={!!this.opts[item.key]}
-                    onChange={(e: Event) => this.setOpts({ [item.key]: (e.target as HTMLInputElement).checked })}
-                  />
+                  <input type="checkbox" checked={!!this.opts[item.key]} onChange={(e: Event) => this.setOpts({ [item.key]: (e.target as HTMLInputElement).checked })} />
                   <code>{item.flag}</code> {item.label}
                 </label>
               ))}
@@ -419,11 +403,7 @@ export class RsyncGui {
               ] as Array<{ key: keyof RsyncOptions; flag: string; label: string }>
             ).map(item => (
               <label key={item.key} class="flex items-center gap-2 text-sm text-text2">
-                <input
-                  type="checkbox"
-                  checked={!!this.opts[item.key]}
-                  onChange={(e: Event) => this.setOpts({ [item.key]: (e.target as HTMLInputElement).checked })}
-                />
+                <input type="checkbox" checked={!!this.opts[item.key]} onChange={(e: Event) => this.setOpts({ [item.key]: (e.target as HTMLInputElement).checked })} />
                 <code>{item.flag}</code> {item.label}
               </label>
             ))}
@@ -466,11 +446,7 @@ export class RsyncGui {
           <h4 class="text-text2 text-xs uppercase mb-2 mt-4">Backup</h4>
           <div class="grid grid-cols-2 gap-2 mb-3">
             <label class="flex items-center gap-2 text-sm text-text2">
-              <input
-                type="checkbox"
-                checked={this.opts.backup ?? false}
-                onChange={(e: Event) => this.setOpts({ backup: (e.target as HTMLInputElement).checked })}
-              />
+              <input type="checkbox" checked={this.opts.backup ?? false} onChange={(e: Event) => this.setOpts({ backup: (e.target as HTMLInputElement).checked })} />
               <code>--backup</code>
             </label>
           </div>
@@ -549,9 +525,7 @@ export class RsyncGui {
             </label>
           </div>
           {(this.opts.delete || this.opts.deleteAfter || this.opts.deleteExcluded || this.opts.removeSourceFiles) && (
-            <div class="mt-3 p-2 rounded bg-danger/10 text-danger text-xs">
-              Destructive flags active — execution will require confirmation.
-            </div>
+            <div class="mt-3 p-2 rounded bg-danger/10 text-danger text-xs">Destructive flags active — execution will require confirmation.</div>
           )}
         </div>
 
@@ -592,11 +566,7 @@ export class RsyncGui {
               <h3 class="text-text2 text-base mb-3 capitalize">{cat}</h3>
               <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
                 {presets.map(preset => {
-                  const btnClass = preset.intent === 'danger'
-                    ? 'cli-btn cli-btn-danger'
-                    : preset.intent === 'query'
-                    ? 'cli-btn cli-btn-success'
-                    : 'cli-btn';
+                  const btnClass = preset.intent === 'danger' ? 'cli-btn cli-btn-danger' : preset.intent === 'query' ? 'cli-btn cli-btn-success' : 'cli-btn';
                   const notes = describeOptions(preset.options);
                   return (
                     <div key={preset.id} class="rsync-preset-card">
@@ -604,13 +574,18 @@ export class RsyncGui {
                       <p class="text-xs text-text2 mb-2">{preset.description}</p>
                       {notes.length > 0 && (
                         <ul class="text-xs text-text2 list-disc pl-4 mb-2 space-y-1">
-                          {notes.map((n, i) => <li key={i}>{n}</li>)}
+                          {notes.map((n, i) => (
+                            <li key={i}>{n}</li>
+                          ))}
                         </ul>
                       )}
                       <button
                         type="button"
                         class={`${btnClass} cli-btn-sm w-full`}
-                        onClick={() => { this.loadPreset(preset.id); this.activeTab = 'builder'; }}
+                        onClick={() => {
+                          this.loadPreset(preset.id);
+                          this.activeTab = 'builder';
+                        }}
                       >
                         Load preset
                       </button>
@@ -635,24 +610,34 @@ export class RsyncGui {
       <div class="grid grid-cols-1 xl:grid-cols-2 gap-5">
         {/* Exclude patterns */}
         <div class="cli-card">
-          <h3 class="text-text2 text-base mb-3">Exclude patterns (<code>--exclude</code>)</h3>
+          <h3 class="text-text2 text-base mb-3">
+            Exclude patterns (<code>--exclude</code>)
+          </h3>
           <div class="flex gap-2 mb-3">
             <input
               type="text"
               class="cli-input flex-1 font-mono"
               placeholder="*.log, .git/, tmp/"
               value={this.newExclude}
-              onInput={(e: Event) => { this.newExclude = (e.target as HTMLInputElement).value; }}
-              onKeyDown={(e: KeyboardEvent) => { if (e.key === 'Enter') this.addExclude(); }}
+              onInput={(e: Event) => {
+                this.newExclude = (e.target as HTMLInputElement).value;
+              }}
+              onKeyDown={(e: KeyboardEvent) => {
+                if (e.key === 'Enter') this.addExclude();
+              }}
             />
-            <button type="button" class="cli-btn cli-btn-sm" onClick={() => this.addExclude()}>Add</button>
+            <button type="button" class="cli-btn cli-btn-sm" onClick={() => this.addExclude()}>
+              Add
+            </button>
           </div>
           {(this.opts.excludes ?? []).length > 0 && (
             <div class="flex flex-wrap gap-2">
               {(this.opts.excludes ?? []).map((ex, i) => (
                 <span key={i} class="inline-flex items-center gap-1 px-2 py-1 bg-bg3 rounded text-sm font-mono">
                   {ex}
-                  <button type="button" class="text-danger ml-1" onClick={() => this.removeExclude(i)}>×</button>
+                  <button type="button" class="text-danger ml-1" onClick={() => this.removeExclude(i)}>
+                    ×
+                  </button>
                 </span>
               ))}
             </div>
@@ -674,24 +659,34 @@ export class RsyncGui {
 
         {/* Include patterns */}
         <div class="cli-card">
-          <h3 class="text-text2 text-base mb-3">Include patterns (<code>--include</code>)</h3>
+          <h3 class="text-text2 text-base mb-3">
+            Include patterns (<code>--include</code>)
+          </h3>
           <div class="flex gap-2 mb-3">
             <input
               type="text"
               class="cli-input flex-1 font-mono"
               placeholder="*.ts, src/"
               value={this.newInclude}
-              onInput={(e: Event) => { this.newInclude = (e.target as HTMLInputElement).value; }}
-              onKeyDown={(e: KeyboardEvent) => { if (e.key === 'Enter') this.addInclude(); }}
+              onInput={(e: Event) => {
+                this.newInclude = (e.target as HTMLInputElement).value;
+              }}
+              onKeyDown={(e: KeyboardEvent) => {
+                if (e.key === 'Enter') this.addInclude();
+              }}
             />
-            <button type="button" class="cli-btn cli-btn-sm cli-btn-success" onClick={() => this.addInclude()}>Add</button>
+            <button type="button" class="cli-btn cli-btn-sm cli-btn-success" onClick={() => this.addInclude()}>
+              Add
+            </button>
           </div>
           {(this.opts.includes ?? []).length > 0 && (
             <div class="flex flex-wrap gap-2">
               {(this.opts.includes ?? []).map((inc, i) => (
                 <span key={i} class="inline-flex items-center gap-1 px-2 py-1 bg-bg3 rounded text-sm font-mono text-success">
                   {inc}
-                  <button type="button" class="text-danger ml-1" onClick={() => this.removeInclude(i)}>×</button>
+                  <button type="button" class="text-danger ml-1" onClick={() => this.removeInclude(i)}>
+                    ×
+                  </button>
                 </span>
               ))}
             </div>
@@ -726,7 +721,9 @@ export class RsyncGui {
 
         {/* Filter rules */}
         <div class="cli-card xl:col-span-2">
-          <h3 class="text-text2 text-base mb-3">Filter rules (<code>--filter</code>)</h3>
+          <h3 class="text-text2 text-base mb-3">
+            Filter rules (<code>--filter</code>)
+          </h3>
           <p class="text-text2 text-xs mb-3">
             rsync filter rules: <code>+ pattern</code> = include, <code>- pattern</code> = exclude,
             <code>: .rsync-filter</code> = merge per-dir filter, <code>H pattern</code> = hide.
@@ -737,17 +734,25 @@ export class RsyncGui {
               class="cli-input flex-1 font-mono"
               placeholder="- *.log  or  + important.log"
               value={this.newFilterRule}
-              onInput={(e: Event) => { this.newFilterRule = (e.target as HTMLInputElement).value; }}
-              onKeyDown={(e: KeyboardEvent) => { if (e.key === 'Enter') this.addFilterRule(); }}
+              onInput={(e: Event) => {
+                this.newFilterRule = (e.target as HTMLInputElement).value;
+              }}
+              onKeyDown={(e: KeyboardEvent) => {
+                if (e.key === 'Enter') this.addFilterRule();
+              }}
             />
-            <button type="button" class="cli-btn cli-btn-sm" onClick={() => this.addFilterRule()}>Add</button>
+            <button type="button" class="cli-btn cli-btn-sm" onClick={() => this.addFilterRule()}>
+              Add
+            </button>
           </div>
           {(this.opts.filterRules ?? []).length > 0 && (
             <div class="space-y-1">
               {(this.opts.filterRules ?? []).map((rule, i) => (
                 <div key={i} class="flex items-center gap-2 p-2 bg-bg3 rounded font-mono text-sm">
                   <span class="flex-1">{rule}</span>
-                  <button type="button" class="text-danger" onClick={() => this.removeFilterRule(i)}>×</button>
+                  <button type="button" class="text-danger" onClick={() => this.removeFilterRule(i)}>
+                    ×
+                  </button>
                 </div>
               ))}
             </div>
@@ -761,13 +766,15 @@ export class RsyncGui {
     return (
       <div class="grid grid-cols-1 xl:grid-cols-2 gap-5">
         <div class="cli-card">
-          <h3 class="text-text2 text-base mb-3">Remote Shell (<code>-e</code> / <code>--rsh</code>)</h3>
+          <h3 class="text-text2 text-base mb-3">
+            Remote Shell (<code>-e</code> / <code>--rsh</code>)
+          </h3>
           <label class="flex flex-col gap-1 text-sm text-text2 mb-4">
             Shell expression
             <input
               type="text"
               class="cli-input w-full font-mono"
-              placeholder='ssh  or  ssh -p 2222 -i ~/.ssh/key'
+              placeholder="ssh  or  ssh -p 2222 -i ~/.ssh/key"
               value={this.opts.rsh ?? ''}
               onInput={(e: Event) => this.setOpts({ rsh: (e.target as HTMLInputElement).value })}
             />
@@ -792,7 +799,9 @@ export class RsyncGui {
         </div>
 
         <div class="cli-card">
-          <h3 class="text-text2 text-base mb-3">Bandwidth Limit (<code>--bwlimit</code>)</h3>
+          <h3 class="text-text2 text-base mb-3">
+            Bandwidth Limit (<code>--bwlimit</code>)
+          </h3>
           <label class="flex flex-col gap-1 text-sm text-text2 mb-4">
             Limit (KB/s)
             <input
@@ -805,12 +814,7 @@ export class RsyncGui {
           </label>
           <div class="flex flex-wrap gap-2">
             {['256', '512', '1024', '5120', '10240'].map(v => (
-              <button
-                key={v}
-                type="button"
-                class={`cli-btn cli-btn-sm ${this.opts.bwlimit === v ? 'cli-btn-info' : ''}`}
-                onClick={() => this.setOpts({ bwlimit: v })}
-              >
+              <button key={v} type="button" class={`cli-btn cli-btn-sm ${this.opts.bwlimit === v ? 'cli-btn-info' : ''}`} onClick={() => this.setOpts({ bwlimit: v })}>
                 {v} KB/s
               </button>
             ))}
@@ -834,20 +838,19 @@ export class RsyncGui {
     return (
       <div class="grid grid-cols-1 gap-5">
         <div class="cli-card border border-success/30">
-          <h3 class="text-success text-base mb-2">Dry Run Mode (<code>-n</code> / <code>--dry-run</code>)</h3>
+          <h3 class="text-success text-base mb-2">
+            Dry Run Mode (<code>-n</code> / <code>--dry-run</code>)
+          </h3>
           <p class="text-text2 text-sm mb-4">
-            A dry run performs all checks and logs what <em>would</em> happen, but never writes or deletes anything.
-            Always run a dry run before executing a destructive sync.
+            A dry run performs all checks and logs what <em>would</em> happen, but never writes or deletes anything. Always run a dry run before executing a destructive sync.
           </p>
 
           <div class="mb-4">
             <label class="flex items-center gap-2 text-sm">
-              <input
-                type="checkbox"
-                checked={this.opts.dryRun ?? false}
-                onChange={(e: Event) => this.setOpts({ dryRun: (e.target as HTMLInputElement).checked })}
-              />
-              <span>Enable dry run (<code>-n</code>) globally</span>
+              <input type="checkbox" checked={this.opts.dryRun ?? false} onChange={(e: Event) => this.setOpts({ dryRun: (e.target as HTMLInputElement).checked })} />
+              <span>
+                Enable dry run (<code>-n</code>) globally
+              </span>
             </label>
           </div>
 
@@ -857,11 +860,7 @@ export class RsyncGui {
             <button type="button" class="cli-btn cli-btn-success" onClick={() => this.executeCommand(true)}>
               Execute Dry Run
             </button>
-            <button
-              type="button"
-              class={`cli-btn ${this.commandIntent === 'danger' ? 'cli-btn-danger' : 'cli-btn-info'}`}
-              onClick={() => this.executeCommand()}
-            >
+            <button type="button" class={`cli-btn ${this.commandIntent === 'danger' ? 'cli-btn-danger' : 'cli-btn-info'}`} onClick={() => this.executeCommand()}>
               Execute Real Sync
             </button>
           </div>
@@ -890,7 +889,9 @@ export class RsyncGui {
               key={tab.id}
               type="button"
               class={`cli-tab ${this.activeTab === tab.id ? 'cli-tab-active' : ''}`}
-              onClick={() => { this.activeTab = tab.id; }}
+              onClick={() => {
+                this.activeTab = tab.id;
+              }}
             >
               {tab.label}
             </button>

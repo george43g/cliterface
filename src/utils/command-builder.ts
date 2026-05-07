@@ -81,7 +81,7 @@ function getDefaultExplanation(part: string, type: CommandSegment['type']): stri
 export function formatCliValue(value: string): string {
   if (!value) return '';
   // Escape special shell characters
-  if (/[\s'"\\$|&;<>(){}\[\]*?#]/.test(value)) {
+  if (/[\s'"\\$|&;<>(){}[\]*?#]/.test(value)) {
     return `"${value.replace(/"/g, '\\"')}"`;
   }
   return value;
@@ -130,7 +130,7 @@ export function buildCommandSegments(tool: string, subcommand: string, options: 
       segments.push({
         text: opt.value,
         type: 'value',
-        description: 'Value for ' + opt.flag,
+        description: `Value for ${opt.flag}`,
         compatible: true,
       });
     }

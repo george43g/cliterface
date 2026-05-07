@@ -139,11 +139,11 @@ export function formatJqFilter(filter: string): string {
     .replace(/\./g, ' .')
     .replace(/\?\./g, ' ?.')
     .replace(/\+\+/g, ' + ')
-    .replace(/>\=/g, ' >= ')
-    .replace(/\=\=/g, ' == ')
-    .replace(/\!\=/g, ' != ')
+    .replace(/>=/g, ' >= ')
+    .replace(/==/g, ' == ')
+    .replace(/!=/g, ' != ')
     .replace(/\|\|/g, ' || ')
-    .replace(/\&\&/g, ' && ')
+    .replace(/&&/g, ' && ')
     .replace(/\s+/g, ' ')
     .trim();
 }

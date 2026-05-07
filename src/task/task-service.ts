@@ -3,9 +3,9 @@
  * Provides typed wrappers around the `task` CLI.
  */
 
-import { type CommandResult } from '../yabai/yabai-service';
+import type { CommandResult } from '../yabai/yabai-service';
 
-export { type CommandResult };
+export type { CommandResult };
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -179,7 +179,7 @@ function formatTaskTable(tasks: Task[]): string {
   const rows = tasks
     .filter(t => t.status === 'pending' || t.status === 'waiting')
     .map(t => {
-      const age = t.entry ? Math.floor((Date.now() - new Date(t.entry).getTime()) / 86400000) + 'd' : '-';
+      const age = t.entry ? `${Math.floor((Date.now() - new Date(t.entry).getTime()) / 86400000)}d` : '-';
       const pri = t.priority || ' ';
       const proj = (t.project || '').padEnd(11).slice(0, 11);
       const tags = (t.tags?.join(',') || '').padEnd(17).slice(0, 17);
@@ -197,7 +197,9 @@ function formatProjectList(tasks: Task[]): string {
     const p = t.project || '(none)';
     counts[p] = (counts[p] ?? 0) + 1;
   }
-  const lines = Object.entries(counts).sort((a, b) => a[0].localeCompare(b[0])).map(([p, n]) => `${p.padEnd(20)} ${n}`);
+  const lines = Object.entries(counts)
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .map(([p, n]) => `${p.padEnd(20)} ${n}`);
   return ['Project              Count', '─'.repeat(30), ...lines].join('\n');
 }
 
@@ -214,14 +216,44 @@ export async function executeCommand(cmd: string): Promise<CommandResult> {
 
   if (args.includes('help') || args.includes('--help')) {
     return {
-      stdout: 'task <filter> <command> [<mods>]\n\nCommands: add, modify, done, delete, start, stop, annotate, duplicate, list, next, projects, tags, summary, export, import, sync, undo, calc, calendar, diagnostics\n\nSee "man task" for full documentation.',
+      stdout:
+        'task <filter> <command> [<mods>]\n\nCommands: add, modify, done, delete, start, stop, annotate, duplicate, list, next, projects, tags, summary, export, import, sync, undo, calc, calendar, diagnostics\n\nSee "man task" for full documentation.',
       exitCode: 0,
     };
   }
 
   // Determine subcommand — it's the last filter-free token before mods
   const WRITE_CMDS = ['add', 'modify', 'done', 'delete', 'start', 'stop', 'annotate', 'append', 'prepend', 'duplicate', 'denotate', 'purge', 'log', 'import'];
-  const READ_CMDS = ['list', 'next', 'ready', 'all', 'completed', 'projects', 'tags', 'summary', 'export', 'burndown', 'history', 'ghistory', 'calendar', 'info', 'information', 'overdue', 'active', 'blocked', 'blocking', 'stats', 'recurring', 'waiting', 'ids', 'uuids', 'reports', 'diagnostics', 'sync', 'undo'];
+  const READ_CMDS = [
+    'list',
+    'next',
+    'ready',
+    'all',
+    'completed',
+    'projects',
+    'tags',
+    'summary',
+    'export',
+    'burndown',
+    'history',
+    'ghistory',
+    'calendar',
+    'info',
+    'information',
+    'overdue',
+    'active',
+    'blocked',
+    'blocking',
+    'stats',
+    'recurring',
+    'waiting',
+    'ids',
+    'uuids',
+    'reports',
+    'diagnostics',
+    'sync',
+    'undo',
+  ];
 
   const subCmd = args.find(a => WRITE_CMDS.includes(a) || READ_CMDS.includes(a));
 
@@ -268,7 +300,9 @@ export async function executeCommand(cmd: string): Promise<CommandResult> {
           tagCounts[tag] = (tagCounts[tag] ?? 0) + 1;
         }
       }
-      const lines = Object.entries(tagCounts).sort().map(([tag, n]) => `${tag.padEnd(20)} ${n}`);
+      const lines = Object.entries(tagCounts)
+        .sort()
+        .map(([tag, n]) => `${tag.padEnd(20)} ${n}`);
       return { stdout: ['Tag                  Count', '─'.repeat(30), ...lines].join('\n'), exitCode: 0 };
     }
 
@@ -286,20 +320,24 @@ export async function executeCommand(cmd: string): Promise<CommandResult> {
       const ids = filterTokens.filter(t => /^\d+$/.test(t)).map(Number);
       const tasks = ids.length ? MOCK_TASKS.filter(t => ids.includes(t.id ?? -1)) : MOCK_TASKS.slice(0, 1);
       if (!tasks.length) return { stdout: 'No matching tasks.', exitCode: 0 };
-      const info = tasks.map(t => [
-        `Name           Value`,
-        `────────────── ─────────────────────────────────────`,
-        `ID             ${t.id}`,
-        `Description    ${t.description}`,
-        `Status         ${t.status}`,
-        `Priority       ${t.priority || 'none'}`,
-        `Project        ${t.project || 'none'}`,
-        `Tags           ${t.tags?.join(', ') || 'none'}`,
-        `Due            ${t.due || 'none'}`,
-        `Scheduled      ${t.scheduled || 'none'}`,
-        `Urgency        ${t.urgency ?? 0}`,
-        `UUID           ${t.uuid}`,
-      ].join('\n')).join('\n\n');
+      const info = tasks
+        .map(t =>
+          [
+            `Name           Value`,
+            `────────────── ─────────────────────────────────────`,
+            `ID             ${t.id}`,
+            `Description    ${t.description}`,
+            `Status         ${t.status}`,
+            `Priority       ${t.priority || 'none'}`,
+            `Project        ${t.project || 'none'}`,
+            `Tags           ${t.tags?.join(', ') || 'none'}`,
+            `Due            ${t.due || 'none'}`,
+            `Scheduled      ${t.scheduled || 'none'}`,
+            `Urgency        ${t.urgency ?? 0}`,
+            `UUID           ${t.uuid}`,
+          ].join('\n'),
+        )
+        .join('\n\n');
       return { stdout: info, exitCode: 0 };
     }
 
@@ -356,7 +394,10 @@ export async function executeCommand(cmd: string): Promise<CommandResult> {
 
     case 'log': {
       const modsIdx = args.indexOf('log') + 1;
-      const desc = args.slice(modsIdx).filter(t => !t.includes(':')).join(' ');
+      const desc = args
+        .slice(modsIdx)
+        .filter(t => !t.includes(':'))
+        .join(' ');
       return { stdout: `Logged completed task (mock): "${desc}"`, exitCode: 0 };
     }
 

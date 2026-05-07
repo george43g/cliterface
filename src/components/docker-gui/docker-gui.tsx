@@ -1,5 +1,5 @@
 import { Component, h, State } from '@stencil/core';
-import { dockerService, executeCommand, type CommandResult } from '../../docker/docker-service';
+import { type CommandResult, dockerService, executeCommand } from '../../docker/docker-service';
 
 const TABS = [
   { id: 'containers', label: '🐳 Containers' },
@@ -26,7 +26,7 @@ export class DockerGui {
 
   // ── Containers tab ─────────────────────────────────────────────────────────
   @State() showAllContainers = false;
-  @State() containerTarget = '';     // ID/name for targeted operations
+  @State() containerTarget = ''; // ID/name for targeted operations
   @State() logTail = '50';
   @State() logTimestamps = false;
   @State() execCmd = 'sh';
@@ -37,9 +37,9 @@ export class DockerGui {
 
   // ── Images tab ─────────────────────────────────────────────────────────────
   @State() showAllImages = false;
-  @State() imageRef = '';            // for pull / rmi / tag / push
-  @State() imageTarget = '';         // for push / tag source
-  @State() imageTagTarget = '';      // tag destination
+  @State() imageRef = ''; // for pull / rmi / tag / push
+  @State() imageTarget = ''; // for push / tag source
+  @State() imageTagTarget = ''; // tag destination
   @State() searchTerm = '';
   @State() saveImageRef = '';
   @State() saveOutputPath = '';
@@ -127,7 +127,10 @@ export class DockerGui {
     if (typeof navigator !== 'undefined' && navigator.clipboard?.writeText) {
       await navigator.clipboard.writeText(this.output);
       this.statusMessage = 'Copied!';
-      if (typeof window !== 'undefined') window.setTimeout(() => { this.statusMessage = 'Done'; }, 1500);
+      if (typeof window !== 'undefined')
+        window.setTimeout(() => {
+          this.statusMessage = 'Done';
+        }, 1500);
     }
   }
 
@@ -156,7 +159,10 @@ export class DockerGui {
   }
 
   private buildBuildPreview(): string {
-    const argFlags = this.buildArgs.filter(Boolean).map(a => `--build-arg ${a}`).join(' ');
+    const argFlags = this.buildArgs
+      .filter(Boolean)
+      .map(a => `--build-arg ${a}`)
+      .join(' ');
     const dfFlag = this.buildDockerfile ? `-f ${this.buildDockerfile}` : '';
     return `docker build ${dfFlag} ${argFlags} -t ${this.buildTag || '<tag>'} ${this.buildContext}`.replace(/\s+/g, ' ').trim();
   }
@@ -173,7 +179,10 @@ export class DockerGui {
             key={tab.id}
             type="button"
             class={`cli-tab${this.activeTab === tab.id ? ' cli-tab-active' : ''}`}
-            onClick={() => { this.activeTab = tab.id; this.clearOutput(); }}
+            onClick={() => {
+              this.activeTab = tab.id;
+              this.clearOutput();
+            }}
           >
             {tab.label}
           </button>
@@ -195,8 +204,12 @@ export class DockerGui {
             Status: <span class={statusClass}>{this.statusMessage}</span>
           </span>
           <div class="flex gap-2">
-            <button type="button" class="cli-btn cli-btn-sm" onClick={() => this.copyOutput()}>Copy</button>
-            <button type="button" class="cli-btn cli-btn-sm cli-btn-warning" onClick={() => this.clearOutput()}>Clear</button>
+            <button type="button" class="cli-btn cli-btn-sm" onClick={() => this.copyOutput()}>
+              Copy
+            </button>
+            <button type="button" class="cli-btn cli-btn-sm cli-btn-warning" onClick={() => this.clearOutput()}>
+              Clear
+            </button>
           </div>
         </div>
         <div class="cli-cmd-preview text-sm mb-2">{this.lastCommand}</div>
@@ -219,7 +232,9 @@ export class DockerGui {
             <input
               type="checkbox"
               checked={this.showAllContainers}
-              onChange={(e: Event) => { this.showAllContainers = (e.target as HTMLInputElement).checked; }}
+              onChange={(e: Event) => {
+                this.showAllContainers = (e.target as HTMLInputElement).checked;
+              }}
             />
             Show all (including stopped)
           </label>
@@ -240,43 +255,68 @@ export class DockerGui {
             class="cli-input w-full mb-3"
             placeholder="Container ID or name"
             value={this.containerTarget}
-            onInput={(e: Event) => { this.containerTarget = (e.target as HTMLInputElement).value; }}
+            onInput={(e: Event) => {
+              this.containerTarget = (e.target as HTMLInputElement).value;
+            }}
           />
           <div class="flex flex-wrap gap-2">
-            <button type="button" class="cli-btn cli-btn-sm cli-btn-success"
-              onClick={() => this.run(dockerService.containerStats(this.containerTarget), `docker stats --no-stream ${this.containerTarget}`.trim())}>
+            <button
+              type="button"
+              class="cli-btn cli-btn-sm cli-btn-success"
+              onClick={() => this.run(dockerService.containerStats(this.containerTarget), `docker stats --no-stream ${this.containerTarget}`.trim())}
+            >
               Stats
             </button>
-            <button type="button" class="cli-btn cli-btn-sm cli-btn-success"
-              onClick={() => this.run(dockerService.containerTop(this.containerTarget), `docker top ${this.containerTarget}`)}>
+            <button
+              type="button"
+              class="cli-btn cli-btn-sm cli-btn-success"
+              onClick={() => this.run(dockerService.containerTop(this.containerTarget), `docker top ${this.containerTarget}`)}
+            >
               Top
             </button>
-            <button type="button" class="cli-btn cli-btn-sm cli-btn-success"
-              onClick={() => this.run(dockerService.inspectObject(this.containerTarget), `docker inspect ${this.containerTarget}`)}>
+            <button
+              type="button"
+              class="cli-btn cli-btn-sm cli-btn-success"
+              onClick={() => this.run(dockerService.inspectObject(this.containerTarget), `docker inspect ${this.containerTarget}`)}
+            >
               Inspect
             </button>
-            <button type="button" class="cli-btn cli-btn-sm"
-              onClick={() => this.run(dockerService.startContainer(this.containerTarget), `docker start ${this.containerTarget}`)}>
+            <button type="button" class="cli-btn cli-btn-sm" onClick={() => this.run(dockerService.startContainer(this.containerTarget), `docker start ${this.containerTarget}`)}>
               Start
             </button>
-            <button type="button" class="cli-btn cli-btn-sm"
-              onClick={() => this.run(dockerService.restartContainer(this.containerTarget), `docker restart ${this.containerTarget}`)}>
+            <button
+              type="button"
+              class="cli-btn cli-btn-sm"
+              onClick={() => this.run(dockerService.restartContainer(this.containerTarget), `docker restart ${this.containerTarget}`)}
+            >
               Restart
             </button>
-            <button type="button" class="cli-btn cli-btn-sm cli-btn-warning"
-              onClick={() => this.run(dockerService.stopContainer(this.containerTarget), `docker stop ${this.containerTarget}`)}>
+            <button
+              type="button"
+              class="cli-btn cli-btn-sm cli-btn-warning"
+              onClick={() => this.run(dockerService.stopContainer(this.containerTarget), `docker stop ${this.containerTarget}`)}
+            >
               Stop
             </button>
-            <button type="button" class="cli-btn cli-btn-sm cli-btn-danger"
-              onClick={() => this.runDestructive(dockerService.killContainer(this.containerTarget), `docker kill ${this.containerTarget}`)}>
+            <button
+              type="button"
+              class="cli-btn cli-btn-sm cli-btn-danger"
+              onClick={() => this.runDestructive(dockerService.killContainer(this.containerTarget), `docker kill ${this.containerTarget}`)}
+            >
               Kill
             </button>
-            <button type="button" class="cli-btn cli-btn-sm cli-btn-danger"
-              onClick={() => this.runDestructive(dockerService.removeContainer(this.containerTarget, false), `docker rm ${this.containerTarget}`)}>
+            <button
+              type="button"
+              class="cli-btn cli-btn-sm cli-btn-danger"
+              onClick={() => this.runDestructive(dockerService.removeContainer(this.containerTarget, false), `docker rm ${this.containerTarget}`)}
+            >
               Remove
             </button>
-            <button type="button" class="cli-btn cli-btn-sm cli-btn-danger"
-              onClick={() => this.runDestructive(dockerService.removeContainer(this.containerTarget, true), `docker rm -f ${this.containerTarget}`)}>
+            <button
+              type="button"
+              class="cli-btn cli-btn-sm cli-btn-danger"
+              onClick={() => this.runDestructive(dockerService.removeContainer(this.containerTarget, true), `docker rm -f ${this.containerTarget}`)}
+            >
               Force Remove
             </button>
           </div>
@@ -292,14 +332,18 @@ export class DockerGui {
                 type="text"
                 class="cli-input w-24"
                 value={this.logTail}
-                onInput={(e: Event) => { this.logTail = (e.target as HTMLInputElement).value; }}
+                onInput={(e: Event) => {
+                  this.logTail = (e.target as HTMLInputElement).value;
+                }}
               />
             </label>
             <label class="flex items-center gap-2 text-sm text-text2 mt-4">
               <input
                 type="checkbox"
                 checked={this.logTimestamps}
-                onChange={(e: Event) => { this.logTimestamps = (e.target as HTMLInputElement).checked; }}
+                onChange={(e: Event) => {
+                  this.logTimestamps = (e.target as HTMLInputElement).checked;
+                }}
               />
               Timestamps
             </label>
@@ -307,10 +351,12 @@ export class DockerGui {
           <button
             type="button"
             class="cli-btn cli-btn-success"
-            onClick={() => this.run(
-              dockerService.containerLogs(this.containerTarget, this.logTail, this.logTimestamps),
-              `docker logs${this.logTail !== 'all' ? ` --tail ${this.logTail}` : ''}${this.logTimestamps ? ' --timestamps' : ''} ${this.containerTarget}`.trim()
-            )}
+            onClick={() =>
+              this.run(
+                dockerService.containerLogs(this.containerTarget, this.logTail, this.logTimestamps),
+                `docker logs${this.logTail !== 'all' ? ` --tail ${this.logTail}` : ''}${this.logTimestamps ? ' --timestamps' : ''} ${this.containerTarget}`.trim(),
+              )
+            }
           >
             Fetch Logs
           </button>
@@ -326,24 +372,30 @@ export class DockerGui {
               class="cli-input w-full font-mono"
               placeholder="sh"
               value={this.execCmd}
-              onInput={(e: Event) => { this.execCmd = (e.target as HTMLInputElement).value; }}
+              onInput={(e: Event) => {
+                this.execCmd = (e.target as HTMLInputElement).value;
+              }}
             />
           </label>
           <label class="flex items-center gap-2 text-sm text-text2 mb-3">
             <input
               type="checkbox"
               checked={this.execInteractive}
-              onChange={(e: Event) => { this.execInteractive = (e.target as HTMLInputElement).checked; }}
+              onChange={(e: Event) => {
+                this.execInteractive = (e.target as HTMLInputElement).checked;
+              }}
             />
             Interactive (-it)
           </label>
           <button
             type="button"
             class="cli-btn cli-btn-sm"
-            onClick={() => this.run(
-              dockerService.execContainer(this.containerTarget, this.execCmd, this.execInteractive),
-              `docker exec${this.execInteractive ? ' -it' : ''} ${this.containerTarget} ${this.execCmd}`.trim()
-            )}
+            onClick={() =>
+              this.run(
+                dockerService.execContainer(this.containerTarget, this.execCmd, this.execInteractive),
+                `docker exec${this.execInteractive ? ' -it' : ''} ${this.containerTarget} ${this.execCmd}`.trim(),
+              )
+            }
           >
             Execute
           </button>
@@ -357,7 +409,9 @@ export class DockerGui {
               Direction
               <select
                 class="cli-select"
-                onChange={(e: Event) => { this.cpDirection = (e.target as HTMLSelectElement).value as 'to' | 'from'; }}
+                onChange={(e: Event) => {
+                  this.cpDirection = (e.target as HTMLSelectElement).value as 'to' | 'from';
+                }}
               >
                 <option value="to">Local → Container</option>
                 <option value="from">Container → Local</option>
@@ -370,7 +424,9 @@ export class DockerGui {
                 class="cli-input w-full"
                 placeholder="/local/path"
                 value={this.cpLocalPath}
-                onInput={(e: Event) => { this.cpLocalPath = (e.target as HTMLInputElement).value; }}
+                onInput={(e: Event) => {
+                  this.cpLocalPath = (e.target as HTMLInputElement).value;
+                }}
               />
             </label>
             <label class="flex flex-col gap-1 text-sm text-text2 flex-1">
@@ -380,7 +436,9 @@ export class DockerGui {
                 class="cli-input w-full"
                 placeholder="/container/path"
                 value={this.cpRemotePath}
-                onInput={(e: Event) => { this.cpRemotePath = (e.target as HTMLInputElement).value; }}
+                onInput={(e: Event) => {
+                  this.cpRemotePath = (e.target as HTMLInputElement).value;
+                }}
               />
             </label>
             <button
@@ -390,12 +448,12 @@ export class DockerGui {
                 if (this.cpDirection === 'to') {
                   this.run(
                     dockerService.copyToContainer(this.cpLocalPath, this.containerTarget, this.cpRemotePath),
-                    `docker cp ${this.cpLocalPath} ${this.containerTarget}:${this.cpRemotePath}`
+                    `docker cp ${this.cpLocalPath} ${this.containerTarget}:${this.cpRemotePath}`,
                   );
                 } else {
                   this.run(
                     dockerService.copyFromContainer(this.containerTarget, this.cpRemotePath, this.cpLocalPath),
-                    `docker cp ${this.containerTarget}:${this.cpRemotePath} ${this.cpLocalPath}`
+                    `docker cp ${this.containerTarget}:${this.cpRemotePath} ${this.cpLocalPath}`,
                   );
                 }
               }}
@@ -422,7 +480,9 @@ export class DockerGui {
             <input
               type="checkbox"
               checked={this.showAllImages}
-              onChange={(e: Event) => { this.showAllImages = (e.target as HTMLInputElement).checked; }}
+              onChange={(e: Event) => {
+                this.showAllImages = (e.target as HTMLInputElement).checked;
+              }}
             />
             Show all (including intermediate)
           </label>
@@ -444,13 +504,11 @@ export class DockerGui {
               class="cli-input flex-1"
               placeholder="nginx"
               value={this.searchTerm}
-              onInput={(e: Event) => { this.searchTerm = (e.target as HTMLInputElement).value; }}
+              onInput={(e: Event) => {
+                this.searchTerm = (e.target as HTMLInputElement).value;
+              }}
             />
-            <button
-              type="button"
-              class="cli-btn cli-btn-success"
-              onClick={() => this.run(dockerService.searchImage(this.searchTerm), `docker search ${this.searchTerm}`)}
-            >
+            <button type="button" class="cli-btn cli-btn-success" onClick={() => this.run(dockerService.searchImage(this.searchTerm), `docker search ${this.searchTerm}`)}>
               Search
             </button>
           </div>
@@ -466,22 +524,16 @@ export class DockerGui {
               class="cli-input w-full font-mono"
               placeholder="nginx:latest"
               value={this.imageRef}
-              onInput={(e: Event) => { this.imageRef = (e.target as HTMLInputElement).value; }}
+              onInput={(e: Event) => {
+                this.imageRef = (e.target as HTMLInputElement).value;
+              }}
             />
           </label>
           <div class="flex gap-2">
-            <button
-              type="button"
-              class="cli-btn cli-btn-success"
-              onClick={() => this.run(dockerService.pullImage(this.imageRef), `docker pull ${this.imageRef}`)}
-            >
+            <button type="button" class="cli-btn cli-btn-success" onClick={() => this.run(dockerService.pullImage(this.imageRef), `docker pull ${this.imageRef}`)}>
               Pull
             </button>
-            <button
-              type="button"
-              class="cli-btn"
-              onClick={() => this.run(dockerService.pushImage(this.imageRef), `docker push ${this.imageRef}`)}
-            >
+            <button type="button" class="cli-btn" onClick={() => this.run(dockerService.pushImage(this.imageRef), `docker push ${this.imageRef}`)}>
               Push
             </button>
           </div>
@@ -497,7 +549,9 @@ export class DockerGui {
               class="cli-input w-full font-mono"
               placeholder="myimage:latest"
               value={this.imageTarget}
-              onInput={(e: Event) => { this.imageTarget = (e.target as HTMLInputElement).value; }}
+              onInput={(e: Event) => {
+                this.imageTarget = (e.target as HTMLInputElement).value;
+              }}
             />
           </label>
           <label class="flex flex-col gap-1 text-sm text-text2 mb-3">
@@ -507,7 +561,9 @@ export class DockerGui {
               class="cli-input w-full font-mono"
               placeholder="registry/myimage:v1.0"
               value={this.imageTagTarget}
-              onInput={(e: Event) => { this.imageTagTarget = (e.target as HTMLInputElement).value; }}
+              onInput={(e: Event) => {
+                this.imageTagTarget = (e.target as HTMLInputElement).value;
+              }}
             />
           </label>
           <button
@@ -529,7 +585,9 @@ export class DockerGui {
               class="cli-input w-full font-mono"
               placeholder="nginx:latest or abc123"
               value={this.imageRef}
-              onInput={(e: Event) => { this.imageRef = (e.target as HTMLInputElement).value; }}
+              onInput={(e: Event) => {
+                this.imageRef = (e.target as HTMLInputElement).value;
+              }}
             />
           </label>
           <div class="flex gap-2 flex-wrap">
@@ -567,7 +625,9 @@ export class DockerGui {
               class="cli-input w-full font-mono"
               placeholder="nginx:latest"
               value={this.saveImageRef}
-              onInput={(e: Event) => { this.saveImageRef = (e.target as HTMLInputElement).value; }}
+              onInput={(e: Event) => {
+                this.saveImageRef = (e.target as HTMLInputElement).value;
+              }}
             />
           </label>
           <label class="flex flex-col gap-1 text-sm text-text2 mb-3">
@@ -577,7 +637,9 @@ export class DockerGui {
               class="cli-input w-full font-mono"
               placeholder="/tmp/nginx.tar"
               value={this.saveOutputPath}
-              onInput={(e: Event) => { this.saveOutputPath = (e.target as HTMLInputElement).value; }}
+              onInput={(e: Event) => {
+                this.saveOutputPath = (e.target as HTMLInputElement).value;
+              }}
             />
           </label>
           <div class="flex gap-2 mb-4">
@@ -597,14 +659,12 @@ export class DockerGui {
               class="cli-input w-full font-mono"
               placeholder="/tmp/nginx.tar"
               value={this.loadInputPath}
-              onInput={(e: Event) => { this.loadInputPath = (e.target as HTMLInputElement).value; }}
+              onInput={(e: Event) => {
+                this.loadInputPath = (e.target as HTMLInputElement).value;
+              }}
             />
           </label>
-          <button
-            type="button"
-            class="cli-btn cli-btn-sm"
-            onClick={() => this.run(dockerService.loadImage(this.loadInputPath), `docker load -i ${this.loadInputPath}`)}
-          >
+          <button type="button" class="cli-btn cli-btn-sm" onClick={() => this.run(dockerService.loadImage(this.loadInputPath), `docker load -i ${this.loadInputPath}`)}>
             Load
           </button>
         </div>
@@ -621,11 +681,7 @@ export class DockerGui {
       <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
         <div class="cli-card">
           <h3 class="text-text2 text-base mb-3">List Volumes</h3>
-          <button
-            type="button"
-            class="cli-btn cli-btn-success"
-            onClick={() => this.run(dockerService.listVolumes(), 'docker volume ls')}
-          >
+          <button type="button" class="cli-btn cli-btn-success" onClick={() => this.run(dockerService.listVolumes(), 'docker volume ls')}>
             docker volume ls
           </button>
         </div>
@@ -639,14 +695,12 @@ export class DockerGui {
               class="cli-input w-full"
               placeholder="my-volume"
               value={this.newVolumeName}
-              onInput={(e: Event) => { this.newVolumeName = (e.target as HTMLInputElement).value; }}
+              onInput={(e: Event) => {
+                this.newVolumeName = (e.target as HTMLInputElement).value;
+              }}
             />
           </label>
-          <button
-            type="button"
-            class="cli-btn cli-btn-sm"
-            onClick={() => this.run(dockerService.createVolume(this.newVolumeName), `docker volume create ${this.newVolumeName}`)}
-          >
+          <button type="button" class="cli-btn cli-btn-sm" onClick={() => this.run(dockerService.createVolume(this.newVolumeName), `docker volume create ${this.newVolumeName}`)}>
             Create
           </button>
         </div>
@@ -660,7 +714,9 @@ export class DockerGui {
               class="cli-input w-full"
               placeholder="my-volume"
               value={this.volumeTarget}
-              onInput={(e: Event) => { this.volumeTarget = (e.target as HTMLInputElement).value; }}
+              onInput={(e: Event) => {
+                this.volumeTarget = (e.target as HTMLInputElement).value;
+              }}
             />
           </label>
           <div class="flex gap-2 flex-wrap">
@@ -687,11 +743,7 @@ export class DockerGui {
             <span class="cli-badge-sip">Destructive</span>
           </h3>
           <p class="text-text2 text-sm mb-3">Removes all local volumes not used by at least one container.</p>
-          <button
-            type="button"
-            class="cli-btn cli-btn-danger"
-            onClick={() => this.runDestructive(dockerService.pruneVolumes(), 'docker volume prune -f')}
-          >
+          <button type="button" class="cli-btn cli-btn-danger" onClick={() => this.runDestructive(dockerService.pruneVolumes(), 'docker volume prune -f')}>
             Prune Volumes
           </button>
         </div>
@@ -708,11 +760,7 @@ export class DockerGui {
       <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
         <div class="cli-card">
           <h3 class="text-text2 text-base mb-3">List Networks</h3>
-          <button
-            type="button"
-            class="cli-btn cli-btn-success"
-            onClick={() => this.run(dockerService.listNetworks(), 'docker network ls')}
-          >
+          <button type="button" class="cli-btn cli-btn-success" onClick={() => this.run(dockerService.listNetworks(), 'docker network ls')}>
             docker network ls
           </button>
         </div>
@@ -726,14 +774,18 @@ export class DockerGui {
               class="cli-input w-full"
               placeholder="my-network"
               value={this.newNetworkName}
-              onInput={(e: Event) => { this.newNetworkName = (e.target as HTMLInputElement).value; }}
+              onInput={(e: Event) => {
+                this.newNetworkName = (e.target as HTMLInputElement).value;
+              }}
             />
           </label>
           <label class="flex flex-col gap-1 text-sm text-text2 mb-3">
             Driver
             <select
               class="cli-select"
-              onChange={(e: Event) => { this.newNetworkDriver = (e.target as HTMLSelectElement).value; }}
+              onChange={(e: Event) => {
+                this.newNetworkDriver = (e.target as HTMLSelectElement).value;
+              }}
             >
               <option value="bridge">bridge</option>
               <option value="host">host</option>
@@ -745,7 +797,9 @@ export class DockerGui {
           <button
             type="button"
             class="cli-btn cli-btn-sm"
-            onClick={() => this.run(dockerService.createNetwork(this.newNetworkName, this.newNetworkDriver), `docker network create --driver ${this.newNetworkDriver} ${this.newNetworkName}`)}
+            onClick={() =>
+              this.run(dockerService.createNetwork(this.newNetworkName, this.newNetworkDriver), `docker network create --driver ${this.newNetworkDriver} ${this.newNetworkName}`)
+            }
           >
             Create
           </button>
@@ -760,7 +814,9 @@ export class DockerGui {
               class="cli-input w-full"
               placeholder="my-network"
               value={this.networkTarget}
-              onInput={(e: Event) => { this.networkTarget = (e.target as HTMLInputElement).value; }}
+              onInput={(e: Event) => {
+                this.networkTarget = (e.target as HTMLInputElement).value;
+              }}
             />
           </label>
           <div class="flex gap-2 flex-wrap">
@@ -787,11 +843,7 @@ export class DockerGui {
             <span class="cli-badge-sip">Destructive</span>
           </h3>
           <p class="text-text2 text-sm mb-3">Removes all networks not used by at least one container.</p>
-          <button
-            type="button"
-            class="cli-btn cli-btn-danger"
-            onClick={() => this.runDestructive(dockerService.pruneNetworks(), 'docker network prune -f')}
-          >
+          <button type="button" class="cli-btn cli-btn-danger" onClick={() => this.runDestructive(dockerService.pruneNetworks(), 'docker network prune -f')}>
             Prune Networks
           </button>
         </div>
@@ -817,7 +869,9 @@ export class DockerGui {
                 class="cli-input w-full font-mono"
                 placeholder="."
                 value={this.buildContext}
-                onInput={(e: Event) => { this.buildContext = (e.target as HTMLInputElement).value; }}
+                onInput={(e: Event) => {
+                  this.buildContext = (e.target as HTMLInputElement).value;
+                }}
               />
             </label>
             <label class="flex flex-col gap-1 text-sm text-text2">
@@ -827,7 +881,9 @@ export class DockerGui {
                 class="cli-input w-full font-mono"
                 placeholder="my-image:latest"
                 value={this.buildTag}
-                onInput={(e: Event) => { this.buildTag = (e.target as HTMLInputElement).value; }}
+                onInput={(e: Event) => {
+                  this.buildTag = (e.target as HTMLInputElement).value;
+                }}
               />
             </label>
             <label class="flex flex-col gap-1 text-sm text-text2">
@@ -837,7 +893,9 @@ export class DockerGui {
                 class="cli-input w-full font-mono"
                 placeholder="Dockerfile"
                 value={this.buildDockerfile}
-                onInput={(e: Event) => { this.buildDockerfile = (e.target as HTMLInputElement).value; }}
+                onInput={(e: Event) => {
+                  this.buildDockerfile = (e.target as HTMLInputElement).value;
+                }}
               />
             </label>
           </div>
@@ -849,8 +907,12 @@ export class DockerGui {
               <button
                 type="button"
                 class="remove-btn"
-                onClick={() => { this.buildArgs = this.buildArgs.filter((_, idx) => idx !== i); }}
-              >×</button>
+                onClick={() => {
+                  this.buildArgs = this.buildArgs.filter((_, idx) => idx !== i);
+                }}
+              >
+                ×
+              </button>
             </div>
           ))}
           <div class="flex gap-2 mb-4">
@@ -859,7 +921,9 @@ export class DockerGui {
               class="cli-input flex-1 font-mono"
               placeholder="NODE_ENV=production"
               value={this.buildArgInput}
-              onInput={(e: Event) => { this.buildArgInput = (e.target as HTMLInputElement).value; }}
+              onInput={(e: Event) => {
+                this.buildArgInput = (e.target as HTMLInputElement).value;
+              }}
             />
             <button
               type="button"
@@ -879,10 +943,7 @@ export class DockerGui {
           <button
             type="button"
             class="cli-btn cli-btn-success"
-            onClick={() => this.run(
-              dockerService.buildImage(this.buildContext, this.buildTag, this.buildDockerfile, this.buildArgs),
-              preview
-            )}
+            onClick={() => this.run(dockerService.buildImage(this.buildContext, this.buildTag, this.buildDockerfile, this.buildArgs), preview)}
           >
             Build Image
           </button>
@@ -908,7 +969,9 @@ export class DockerGui {
               class="cli-input w-full font-mono"
               placeholder="nginx:latest"
               value={this.runImage}
-              onInput={(e: Event) => { this.runImage = (e.target as HTMLInputElement).value; }}
+              onInput={(e: Event) => {
+                this.runImage = (e.target as HTMLInputElement).value;
+              }}
             />
           </label>
           <label class="flex flex-col gap-1 text-sm text-text2 mb-2">
@@ -918,7 +981,9 @@ export class DockerGui {
               class="cli-input w-full"
               placeholder="my-container"
               value={this.runName}
-              onInput={(e: Event) => { this.runName = (e.target as HTMLInputElement).value; }}
+              onInput={(e: Event) => {
+                this.runName = (e.target as HTMLInputElement).value;
+              }}
             />
           </label>
           <label class="flex flex-col gap-1 text-sm text-text2 mb-2">
@@ -928,7 +993,9 @@ export class DockerGui {
               class="cli-input w-full"
               placeholder="bridge"
               value={this.runNetwork}
-              onInput={(e: Event) => { this.runNetwork = (e.target as HTMLInputElement).value; }}
+              onInput={(e: Event) => {
+                this.runNetwork = (e.target as HTMLInputElement).value;
+              }}
             />
           </label>
           <label class="flex flex-col gap-1 text-sm text-text2 mb-2">
@@ -938,7 +1005,9 @@ export class DockerGui {
               class="cli-input w-full font-mono"
               placeholder="/bin/sh"
               value={this.runEntrypoint}
-              onInput={(e: Event) => { this.runEntrypoint = (e.target as HTMLInputElement).value; }}
+              onInput={(e: Event) => {
+                this.runEntrypoint = (e.target as HTMLInputElement).value;
+              }}
             />
           </label>
           <label class="flex flex-col gap-1 text-sm text-text2 mb-3">
@@ -948,18 +1017,30 @@ export class DockerGui {
               class="cli-input w-full font-mono"
               placeholder="echo hello"
               value={this.runCommand}
-              onInput={(e: Event) => { this.runCommand = (e.target as HTMLInputElement).value; }}
+              onInput={(e: Event) => {
+                this.runCommand = (e.target as HTMLInputElement).value;
+              }}
             />
           </label>
           <div class="flex gap-4">
             <label class="flex items-center gap-2 text-sm text-text2">
-              <input type="checkbox" checked={this.runDetach}
-                onChange={(e: Event) => { this.runDetach = (e.target as HTMLInputElement).checked; }} />
+              <input
+                type="checkbox"
+                checked={this.runDetach}
+                onChange={(e: Event) => {
+                  this.runDetach = (e.target as HTMLInputElement).checked;
+                }}
+              />
               Detached (-d)
             </label>
             <label class="flex items-center gap-2 text-sm text-text2">
-              <input type="checkbox" checked={this.runRm}
-                onChange={(e: Event) => { this.runRm = (e.target as HTMLInputElement).checked; }} />
+              <input
+                type="checkbox"
+                checked={this.runRm}
+                onChange={(e: Event) => {
+                  this.runRm = (e.target as HTMLInputElement).checked;
+                }}
+              />
               Auto-remove (--rm)
             </label>
           </div>
@@ -970,8 +1051,15 @@ export class DockerGui {
           {this.runPorts.map((p, i) => (
             <div key={i} class="port-row">
               <span class="font-mono text-sm flex-1 bg-bg3 px-2 py-1 rounded">{p}</span>
-              <button type="button" class="remove-btn"
-                onClick={() => { this.runPorts = this.runPorts.filter((_, idx) => idx !== i); }}>×</button>
+              <button
+                type="button"
+                class="remove-btn"
+                onClick={() => {
+                  this.runPorts = this.runPorts.filter((_, idx) => idx !== i);
+                }}
+              >
+                ×
+              </button>
             </div>
           ))}
           <div class="flex gap-2 mb-4">
@@ -980,23 +1068,37 @@ export class DockerGui {
               class="cli-input flex-1 font-mono"
               placeholder="8080:80"
               value={this.runPortInput}
-              onInput={(e: Event) => { this.runPortInput = (e.target as HTMLInputElement).value; }}
+              onInput={(e: Event) => {
+                this.runPortInput = (e.target as HTMLInputElement).value;
+              }}
             />
-            <button type="button" class="cli-btn cli-btn-sm cli-btn-success"
+            <button
+              type="button"
+              class="cli-btn cli-btn-sm cli-btn-success"
               onClick={() => {
                 if (this.runPortInput.trim()) {
                   this.runPorts = [...this.runPorts, this.runPortInput.trim()];
                   this.runPortInput = '';
                 }
-              }}>Add Port</button>
+              }}
+            >
+              Add Port
+            </button>
           </div>
 
           <h3 class="text-text2 text-base mb-3">Volume Mounts (-v)</h3>
           {this.runVolumes.map((v, i) => (
             <div key={i} class="vol-row">
               <span class="font-mono text-sm flex-1 bg-bg3 px-2 py-1 rounded">{v}</span>
-              <button type="button" class="remove-btn"
-                onClick={() => { this.runVolumes = this.runVolumes.filter((_, idx) => idx !== i); }}>×</button>
+              <button
+                type="button"
+                class="remove-btn"
+                onClick={() => {
+                  this.runVolumes = this.runVolumes.filter((_, idx) => idx !== i);
+                }}
+              >
+                ×
+              </button>
             </div>
           ))}
           <div class="flex gap-2 mb-4">
@@ -1005,23 +1107,37 @@ export class DockerGui {
               class="cli-input flex-1 font-mono"
               placeholder="/host/path:/container/path"
               value={this.runVolumeInput}
-              onInput={(e: Event) => { this.runVolumeInput = (e.target as HTMLInputElement).value; }}
+              onInput={(e: Event) => {
+                this.runVolumeInput = (e.target as HTMLInputElement).value;
+              }}
             />
-            <button type="button" class="cli-btn cli-btn-sm cli-btn-success"
+            <button
+              type="button"
+              class="cli-btn cli-btn-sm cli-btn-success"
               onClick={() => {
                 if (this.runVolumeInput.trim()) {
                   this.runVolumes = [...this.runVolumes, this.runVolumeInput.trim()];
                   this.runVolumeInput = '';
                 }
-              }}>Add Volume</button>
+              }}
+            >
+              Add Volume
+            </button>
           </div>
 
           <h3 class="text-text2 text-base mb-3">Environment Variables (-e)</h3>
           {this.runEnvs.map((e, i) => (
             <div key={i} class="env-row">
               <span class="font-mono text-sm flex-1 bg-bg3 px-2 py-1 rounded">{e}</span>
-              <button type="button" class="remove-btn"
-                onClick={() => { this.runEnvs = this.runEnvs.filter((_, idx) => idx !== i); }}>×</button>
+              <button
+                type="button"
+                class="remove-btn"
+                onClick={() => {
+                  this.runEnvs = this.runEnvs.filter((_, idx) => idx !== i);
+                }}
+              >
+                ×
+              </button>
             </div>
           ))}
           <div class="flex gap-2">
@@ -1030,15 +1146,22 @@ export class DockerGui {
               class="cli-input flex-1 font-mono"
               placeholder="MY_VAR=value"
               value={this.runEnvInput}
-              onInput={(e: Event) => { this.runEnvInput = (e.target as HTMLInputElement).value; }}
+              onInput={(e: Event) => {
+                this.runEnvInput = (e.target as HTMLInputElement).value;
+              }}
             />
-            <button type="button" class="cli-btn cli-btn-sm cli-btn-success"
+            <button
+              type="button"
+              class="cli-btn cli-btn-sm cli-btn-success"
               onClick={() => {
                 if (this.runEnvInput.trim()) {
                   this.runEnvs = [...this.runEnvs, this.runEnvInput.trim()];
                   this.runEnvInput = '';
                 }
-              }}>Add Env</button>
+              }}
+            >
+              Add Env
+            </button>
           </div>
         </div>
 
@@ -1048,20 +1171,22 @@ export class DockerGui {
           <button
             type="button"
             class="cli-btn cli-btn-success"
-            onClick={() => this.run(
-              dockerService.runContainer(this.runImage, {
-                name: this.runName,
-                ports: this.runPorts,
-                volumes: this.runVolumes,
-                envs: this.runEnvs,
-                detach: this.runDetach,
-                rm: this.runRm,
-                network: this.runNetwork,
-                entrypoint: this.runEntrypoint,
-                command: this.runCommand,
-              }),
-              preview
-            )}
+            onClick={() =>
+              this.run(
+                dockerService.runContainer(this.runImage, {
+                  name: this.runName,
+                  ports: this.runPorts,
+                  volumes: this.runVolumes,
+                  envs: this.runEnvs,
+                  detach: this.runDetach,
+                  rm: this.runRm,
+                  network: this.runNetwork,
+                  entrypoint: this.runEntrypoint,
+                  command: this.runCommand,
+                }),
+                preview,
+              )
+            }
           >
             Run Container
           </button>
@@ -1081,32 +1206,16 @@ export class DockerGui {
         <div class="cli-card">
           <h3 class="text-text2 text-base mb-3">System Info</h3>
           <div class="flex flex-wrap gap-2">
-            <button
-              type="button"
-              class="cli-btn cli-btn-success"
-              onClick={() => this.run(dockerService.systemInfo(), 'docker system info')}
-            >
+            <button type="button" class="cli-btn cli-btn-success" onClick={() => this.run(dockerService.systemInfo(), 'docker system info')}>
               system info
             </button>
-            <button
-              type="button"
-              class="cli-btn cli-btn-success"
-              onClick={() => this.run(dockerService.systemDf(), 'docker system df')}
-            >
+            <button type="button" class="cli-btn cli-btn-success" onClick={() => this.run(dockerService.systemDf(), 'docker system df')}>
               system df
             </button>
-            <button
-              type="button"
-              class="cli-btn cli-btn-success"
-              onClick={() => this.run(dockerService.version(), 'docker version')}
-            >
+            <button type="button" class="cli-btn cli-btn-success" onClick={() => this.run(dockerService.version(), 'docker version')}>
               version
             </button>
-            <button
-              type="button"
-              class="cli-btn cli-btn-sm cli-btn-success"
-              onClick={() => this.run(dockerService.containerStats(), 'docker stats --no-stream')}
-            >
+            <button type="button" class="cli-btn cli-btn-sm cli-btn-success" onClick={() => this.run(dockerService.containerStats(), 'docker stats --no-stream')}>
               All container stats
             </button>
           </div>
@@ -1120,25 +1229,35 @@ export class DockerGui {
           </h3>
           <p class="text-text2 text-sm mb-3">Remove stopped containers, dangling images, unused networks, and optionally all unused data.</p>
           <label class="flex items-center gap-2 text-sm text-text2 mb-2">
-            <input type="checkbox" checked={this.pruneAll}
-              onChange={(e: Event) => { this.pruneAll = (e.target as HTMLInputElement).checked; }} />
+            <input
+              type="checkbox"
+              checked={this.pruneAll}
+              onChange={(e: Event) => {
+                this.pruneAll = (e.target as HTMLInputElement).checked;
+              }}
+            />
             Remove all unused images (not just dangling) — (-a)
           </label>
           <label class="flex items-center gap-2 text-sm text-text2 mb-3">
-            <input type="checkbox" checked={this.pruneVolumes}
-              onChange={(e: Event) => { this.pruneVolumes = (e.target as HTMLInputElement).checked; }} />
+            <input
+              type="checkbox"
+              checked={this.pruneVolumes}
+              onChange={(e: Event) => {
+                this.pruneVolumes = (e.target as HTMLInputElement).checked;
+              }}
+            />
             Also remove unused volumes (--volumes)
           </label>
-          <div class="cli-cmd-preview mb-3">
-            {`docker system prune -f${this.pruneAll ? ' -a' : ''}${this.pruneVolumes ? ' --volumes' : ''}`}
-          </div>
+          <div class="cli-cmd-preview mb-3">{`docker system prune -f${this.pruneAll ? ' -a' : ''}${this.pruneVolumes ? ' --volumes' : ''}`}</div>
           <button
             type="button"
             class="cli-btn cli-btn-danger"
-            onClick={() => this.runDestructive(
-              dockerService.systemPrune(this.pruneAll, this.pruneVolumes),
-              `docker system prune -f${this.pruneAll ? ' -a' : ''}${this.pruneVolumes ? ' --volumes' : ''}`
-            )}
+            onClick={() =>
+              this.runDestructive(
+                dockerService.systemPrune(this.pruneAll, this.pruneVolumes),
+                `docker system prune -f${this.pruneAll ? ' -a' : ''}${this.pruneVolumes ? ' --volumes' : ''}`,
+              )
+            }
           >
             System Prune
           </button>
@@ -1154,7 +1273,9 @@ export class DockerGui {
               class="cli-input w-full"
               placeholder="ghcr.io"
               value={this.loginServer}
-              onInput={(e: Event) => { this.loginServer = (e.target as HTMLInputElement).value; }}
+              onInput={(e: Event) => {
+                this.loginServer = (e.target as HTMLInputElement).value;
+              }}
             />
           </label>
           <label class="flex flex-col gap-1 text-sm text-text2 mb-2">
@@ -1164,7 +1285,9 @@ export class DockerGui {
               class="cli-input w-full"
               placeholder="username"
               value={this.loginUser}
-              onInput={(e: Event) => { this.loginUser = (e.target as HTMLInputElement).value; }}
+              onInput={(e: Event) => {
+                this.loginUser = (e.target as HTMLInputElement).value;
+              }}
             />
           </label>
           <label class="flex flex-col gap-1 text-sm text-text2 mb-3">
@@ -1174,16 +1297,20 @@ export class DockerGui {
               class="cli-input w-full"
               placeholder="••••••••"
               value={this.loginPassword}
-              onInput={(e: Event) => { this.loginPassword = (e.target as HTMLInputElement).value; }}
+              onInput={(e: Event) => {
+                this.loginPassword = (e.target as HTMLInputElement).value;
+              }}
             />
           </label>
           <button
             type="button"
             class="cli-btn cli-btn-sm"
-            onClick={() => this.run(
-              dockerService.login(this.loginServer, this.loginUser, this.loginPassword),
-              `docker login${this.loginServer ? ` ${this.loginServer}` : ''} -u ${this.loginUser} -p ***`
-            )}
+            onClick={() =>
+              this.run(
+                dockerService.login(this.loginServer, this.loginUser, this.loginPassword),
+                `docker login${this.loginServer ? ` ${this.loginServer}` : ''} -u ${this.loginUser} -p ***`,
+              )
+            }
           >
             Login
           </button>
@@ -1198,16 +1325,15 @@ export class DockerGui {
               class="cli-input w-full"
               placeholder="ghcr.io"
               value={this.logoutServer}
-              onInput={(e: Event) => { this.logoutServer = (e.target as HTMLInputElement).value; }}
+              onInput={(e: Event) => {
+                this.logoutServer = (e.target as HTMLInputElement).value;
+              }}
             />
           </label>
           <button
             type="button"
             class="cli-btn cli-btn-sm cli-btn-warning"
-            onClick={() => this.run(
-              dockerService.logout(this.logoutServer),
-              `docker logout${this.logoutServer ? ` ${this.logoutServer}` : ''}`
-            )}
+            onClick={() => this.run(dockerService.logout(this.logoutServer), `docker logout${this.logoutServer ? ` ${this.logoutServer}` : ''}`)}
           >
             Logout
           </button>
@@ -1223,7 +1349,7 @@ export class DockerGui {
               class="cli-input flex-1 font-mono"
               placeholder="docker ps -a --format json"
               onInput={() => {}}
-              ref={(el) => {
+              ref={el => {
                 if (el) (el as HTMLInputElement).dataset.rawCmd = '';
               }}
               onKeyDown={(e: KeyboardEvent) => {

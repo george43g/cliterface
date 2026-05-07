@@ -1,8 +1,8 @@
 import { Component, Event, type EventEmitter, h, Prop, State } from '@stencil/core';
-import { awkService, type CommandResult } from '../../awk/awk-service';
-import { awkPatternPresets, awkActionPresets, awkFieldSeparators, awkExamples, buildAwkCommand } from '../../awk/awk-command-builders';
+import { awkActionPresets, awkExamples, awkFieldSeparators, awkPatternPresets, buildAwkCommand } from '../../awk/awk-command-builders';
 import { getAwkManPage } from '../../awk/awk-documentation';
-import { parseCommandIntoSegments, type CommandSegment } from '../../utils/command-builder';
+import { awkService, type CommandResult } from '../../awk/awk-service';
+import { type CommandSegment, parseCommandIntoSegments } from '../../utils/command-builder';
 
 const TAB_DEFINITIONS = [
   { id: 'builder', label: 'Script Builder' },
@@ -342,7 +342,7 @@ export class AwkGui {
               <input
                 type="text"
                 class="cli-input w-full font-mono"
-                placeholder='print $1, $2'
+                placeholder="print $1, $2"
                 value={this.actionInput}
                 onInput={(e: Event) => {
                   this.actionInput = (e.target as HTMLInputElement).value;
@@ -394,8 +394,7 @@ export class AwkGui {
 
           <div class="mt-4">
             <h4 class="text-sm text-text2 mb-2">
-              Status:{' '}
-              <span class={this.status === 'error' ? 'text-danger' : this.status === 'success' ? 'text-success' : ''}>{this.statusMessage}</span>
+              Status: <span class={this.status === 'error' ? 'text-danger' : this.status === 'success' ? 'text-success' : ''}>{this.statusMessage}</span>
             </h4>
           </div>
 
@@ -437,7 +436,9 @@ export class AwkGui {
             <div class="flex flex-wrap gap-2">
               {Object.entries(this.variables).map(([name, value]) => (
                 <span key={name} class="inline-flex items-center gap-2 px-2 py-1 bg-bg3 rounded text-sm">
-                  <code>-v {name}={value}</code>
+                  <code>
+                    -v {name}={value}
+                  </code>
                   <button class="text-danger hover:text-text" onClick={() => this.removeVariable(name)}>
                     ×
                   </button>
@@ -518,11 +519,7 @@ export class AwkGui {
       <div class="grid grid-cols-1 gap-5">
         <div class="cli-card">
           <h3 class="text-text2 text-base mb-3">Text Input</h3>
-          <textarea
-            class="cli-input w-full font-mono h-64"
-            value={this.textInput}
-            onInput={(e: Event) => (this.textInput = (e.target as HTMLTextAreaElement).value)}
-          />
+          <textarea class="cli-input w-full font-mono h-64" value={this.textInput} onInput={(e: Event) => (this.textInput = (e.target as HTMLTextAreaElement).value)} />
           <div class="flex flex-wrap gap-2 mt-3">
             <button
               type="button"
