@@ -214,6 +214,8 @@ export namespace Components {
     }
     interface SedGui {
     }
+    interface TmuxGui {
+    }
     interface YabaiGui {
         /**
           * @default 'v7.1.17'
@@ -473,6 +475,12 @@ declare global {
         prototype: HTMLSedGuiElement;
         new (): HTMLSedGuiElement;
     };
+    interface HTMLTmuxGuiElement extends Components.TmuxGui, HTMLStencilElement {
+    }
+    var HTMLTmuxGuiElement: {
+        prototype: HTMLTmuxGuiElement;
+        new (): HTMLTmuxGuiElement;
+    };
     interface HTMLYabaiGuiElementEventMap {
         "commandExecuted": CommandResult3;
     }
@@ -527,6 +535,7 @@ declare global {
         "jq-gui": HTMLJqGuiElement;
         "my-component": HTMLMyComponentElement;
         "sed-gui": HTMLSedGuiElement;
+        "tmux-gui": HTMLTmuxGuiElement;
         "yabai-gui": HTMLYabaiGuiElement;
         "yabai-query-panel": HTMLYabaiQueryPanelElement;
     }
@@ -733,6 +742,8 @@ declare namespace LocalJSX {
     interface SedGui {
         "onCommandExecuted"?: (event: SedGuiCustomEvent<CommandResult2>) => void;
     }
+    interface TmuxGui {
+    }
     interface YabaiGui {
         "onCommandExecuted"?: (event: YabaiGuiCustomEvent<CommandResult3>) => void;
         /**
@@ -836,6 +847,7 @@ declare namespace LocalJSX {
         "jq-gui": Omit<JqGui, keyof JqGuiAttributes> & { [K in keyof JqGui & keyof JqGuiAttributes]?: JqGui[K] } & { [K in keyof JqGui & keyof JqGuiAttributes as `attr:${K}`]?: JqGuiAttributes[K] } & { [K in keyof JqGui & keyof JqGuiAttributes as `prop:${K}`]?: JqGui[K] };
         "my-component": Omit<MyComponent, keyof MyComponentAttributes> & { [K in keyof MyComponent & keyof MyComponentAttributes]?: MyComponent[K] } & { [K in keyof MyComponent & keyof MyComponentAttributes as `attr:${K}`]?: MyComponentAttributes[K] } & { [K in keyof MyComponent & keyof MyComponentAttributes as `prop:${K}`]?: MyComponent[K] };
         "sed-gui": SedGui;
+        "tmux-gui": TmuxGui;
         "yabai-gui": Omit<YabaiGui, keyof YabaiGuiAttributes> & { [K in keyof YabaiGui & keyof YabaiGuiAttributes]?: YabaiGui[K] } & { [K in keyof YabaiGui & keyof YabaiGuiAttributes as `attr:${K}`]?: YabaiGuiAttributes[K] } & { [K in keyof YabaiGui & keyof YabaiGuiAttributes as `prop:${K}`]?: YabaiGui[K] };
         "yabai-query-panel": YabaiQueryPanel;
     }
@@ -860,6 +872,7 @@ declare module "@stencil/core" {
             "jq-gui": LocalJSX.IntrinsicElements["jq-gui"] & JSXBase.HTMLAttributes<HTMLJqGuiElement>;
             "my-component": LocalJSX.IntrinsicElements["my-component"] & JSXBase.HTMLAttributes<HTMLMyComponentElement>;
             "sed-gui": LocalJSX.IntrinsicElements["sed-gui"] & JSXBase.HTMLAttributes<HTMLSedGuiElement>;
+            "tmux-gui": LocalJSX.IntrinsicElements["tmux-gui"] & JSXBase.HTMLAttributes<HTMLTmuxGuiElement>;
             "yabai-gui": LocalJSX.IntrinsicElements["yabai-gui"] & JSXBase.HTMLAttributes<HTMLYabaiGuiElement>;
             /**
              * Yabai Query Panel - Uses UI component library
