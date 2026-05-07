@@ -1,6 +1,6 @@
-import { executeCommand } from '../yabai/yabai-service';
+import { executeCommand } from '../utils/execute-command';
 
-export type { CommandResult } from '../yabai/yabai-service';
+export type { CommandResult } from '../utils/execute-command';
 export { executeCommand };
 
 /**

@@ -1,10 +1,7 @@
 import { z } from 'zod';
 
-export interface CommandResult {
-  stdout: string;
-  stderr?: string;
-  exitCode: number;
-}
+export { type CommandResult, executeCommand } from '../utils/execute-command';
+import { type CommandResult, executeCommand } from '../utils/execute-command';
 
 // ── Zod validators ──────────────────────────────────────────────────────────
 
@@ -31,17 +28,6 @@ export const RegionSchema = z.enum([
 export type Region = z.infer<typeof RegionSchema>;
 
 export const REGIONS: Region[] = RegionSchema.options;
-
-// ── Core executor (single integration point) ───────────────────────────────
-
-/**
- * Single integration point.
- * Replace this body with: Tauri invoke, Electron IPC, WKWebView handler, etc.
- */
-export async function executeCommand(cmd: string): Promise<CommandResult> {
-  console.log('[supabase executeCommand]', cmd);
-  return { stdout: `[mock] ${cmd}`, exitCode: 0 };
-}
 
 // ── Auth ───────────────────────────────────────────────────────────────────
 

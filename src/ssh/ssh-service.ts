@@ -4,24 +4,8 @@
  * key management (ssh-keygen), and agent operations (ssh-add).
  */
 
-export interface CommandResult {
-  stdout: string;
-  stderr?: string;
-  exitCode: number;
-}
-
-/**
- * Single integration point — swap the body for your native bridge.
- *
- * Examples:
- *   Tauri:    return await invoke('execute', { command: cmd });
- *   Electron: return await ipcRenderer.invoke('exec', cmd);
- *   WKWebView: return await window.webkit.messageHandlers.exec.postMessage(cmd);
- */
-export async function executeCommand(cmd: string): Promise<CommandResult> {
-  console.log('[ssh executeCommand]', cmd);
-  return { stdout: `Mock output for: ${cmd}`, exitCode: 0 };
-}
+export { type CommandResult, executeCommand } from '../utils/execute-command';
+import { type CommandResult, executeCommand } from '../utils/execute-command';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 

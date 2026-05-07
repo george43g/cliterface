@@ -7,20 +7,8 @@
  * to a real runtime.
  */
 
-export interface CommandResult {
-  stdout: string;
-  stderr?: string;
-  exitCode: number;
-}
-
-export async function executeCommand(cmd: string): Promise<CommandResult> {
-  // STUB — replace with actual native bridge
-  console.log('[tsr:executeCommand]', cmd);
-  return {
-    stdout: `[mock] Running: ${cmd}\n\nNo output in stub mode.`,
-    exitCode: 0,
-  };
-}
+export { type CommandResult, executeCommand } from '../utils/execute-command';
+import { type CommandResult, executeCommand } from '../utils/execute-command';
 
 export interface TsrOptions {
   /** Path to tsconfig.json (defaults to project root tsconfig.json) */

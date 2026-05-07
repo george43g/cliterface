@@ -1,11 +1,7 @@
-import { executeCommand as baseExecuteCommand, type CommandResult } from '../yabai/yabai-service';
+import { type CommandResult, executeCommand } from '../utils/execute-command';
 
 export type { CommandResult };
-
-export async function executeCommand(cmd: string): Promise<CommandResult> {
-  console.log('[firecrawl]', cmd);
-  return baseExecuteCommand(cmd);
-}
+export { executeCommand };
 
 // ── Scrape ──────────────────────────────────────────────────────────────────
 

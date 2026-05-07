@@ -1,21 +1,7 @@
 import { z } from 'zod';
 
-export interface CommandResult {
-  stdout: string;
-  stderr?: string;
-  exitCode: number;
-}
-
-/**
- * Core command execution stub — replace this body with a real native bridge.
- * Tauri:    return await invoke('execute', { command: cmd });
- * Electron: return await ipcRenderer.invoke('exec', cmd);
- * WKWebView: return await window.webkit.messageHandlers.exec.postMessage(cmd);
- */
-export async function executeCommand(cmd: string): Promise<CommandResult> {
-  console.log('[firebase:executeCommand]', cmd);
-  return { stdout: `[mock] ${cmd}`, exitCode: 0 };
-}
+export { type CommandResult, executeCommand } from '../utils/execute-command';
+import { type CommandResult, executeCommand } from '../utils/execute-command';
 
 // ── Zod validators ────────────────────────────────────────────────────────────
 

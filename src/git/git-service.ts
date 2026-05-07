@@ -1,4 +1,4 @@
-import { type CommandResult, executeCommand as sharedExecuteCommand } from '../yabai/yabai-service';
+import { type CommandResult, executeCommand as sharedExecuteCommand } from '../utils/execute-command';
 
 export type { CommandResult };
 

@@ -11,23 +11,8 @@
  *   https://docs.warp.dev/agent-platform/cloud-agents/self-hosting
  */
 
-export interface CommandResult {
-  stdout: string;
-  stderr?: string;
-  exitCode: number;
-}
-
-/**
- * Single integration point — swap this for the real native bridge.
- */
-export async function executeCommand(cmd: string): Promise<CommandResult> {
-  // STUB: replace with actual native bridge call
-  console.log('[oz-service] executeCommand:', cmd);
-  return {
-    stdout: `[stub] Would run: ${cmd}`,
-    exitCode: 0,
-  };
-}
+import { type CommandResult, executeCommand } from '../utils/execute-command';
+export { type CommandResult, executeCommand };
 
 // ─── Authentication ──────────────────────────────────────────────────────────
 

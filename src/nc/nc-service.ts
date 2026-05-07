@@ -10,11 +10,8 @@
  * Key divergences are noted in the VARIANT_NOTES export.
  */
 
-export interface CommandResult {
-  stdout: string;
-  stderr?: string;
-  exitCode: number;
-}
+export { type CommandResult, executeCommand } from '../utils/execute-command';
+import { type CommandResult, executeCommand } from '../utils/execute-command';
 
 export type NcVariant = 'bsd' | 'gnu' | 'ncat';
 
@@ -51,17 +48,6 @@ export const SECURITY_WARNING =
   'Prefer ncat (nmap) or socat for controlled environments. ' +
   'Never expose -e/-c shells on untrusted networks.';
 
-// ── Stub bridge ───────────────────────────────────────────────────────────────
-
-export async function executeCommand(cmd: string): Promise<CommandResult> {
-  console.log('[nc executeCommand]', cmd);
-  // Replace this stub with your native bridge implementation.
-  return {
-    stdout: `[stub] Would run: ${cmd}`,
-    stderr: '',
-    exitCode: 0,
-  };
-}
 
 // ── Typed helpers ─────────────────────────────────────────────────────────────
 

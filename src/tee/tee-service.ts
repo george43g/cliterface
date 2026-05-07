@@ -1,4 +1,4 @@
-import { executeCommand as _executeCommand, type CommandResult } from '../yabai/yabai-service';
+import { executeCommand as _executeCommand, type CommandResult } from '../utils/execute-command';
 
 export type { CommandResult };
 

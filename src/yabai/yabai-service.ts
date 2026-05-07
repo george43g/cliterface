@@ -1,8 +1,5 @@
-export interface CommandResult {
-  stdout: string;
-  stderr?: string;
-  exitCode: number;
-}
+export type { CommandResult } from '../utils/execute-command';
+import type { CommandResult } from '../utils/execute-command';
 
 export interface YabaiQueryResponse<T> {
   data: T;

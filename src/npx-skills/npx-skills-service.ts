@@ -10,17 +10,8 @@
  * Replace executeCommand() body to wire up Tauri, Electron, WKWebView, etc.
  */
 
-export interface CommandResult {
-  stdout: string;
-  stderr?: string;
-  exitCode: number;
-}
-
-export async function executeCommand(cmd: string): Promise<CommandResult> {
-  // STUB – replace with native bridge (Tauri invoke, Electron IPC, WKWebView, etc.)
-  console.log('[npx-skills executeCommand]', cmd);
-  return { stdout: `Mock output for: ${cmd}`, stderr: '', exitCode: 0 };
-}
+export { type CommandResult, executeCommand } from '../utils/execute-command';
+import { type CommandResult, executeCommand } from '../utils/execute-command';
 
 // ── Scope helpers ────────────────────────────────────────────────────────────
 

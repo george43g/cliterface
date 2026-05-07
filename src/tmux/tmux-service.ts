@@ -4,24 +4,8 @@
  * can be swapped for a real native bridge (Tauri, Electron, WKWebView, etc.).
  */
 
-export interface CommandResult {
-  stdout: string;
-  stderr?: string;
-  exitCode: number;
-}
-
-/**
- * Single integration point for tmux command execution.
- * Replace the body here to connect to a real shell runner.
- */
-export async function executeCommand(cmd: string): Promise<CommandResult> {
-  console.log('[tmux-service] executeCommand:', cmd);
-  // STUB — replace with your native bridge:
-  //   Tauri:    return await invoke('execute', { command: cmd });
-  //   Electron: return await ipcRenderer.invoke('exec', cmd);
-  //   WKWebView:return await window.webkit.messageHandlers.exec.postMessage(cmd);
-  return { stdout: `[stub] Would run:\n${cmd}`, stderr: '', exitCode: 0 };
-}
+export { type CommandResult, executeCommand } from '../utils/execute-command';
+import { type CommandResult, executeCommand } from '../utils/execute-command';
 
 // ── Session helpers ────────────────────────────────────────────────────────────
 

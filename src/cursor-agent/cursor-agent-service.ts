@@ -12,17 +12,8 @@
  * reflect this uncertainty — adjust the command prefix as needed.
  */
 
-export interface CommandResult {
-  stdout: string;
-  stderr?: string;
-  exitCode: number;
-}
-
-/** Execute a raw shell command string. Swap this stub for your native bridge. */
-export async function executeCommand(cmd: string): Promise<CommandResult> {
-  console.log('[cursor-agent:executeCommand]', cmd);
-  return { stdout: 'Mock output — connect a native bridge to execute real commands.', exitCode: 0 };
-}
+export { type CommandResult, executeCommand } from '../utils/execute-command';
+import { type CommandResult, executeCommand } from '../utils/execute-command';
 
 // ── Option types ────────────────────────────────────────────────────────────
 

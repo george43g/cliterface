@@ -1,16 +1,12 @@
-import { executeCommand as _executeCommand, type CommandResult } from '../yabai/yabai-service';
+import { type CommandResult, executeCommand } from '../utils/execute-command';
 
 export type { CommandResult };
+export { executeCommand };
 
 /**
  * zsh / zprezto execution service — stub implementation.
  * Replace `executeCommand` body with a native bridge (Tauri, Electron, WKWebView, HTTP) to go live.
  */
-export async function executeCommand(cmd: string): Promise<CommandResult> {
-  console.log('[zsh-service] executeCommand:', cmd);
-  return _executeCommand(cmd);
-}
-
 export const zshService = {
   async version(): Promise<CommandResult> {
     return executeCommand('zsh --version');
