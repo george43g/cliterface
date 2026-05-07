@@ -14,8 +14,9 @@ import { SelectOption } from "./components/ui/cli-select/cli-select";
 import { Tab } from "./components/ui/cli-tabs/cli-tabs";
 import { TooltipContent } from "./components/ui/cli-tooltip/cli-tooltip";
 import { CommandResult as CommandResult1 } from "./jq/jq-service";
-import { CommandResult as CommandResult2 } from "./sed/sed-service";
-import { CommandResult as CommandResult3 } from "./yabai/yabai-service";
+import { CommandResult as CommandResult2 } from "./ps/ps-service";
+import { CommandResult as CommandResult3 } from "./sed/sed-service";
+import { CommandResult as CommandResult4 } from "./yabai/yabai-service";
 export { CommandResult } from "./awk/awk-service";
 export { ButtonSize, ButtonVariant } from "./components/ui/cli-button/cli-button";
 export { CardVariant } from "./components/ui/cli-card/cli-card";
@@ -25,8 +26,9 @@ export { SelectOption } from "./components/ui/cli-select/cli-select";
 export { Tab } from "./components/ui/cli-tabs/cli-tabs";
 export { TooltipContent } from "./components/ui/cli-tooltip/cli-tooltip";
 export { CommandResult as CommandResult1 } from "./jq/jq-service";
-export { CommandResult as CommandResult2 } from "./sed/sed-service";
-export { CommandResult as CommandResult3 } from "./yabai/yabai-service";
+export { CommandResult as CommandResult2 } from "./ps/ps-service";
+export { CommandResult as CommandResult3 } from "./sed/sed-service";
+export { CommandResult as CommandResult4 } from "./yabai/yabai-service";
 export namespace Components {
     interface AppDashboard {
     }
@@ -35,6 +37,8 @@ export namespace Components {
           * @default '4.2'
          */
         "version": string;
+    }
+    interface BashTestsGui {
     }
     interface CliButton {
         "commandSegment"?: string;
@@ -192,11 +196,31 @@ export namespace Components {
          */
         "visible": boolean;
     }
+    interface CodexGui {
+    }
+    interface CursorAgentGui {
+    }
+    interface DockerComposeGui {
+    }
+    interface DockerGui {
+    }
+    interface FirebaseGui {
+    }
+    interface FirecrawlGui {
+    }
+    interface GcloudGui {
+    }
+    interface GhGui {
+    }
+    interface GitGui {
+    }
     interface JqGui {
         /**
           * @default '1.7'
          */
         "version": string;
+    }
+    interface LnGui {
     }
     interface MyComponent {
         /**
@@ -212,9 +236,49 @@ export namespace Components {
          */
         "middle": string;
     }
+    interface NcGui {
+    }
+    interface NmapGui {
+    }
+    interface NpmGui {
+    }
+    interface NpxSkillsGui {
+    }
+    interface OpGui {
+    }
+    interface OzGui {
+    }
+    interface PnpmGui {
+    }
+    interface PosixGui {
+    }
+    interface PsGui {
+    }
+    interface RsyncGui {
+    }
+    interface ScpGui {
+    }
     interface SedGui {
     }
+    interface SignalCliGui {
+    }
+    interface SshGui {
+    }
+    interface SupabaseGui {
+    }
+    interface TaskGui {
+    }
+    interface TeeGui {
+    }
     interface TmuxGui {
+    }
+    interface TsrGui {
+    }
+    interface VercelGui {
+    }
+    interface VimGui {
+    }
+    interface XargsGui {
     }
     interface YabaiGui {
         /**
@@ -227,6 +291,8 @@ export namespace Components {
      */
     interface YabaiQueryPanel {
         "executeCommand": (cmd: string) => Promise<void>;
+    }
+    interface ZshGui {
     }
 }
 export interface AwkGuiCustomEvent<T> extends CustomEvent<T> {
@@ -260,6 +326,10 @@ export interface CliTabsCustomEvent<T> extends CustomEvent<T> {
 export interface JqGuiCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLJqGuiElement;
+}
+export interface PsGuiCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLPsGuiElement;
 }
 export interface SedGuiCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -296,6 +366,12 @@ declare global {
     var HTMLAwkGuiElement: {
         prototype: HTMLAwkGuiElement;
         new (): HTMLAwkGuiElement;
+    };
+    interface HTMLBashTestsGuiElement extends Components.BashTestsGui, HTMLStencilElement {
+    }
+    var HTMLBashTestsGuiElement: {
+        prototype: HTMLBashTestsGuiElement;
+        new (): HTMLBashTestsGuiElement;
     };
     interface HTMLCliButtonElementEventMap {
         "cliClick": void;
@@ -435,6 +511,60 @@ declare global {
         prototype: HTMLCliTooltipElement;
         new (): HTMLCliTooltipElement;
     };
+    interface HTMLCodexGuiElement extends Components.CodexGui, HTMLStencilElement {
+    }
+    var HTMLCodexGuiElement: {
+        prototype: HTMLCodexGuiElement;
+        new (): HTMLCodexGuiElement;
+    };
+    interface HTMLCursorAgentGuiElement extends Components.CursorAgentGui, HTMLStencilElement {
+    }
+    var HTMLCursorAgentGuiElement: {
+        prototype: HTMLCursorAgentGuiElement;
+        new (): HTMLCursorAgentGuiElement;
+    };
+    interface HTMLDockerComposeGuiElement extends Components.DockerComposeGui, HTMLStencilElement {
+    }
+    var HTMLDockerComposeGuiElement: {
+        prototype: HTMLDockerComposeGuiElement;
+        new (): HTMLDockerComposeGuiElement;
+    };
+    interface HTMLDockerGuiElement extends Components.DockerGui, HTMLStencilElement {
+    }
+    var HTMLDockerGuiElement: {
+        prototype: HTMLDockerGuiElement;
+        new (): HTMLDockerGuiElement;
+    };
+    interface HTMLFirebaseGuiElement extends Components.FirebaseGui, HTMLStencilElement {
+    }
+    var HTMLFirebaseGuiElement: {
+        prototype: HTMLFirebaseGuiElement;
+        new (): HTMLFirebaseGuiElement;
+    };
+    interface HTMLFirecrawlGuiElement extends Components.FirecrawlGui, HTMLStencilElement {
+    }
+    var HTMLFirecrawlGuiElement: {
+        prototype: HTMLFirecrawlGuiElement;
+        new (): HTMLFirecrawlGuiElement;
+    };
+    interface HTMLGcloudGuiElement extends Components.GcloudGui, HTMLStencilElement {
+    }
+    var HTMLGcloudGuiElement: {
+        prototype: HTMLGcloudGuiElement;
+        new (): HTMLGcloudGuiElement;
+    };
+    interface HTMLGhGuiElement extends Components.GhGui, HTMLStencilElement {
+    }
+    var HTMLGhGuiElement: {
+        prototype: HTMLGhGuiElement;
+        new (): HTMLGhGuiElement;
+    };
+    interface HTMLGitGuiElement extends Components.GitGui, HTMLStencilElement {
+    }
+    var HTMLGitGuiElement: {
+        prototype: HTMLGitGuiElement;
+        new (): HTMLGitGuiElement;
+    };
     interface HTMLJqGuiElementEventMap {
         "commandExecuted": CommandResult1;
     }
@@ -452,14 +582,97 @@ declare global {
         prototype: HTMLJqGuiElement;
         new (): HTMLJqGuiElement;
     };
+    interface HTMLLnGuiElement extends Components.LnGui, HTMLStencilElement {
+    }
+    var HTMLLnGuiElement: {
+        prototype: HTMLLnGuiElement;
+        new (): HTMLLnGuiElement;
+    };
     interface HTMLMyComponentElement extends Components.MyComponent, HTMLStencilElement {
     }
     var HTMLMyComponentElement: {
         prototype: HTMLMyComponentElement;
         new (): HTMLMyComponentElement;
     };
-    interface HTMLSedGuiElementEventMap {
+    interface HTMLNcGuiElement extends Components.NcGui, HTMLStencilElement {
+    }
+    var HTMLNcGuiElement: {
+        prototype: HTMLNcGuiElement;
+        new (): HTMLNcGuiElement;
+    };
+    interface HTMLNmapGuiElement extends Components.NmapGui, HTMLStencilElement {
+    }
+    var HTMLNmapGuiElement: {
+        prototype: HTMLNmapGuiElement;
+        new (): HTMLNmapGuiElement;
+    };
+    interface HTMLNpmGuiElement extends Components.NpmGui, HTMLStencilElement {
+    }
+    var HTMLNpmGuiElement: {
+        prototype: HTMLNpmGuiElement;
+        new (): HTMLNpmGuiElement;
+    };
+    interface HTMLNpxSkillsGuiElement extends Components.NpxSkillsGui, HTMLStencilElement {
+    }
+    var HTMLNpxSkillsGuiElement: {
+        prototype: HTMLNpxSkillsGuiElement;
+        new (): HTMLNpxSkillsGuiElement;
+    };
+    interface HTMLOpGuiElement extends Components.OpGui, HTMLStencilElement {
+    }
+    var HTMLOpGuiElement: {
+        prototype: HTMLOpGuiElement;
+        new (): HTMLOpGuiElement;
+    };
+    interface HTMLOzGuiElement extends Components.OzGui, HTMLStencilElement {
+    }
+    var HTMLOzGuiElement: {
+        prototype: HTMLOzGuiElement;
+        new (): HTMLOzGuiElement;
+    };
+    interface HTMLPnpmGuiElement extends Components.PnpmGui, HTMLStencilElement {
+    }
+    var HTMLPnpmGuiElement: {
+        prototype: HTMLPnpmGuiElement;
+        new (): HTMLPnpmGuiElement;
+    };
+    interface HTMLPosixGuiElement extends Components.PosixGui, HTMLStencilElement {
+    }
+    var HTMLPosixGuiElement: {
+        prototype: HTMLPosixGuiElement;
+        new (): HTMLPosixGuiElement;
+    };
+    interface HTMLPsGuiElementEventMap {
         "commandExecuted": CommandResult2;
+    }
+    interface HTMLPsGuiElement extends Components.PsGui, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLPsGuiElementEventMap>(type: K, listener: (this: HTMLPsGuiElement, ev: PsGuiCustomEvent<HTMLPsGuiElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLPsGuiElementEventMap>(type: K, listener: (this: HTMLPsGuiElement, ev: PsGuiCustomEvent<HTMLPsGuiElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLPsGuiElement: {
+        prototype: HTMLPsGuiElement;
+        new (): HTMLPsGuiElement;
+    };
+    interface HTMLRsyncGuiElement extends Components.RsyncGui, HTMLStencilElement {
+    }
+    var HTMLRsyncGuiElement: {
+        prototype: HTMLRsyncGuiElement;
+        new (): HTMLRsyncGuiElement;
+    };
+    interface HTMLScpGuiElement extends Components.ScpGui, HTMLStencilElement {
+    }
+    var HTMLScpGuiElement: {
+        prototype: HTMLScpGuiElement;
+        new (): HTMLScpGuiElement;
+    };
+    interface HTMLSedGuiElementEventMap {
+        "commandExecuted": CommandResult3;
     }
     interface HTMLSedGuiElement extends Components.SedGui, HTMLStencilElement {
         addEventListener<K extends keyof HTMLSedGuiElementEventMap>(type: K, listener: (this: HTMLSedGuiElement, ev: SedGuiCustomEvent<HTMLSedGuiElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -475,14 +688,68 @@ declare global {
         prototype: HTMLSedGuiElement;
         new (): HTMLSedGuiElement;
     };
+    interface HTMLSignalCliGuiElement extends Components.SignalCliGui, HTMLStencilElement {
+    }
+    var HTMLSignalCliGuiElement: {
+        prototype: HTMLSignalCliGuiElement;
+        new (): HTMLSignalCliGuiElement;
+    };
+    interface HTMLSshGuiElement extends Components.SshGui, HTMLStencilElement {
+    }
+    var HTMLSshGuiElement: {
+        prototype: HTMLSshGuiElement;
+        new (): HTMLSshGuiElement;
+    };
+    interface HTMLSupabaseGuiElement extends Components.SupabaseGui, HTMLStencilElement {
+    }
+    var HTMLSupabaseGuiElement: {
+        prototype: HTMLSupabaseGuiElement;
+        new (): HTMLSupabaseGuiElement;
+    };
+    interface HTMLTaskGuiElement extends Components.TaskGui, HTMLStencilElement {
+    }
+    var HTMLTaskGuiElement: {
+        prototype: HTMLTaskGuiElement;
+        new (): HTMLTaskGuiElement;
+    };
+    interface HTMLTeeGuiElement extends Components.TeeGui, HTMLStencilElement {
+    }
+    var HTMLTeeGuiElement: {
+        prototype: HTMLTeeGuiElement;
+        new (): HTMLTeeGuiElement;
+    };
     interface HTMLTmuxGuiElement extends Components.TmuxGui, HTMLStencilElement {
     }
     var HTMLTmuxGuiElement: {
         prototype: HTMLTmuxGuiElement;
         new (): HTMLTmuxGuiElement;
     };
+    interface HTMLTsrGuiElement extends Components.TsrGui, HTMLStencilElement {
+    }
+    var HTMLTsrGuiElement: {
+        prototype: HTMLTsrGuiElement;
+        new (): HTMLTsrGuiElement;
+    };
+    interface HTMLVercelGuiElement extends Components.VercelGui, HTMLStencilElement {
+    }
+    var HTMLVercelGuiElement: {
+        prototype: HTMLVercelGuiElement;
+        new (): HTMLVercelGuiElement;
+    };
+    interface HTMLVimGuiElement extends Components.VimGui, HTMLStencilElement {
+    }
+    var HTMLVimGuiElement: {
+        prototype: HTMLVimGuiElement;
+        new (): HTMLVimGuiElement;
+    };
+    interface HTMLXargsGuiElement extends Components.XargsGui, HTMLStencilElement {
+    }
+    var HTMLXargsGuiElement: {
+        prototype: HTMLXargsGuiElement;
+        new (): HTMLXargsGuiElement;
+    };
     interface HTMLYabaiGuiElementEventMap {
-        "commandExecuted": CommandResult3;
+        "commandExecuted": CommandResult4;
     }
     interface HTMLYabaiGuiElement extends Components.YabaiGui, HTMLStencilElement {
         addEventListener<K extends keyof HTMLYabaiGuiElementEventMap>(type: K, listener: (this: HTMLYabaiGuiElement, ev: YabaiGuiCustomEvent<HTMLYabaiGuiElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -518,9 +785,16 @@ declare global {
         prototype: HTMLYabaiQueryPanelElement;
         new (): HTMLYabaiQueryPanelElement;
     };
+    interface HTMLZshGuiElement extends Components.ZshGui, HTMLStencilElement {
+    }
+    var HTMLZshGuiElement: {
+        prototype: HTMLZshGuiElement;
+        new (): HTMLZshGuiElement;
+    };
     interface HTMLElementTagNameMap {
         "app-dashboard": HTMLAppDashboardElement;
         "awk-gui": HTMLAwkGuiElement;
+        "bash-tests-gui": HTMLBashTestsGuiElement;
         "cli-button": HTMLCliButtonElement;
         "cli-card": HTMLCliCardElement;
         "cli-chip": HTMLCliChipElement;
@@ -532,12 +806,43 @@ declare global {
         "cli-select": HTMLCliSelectElement;
         "cli-tabs": HTMLCliTabsElement;
         "cli-tooltip": HTMLCliTooltipElement;
+        "codex-gui": HTMLCodexGuiElement;
+        "cursor-agent-gui": HTMLCursorAgentGuiElement;
+        "docker-compose-gui": HTMLDockerComposeGuiElement;
+        "docker-gui": HTMLDockerGuiElement;
+        "firebase-gui": HTMLFirebaseGuiElement;
+        "firecrawl-gui": HTMLFirecrawlGuiElement;
+        "gcloud-gui": HTMLGcloudGuiElement;
+        "gh-gui": HTMLGhGuiElement;
+        "git-gui": HTMLGitGuiElement;
         "jq-gui": HTMLJqGuiElement;
+        "ln-gui": HTMLLnGuiElement;
         "my-component": HTMLMyComponentElement;
+        "nc-gui": HTMLNcGuiElement;
+        "nmap-gui": HTMLNmapGuiElement;
+        "npm-gui": HTMLNpmGuiElement;
+        "npx-skills-gui": HTMLNpxSkillsGuiElement;
+        "op-gui": HTMLOpGuiElement;
+        "oz-gui": HTMLOzGuiElement;
+        "pnpm-gui": HTMLPnpmGuiElement;
+        "posix-gui": HTMLPosixGuiElement;
+        "ps-gui": HTMLPsGuiElement;
+        "rsync-gui": HTMLRsyncGuiElement;
+        "scp-gui": HTMLScpGuiElement;
         "sed-gui": HTMLSedGuiElement;
+        "signal-cli-gui": HTMLSignalCliGuiElement;
+        "ssh-gui": HTMLSshGuiElement;
+        "supabase-gui": HTMLSupabaseGuiElement;
+        "task-gui": HTMLTaskGuiElement;
+        "tee-gui": HTMLTeeGuiElement;
         "tmux-gui": HTMLTmuxGuiElement;
+        "tsr-gui": HTMLTsrGuiElement;
+        "vercel-gui": HTMLVercelGuiElement;
+        "vim-gui": HTMLVimGuiElement;
+        "xargs-gui": HTMLXargsGuiElement;
         "yabai-gui": HTMLYabaiGuiElement;
         "yabai-query-panel": HTMLYabaiQueryPanelElement;
+        "zsh-gui": HTMLZshGuiElement;
     }
 }
 declare namespace LocalJSX {
@@ -549,6 +854,8 @@ declare namespace LocalJSX {
           * @default '4.2'
          */
         "version"?: string;
+    }
+    interface BashTestsGui {
     }
     interface CliButton {
         "commandSegment"?: string;
@@ -718,12 +1025,32 @@ declare namespace LocalJSX {
          */
         "visible"?: boolean;
     }
+    interface CodexGui {
+    }
+    interface CursorAgentGui {
+    }
+    interface DockerComposeGui {
+    }
+    interface DockerGui {
+    }
+    interface FirebaseGui {
+    }
+    interface FirecrawlGui {
+    }
+    interface GcloudGui {
+    }
+    interface GhGui {
+    }
+    interface GitGui {
+    }
     interface JqGui {
         "onCommandExecuted"?: (event: JqGuiCustomEvent<CommandResult1>) => void;
         /**
           * @default '1.7'
          */
         "version"?: string;
+    }
+    interface LnGui {
     }
     interface MyComponent {
         /**
@@ -739,13 +1066,54 @@ declare namespace LocalJSX {
          */
         "middle"?: string;
     }
+    interface NcGui {
+    }
+    interface NmapGui {
+    }
+    interface NpmGui {
+    }
+    interface NpxSkillsGui {
+    }
+    interface OpGui {
+    }
+    interface OzGui {
+    }
+    interface PnpmGui {
+    }
+    interface PosixGui {
+    }
+    interface PsGui {
+        "onCommandExecuted"?: (event: PsGuiCustomEvent<CommandResult2>) => void;
+    }
+    interface RsyncGui {
+    }
+    interface ScpGui {
+    }
     interface SedGui {
-        "onCommandExecuted"?: (event: SedGuiCustomEvent<CommandResult2>) => void;
+        "onCommandExecuted"?: (event: SedGuiCustomEvent<CommandResult3>) => void;
+    }
+    interface SignalCliGui {
+    }
+    interface SshGui {
+    }
+    interface SupabaseGui {
+    }
+    interface TaskGui {
+    }
+    interface TeeGui {
     }
     interface TmuxGui {
     }
+    interface TsrGui {
+    }
+    interface VercelGui {
+    }
+    interface VimGui {
+    }
+    interface XargsGui {
+    }
     interface YabaiGui {
-        "onCommandExecuted"?: (event: YabaiGuiCustomEvent<CommandResult3>) => void;
+        "onCommandExecuted"?: (event: YabaiGuiCustomEvent<CommandResult4>) => void;
         /**
           * @default 'v7.1.17'
          */
@@ -757,6 +1125,8 @@ declare namespace LocalJSX {
     interface YabaiQueryPanel {
         "executeCommand": (cmd: string) => Promise<void>;
         "onCommandPreview"?: (event: YabaiQueryPanelCustomEvent<string>) => void;
+    }
+    interface ZshGui {
     }
 
     interface AwkGuiAttributes {
@@ -833,6 +1203,7 @@ declare namespace LocalJSX {
     interface IntrinsicElements {
         "app-dashboard": AppDashboard;
         "awk-gui": Omit<AwkGui, keyof AwkGuiAttributes> & { [K in keyof AwkGui & keyof AwkGuiAttributes]?: AwkGui[K] } & { [K in keyof AwkGui & keyof AwkGuiAttributes as `attr:${K}`]?: AwkGuiAttributes[K] } & { [K in keyof AwkGui & keyof AwkGuiAttributes as `prop:${K}`]?: AwkGui[K] };
+        "bash-tests-gui": BashTestsGui;
         "cli-button": Omit<CliButton, keyof CliButtonAttributes> & { [K in keyof CliButton & keyof CliButtonAttributes]?: CliButton[K] } & { [K in keyof CliButton & keyof CliButtonAttributes as `attr:${K}`]?: CliButtonAttributes[K] } & { [K in keyof CliButton & keyof CliButtonAttributes as `prop:${K}`]?: CliButton[K] };
         "cli-card": Omit<CliCard, keyof CliCardAttributes> & { [K in keyof CliCard & keyof CliCardAttributes]?: CliCard[K] } & { [K in keyof CliCard & keyof CliCardAttributes as `attr:${K}`]?: CliCardAttributes[K] } & { [K in keyof CliCard & keyof CliCardAttributes as `prop:${K}`]?: CliCard[K] };
         "cli-chip": Omit<CliChip, keyof CliChipAttributes> & { [K in keyof CliChip & keyof CliChipAttributes]?: CliChip[K] } & { [K in keyof CliChip & keyof CliChipAttributes as `attr:${K}`]?: CliChipAttributes[K] } & { [K in keyof CliChip & keyof CliChipAttributes as `prop:${K}`]?: CliChip[K] };
@@ -844,12 +1215,43 @@ declare namespace LocalJSX {
         "cli-select": Omit<CliSelect, keyof CliSelectAttributes> & { [K in keyof CliSelect & keyof CliSelectAttributes]?: CliSelect[K] } & { [K in keyof CliSelect & keyof CliSelectAttributes as `attr:${K}`]?: CliSelectAttributes[K] } & { [K in keyof CliSelect & keyof CliSelectAttributes as `prop:${K}`]?: CliSelect[K] };
         "cli-tabs": Omit<CliTabs, keyof CliTabsAttributes> & { [K in keyof CliTabs & keyof CliTabsAttributes]?: CliTabs[K] } & { [K in keyof CliTabs & keyof CliTabsAttributes as `attr:${K}`]?: CliTabsAttributes[K] } & { [K in keyof CliTabs & keyof CliTabsAttributes as `prop:${K}`]?: CliTabs[K] };
         "cli-tooltip": Omit<CliTooltip, keyof CliTooltipAttributes> & { [K in keyof CliTooltip & keyof CliTooltipAttributes]?: CliTooltip[K] } & { [K in keyof CliTooltip & keyof CliTooltipAttributes as `attr:${K}`]?: CliTooltipAttributes[K] } & { [K in keyof CliTooltip & keyof CliTooltipAttributes as `prop:${K}`]?: CliTooltip[K] };
+        "codex-gui": CodexGui;
+        "cursor-agent-gui": CursorAgentGui;
+        "docker-compose-gui": DockerComposeGui;
+        "docker-gui": DockerGui;
+        "firebase-gui": FirebaseGui;
+        "firecrawl-gui": FirecrawlGui;
+        "gcloud-gui": GcloudGui;
+        "gh-gui": GhGui;
+        "git-gui": GitGui;
         "jq-gui": Omit<JqGui, keyof JqGuiAttributes> & { [K in keyof JqGui & keyof JqGuiAttributes]?: JqGui[K] } & { [K in keyof JqGui & keyof JqGuiAttributes as `attr:${K}`]?: JqGuiAttributes[K] } & { [K in keyof JqGui & keyof JqGuiAttributes as `prop:${K}`]?: JqGui[K] };
+        "ln-gui": LnGui;
         "my-component": Omit<MyComponent, keyof MyComponentAttributes> & { [K in keyof MyComponent & keyof MyComponentAttributes]?: MyComponent[K] } & { [K in keyof MyComponent & keyof MyComponentAttributes as `attr:${K}`]?: MyComponentAttributes[K] } & { [K in keyof MyComponent & keyof MyComponentAttributes as `prop:${K}`]?: MyComponent[K] };
+        "nc-gui": NcGui;
+        "nmap-gui": NmapGui;
+        "npm-gui": NpmGui;
+        "npx-skills-gui": NpxSkillsGui;
+        "op-gui": OpGui;
+        "oz-gui": OzGui;
+        "pnpm-gui": PnpmGui;
+        "posix-gui": PosixGui;
+        "ps-gui": PsGui;
+        "rsync-gui": RsyncGui;
+        "scp-gui": ScpGui;
         "sed-gui": SedGui;
+        "signal-cli-gui": SignalCliGui;
+        "ssh-gui": SshGui;
+        "supabase-gui": SupabaseGui;
+        "task-gui": TaskGui;
+        "tee-gui": TeeGui;
         "tmux-gui": TmuxGui;
+        "tsr-gui": TsrGui;
+        "vercel-gui": VercelGui;
+        "vim-gui": VimGui;
+        "xargs-gui": XargsGui;
         "yabai-gui": Omit<YabaiGui, keyof YabaiGuiAttributes> & { [K in keyof YabaiGui & keyof YabaiGuiAttributes]?: YabaiGui[K] } & { [K in keyof YabaiGui & keyof YabaiGuiAttributes as `attr:${K}`]?: YabaiGuiAttributes[K] } & { [K in keyof YabaiGui & keyof YabaiGuiAttributes as `prop:${K}`]?: YabaiGui[K] };
         "yabai-query-panel": YabaiQueryPanel;
+        "zsh-gui": ZshGui;
     }
 }
 export { LocalJSX as JSX };
@@ -858,6 +1260,7 @@ declare module "@stencil/core" {
         interface IntrinsicElements {
             "app-dashboard": LocalJSX.IntrinsicElements["app-dashboard"] & JSXBase.HTMLAttributes<HTMLAppDashboardElement>;
             "awk-gui": LocalJSX.IntrinsicElements["awk-gui"] & JSXBase.HTMLAttributes<HTMLAwkGuiElement>;
+            "bash-tests-gui": LocalJSX.IntrinsicElements["bash-tests-gui"] & JSXBase.HTMLAttributes<HTMLBashTestsGuiElement>;
             "cli-button": LocalJSX.IntrinsicElements["cli-button"] & JSXBase.HTMLAttributes<HTMLCliButtonElement>;
             "cli-card": LocalJSX.IntrinsicElements["cli-card"] & JSXBase.HTMLAttributes<HTMLCliCardElement>;
             "cli-chip": LocalJSX.IntrinsicElements["cli-chip"] & JSXBase.HTMLAttributes<HTMLCliChipElement>;
@@ -869,15 +1272,46 @@ declare module "@stencil/core" {
             "cli-select": LocalJSX.IntrinsicElements["cli-select"] & JSXBase.HTMLAttributes<HTMLCliSelectElement>;
             "cli-tabs": LocalJSX.IntrinsicElements["cli-tabs"] & JSXBase.HTMLAttributes<HTMLCliTabsElement>;
             "cli-tooltip": LocalJSX.IntrinsicElements["cli-tooltip"] & JSXBase.HTMLAttributes<HTMLCliTooltipElement>;
+            "codex-gui": LocalJSX.IntrinsicElements["codex-gui"] & JSXBase.HTMLAttributes<HTMLCodexGuiElement>;
+            "cursor-agent-gui": LocalJSX.IntrinsicElements["cursor-agent-gui"] & JSXBase.HTMLAttributes<HTMLCursorAgentGuiElement>;
+            "docker-compose-gui": LocalJSX.IntrinsicElements["docker-compose-gui"] & JSXBase.HTMLAttributes<HTMLDockerComposeGuiElement>;
+            "docker-gui": LocalJSX.IntrinsicElements["docker-gui"] & JSXBase.HTMLAttributes<HTMLDockerGuiElement>;
+            "firebase-gui": LocalJSX.IntrinsicElements["firebase-gui"] & JSXBase.HTMLAttributes<HTMLFirebaseGuiElement>;
+            "firecrawl-gui": LocalJSX.IntrinsicElements["firecrawl-gui"] & JSXBase.HTMLAttributes<HTMLFirecrawlGuiElement>;
+            "gcloud-gui": LocalJSX.IntrinsicElements["gcloud-gui"] & JSXBase.HTMLAttributes<HTMLGcloudGuiElement>;
+            "gh-gui": LocalJSX.IntrinsicElements["gh-gui"] & JSXBase.HTMLAttributes<HTMLGhGuiElement>;
+            "git-gui": LocalJSX.IntrinsicElements["git-gui"] & JSXBase.HTMLAttributes<HTMLGitGuiElement>;
             "jq-gui": LocalJSX.IntrinsicElements["jq-gui"] & JSXBase.HTMLAttributes<HTMLJqGuiElement>;
+            "ln-gui": LocalJSX.IntrinsicElements["ln-gui"] & JSXBase.HTMLAttributes<HTMLLnGuiElement>;
             "my-component": LocalJSX.IntrinsicElements["my-component"] & JSXBase.HTMLAttributes<HTMLMyComponentElement>;
+            "nc-gui": LocalJSX.IntrinsicElements["nc-gui"] & JSXBase.HTMLAttributes<HTMLNcGuiElement>;
+            "nmap-gui": LocalJSX.IntrinsicElements["nmap-gui"] & JSXBase.HTMLAttributes<HTMLNmapGuiElement>;
+            "npm-gui": LocalJSX.IntrinsicElements["npm-gui"] & JSXBase.HTMLAttributes<HTMLNpmGuiElement>;
+            "npx-skills-gui": LocalJSX.IntrinsicElements["npx-skills-gui"] & JSXBase.HTMLAttributes<HTMLNpxSkillsGuiElement>;
+            "op-gui": LocalJSX.IntrinsicElements["op-gui"] & JSXBase.HTMLAttributes<HTMLOpGuiElement>;
+            "oz-gui": LocalJSX.IntrinsicElements["oz-gui"] & JSXBase.HTMLAttributes<HTMLOzGuiElement>;
+            "pnpm-gui": LocalJSX.IntrinsicElements["pnpm-gui"] & JSXBase.HTMLAttributes<HTMLPnpmGuiElement>;
+            "posix-gui": LocalJSX.IntrinsicElements["posix-gui"] & JSXBase.HTMLAttributes<HTMLPosixGuiElement>;
+            "ps-gui": LocalJSX.IntrinsicElements["ps-gui"] & JSXBase.HTMLAttributes<HTMLPsGuiElement>;
+            "rsync-gui": LocalJSX.IntrinsicElements["rsync-gui"] & JSXBase.HTMLAttributes<HTMLRsyncGuiElement>;
+            "scp-gui": LocalJSX.IntrinsicElements["scp-gui"] & JSXBase.HTMLAttributes<HTMLScpGuiElement>;
             "sed-gui": LocalJSX.IntrinsicElements["sed-gui"] & JSXBase.HTMLAttributes<HTMLSedGuiElement>;
+            "signal-cli-gui": LocalJSX.IntrinsicElements["signal-cli-gui"] & JSXBase.HTMLAttributes<HTMLSignalCliGuiElement>;
+            "ssh-gui": LocalJSX.IntrinsicElements["ssh-gui"] & JSXBase.HTMLAttributes<HTMLSshGuiElement>;
+            "supabase-gui": LocalJSX.IntrinsicElements["supabase-gui"] & JSXBase.HTMLAttributes<HTMLSupabaseGuiElement>;
+            "task-gui": LocalJSX.IntrinsicElements["task-gui"] & JSXBase.HTMLAttributes<HTMLTaskGuiElement>;
+            "tee-gui": LocalJSX.IntrinsicElements["tee-gui"] & JSXBase.HTMLAttributes<HTMLTeeGuiElement>;
             "tmux-gui": LocalJSX.IntrinsicElements["tmux-gui"] & JSXBase.HTMLAttributes<HTMLTmuxGuiElement>;
+            "tsr-gui": LocalJSX.IntrinsicElements["tsr-gui"] & JSXBase.HTMLAttributes<HTMLTsrGuiElement>;
+            "vercel-gui": LocalJSX.IntrinsicElements["vercel-gui"] & JSXBase.HTMLAttributes<HTMLVercelGuiElement>;
+            "vim-gui": LocalJSX.IntrinsicElements["vim-gui"] & JSXBase.HTMLAttributes<HTMLVimGuiElement>;
+            "xargs-gui": LocalJSX.IntrinsicElements["xargs-gui"] & JSXBase.HTMLAttributes<HTMLXargsGuiElement>;
             "yabai-gui": LocalJSX.IntrinsicElements["yabai-gui"] & JSXBase.HTMLAttributes<HTMLYabaiGuiElement>;
             /**
              * Yabai Query Panel - Uses UI component library
              */
             "yabai-query-panel": LocalJSX.IntrinsicElements["yabai-query-panel"] & JSXBase.HTMLAttributes<HTMLYabaiQueryPanelElement>;
+            "zsh-gui": LocalJSX.IntrinsicElements["zsh-gui"] & JSXBase.HTMLAttributes<HTMLZshGuiElement>;
         }
     }
 }

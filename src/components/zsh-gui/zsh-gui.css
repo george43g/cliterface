@@ -1,0 +1,28 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+/* Full-width table inside scoped component */
+.zsh-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.zsh-table td,
+.zsh-table th {
+  border: none;
+  vertical-align: top;
+}
+
+/* Prompt theme preview pane */
+.zsh-theme-preview {
+  background: #0d1117;
+  border: 1px solid var(--color-bg3);
+  border-radius: 6px;
+  padding: 10px 12px;
+  color: #e6edf3;
+  min-height: 52px;
+  white-space: pre;
+  overflow-x: auto;
+}

@@ -1,0 +1,212 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+/* ── Link type selector buttons ─────────────────────────────── */
+.link-type-btn {
+  padding: 8px 18px;
+  background: var(--color-bg3);
+  border: 2px solid var(--color-bg3);
+  color: var(--color-text);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.link-type-btn:hover {
+  border-color: var(--color-accent2);
+}
+
+.link-type-btn-active {
+  border-color: var(--color-info);
+  background: color-mix(in srgb, var(--color-info) 15%, var(--color-bg3));
+  color: var(--color-info);
+  font-weight: 600;
+}
+
+.link-type-btn-hard.link-type-btn-active {
+  border-color: var(--color-warning);
+  background: color-mix(in srgb, var(--color-warning) 15%, var(--color-bg3));
+  color: var(--color-warning);
+}
+
+/* ── Flag checkboxes ─────────────────────────────────────────── */
+.flag-checkbox {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 10px;
+  background: var(--color-bg3);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: background 0.15s ease;
+}
+
+.flag-checkbox:hover {
+  background: color-mix(in srgb, var(--color-accent2) 30%, var(--color-bg3));
+}
+
+.flag-checkbox input[type="checkbox"] {
+  margin-bottom: 2px;
+}
+
+/* ── SVG link diagrams ───────────────────────────────────────── */
+.link-diagram {
+  width: 100%;
+  height: auto;
+  max-height: 140px;
+}
+
+.diagram-box {
+  fill: var(--color-bg);
+  stroke-width: 2;
+}
+
+.diagram-inode {
+  stroke: var(--color-success);
+}
+
+.diagram-symlink {
+  stroke: var(--color-info);
+}
+
+.diagram-hard {
+  stroke: var(--color-warning);
+}
+
+.diagram-dashed {
+  fill: none;
+  stroke: var(--color-info);
+  stroke-width: 1.5;
+  stroke-dasharray: 5 4;
+  opacity: 0.5;
+}
+
+.diagram-label {
+  fill: var(--color-text);
+  font-size: 11px;
+  font-family: var(--font-mono);
+}
+
+.diagram-sublabel {
+  fill: var(--color-text2);
+  font-size: 9px;
+  font-family: var(--font-mono);
+}
+
+.diagram-pointer-label {
+  fill: var(--color-info);
+  font-size: 9px;
+  font-family: var(--font-mono);
+  font-style: italic;
+}
+
+.diagram-arrow-line {
+  stroke: var(--color-text2);
+  stroke-width: 1.5;
+}
+
+.diagram-arrow-head-symlink {
+  fill: var(--color-info);
+}
+
+.diagram-arrow-head-hard {
+  fill: var(--color-warning);
+}
+
+/* ── Command segments (hover highlight) ─────────────────────── */
+.cmd-segment {
+  padding: 2px 4px;
+  border-radius: 3px;
+  transition: background 0.15s ease;
+  cursor: help;
+}
+
+.cmd-segment:hover,
+.cmd-segment-highlight {
+  background: color-mix(in srgb, var(--color-accent) 20%, transparent);
+  outline: 1px solid var(--color-accent);
+}
+
+.cmd-segment-command {
+  color: var(--color-accent);
+  font-weight: 600;
+}
+.cmd-segment-flag {
+  color: var(--color-info);
+}
+.cmd-segment-value {
+  color: var(--color-success);
+}
+.cmd-segment-subcommand {
+  color: var(--color-warning);
+}
+
+/* ── Output states ───────────────────────────────────────────── */
+.output-error {
+  border-color: var(--color-danger);
+}
+.output-success {
+  border-color: var(--color-success);
+}
+
+/* ── Force-confirm overlay ───────────────────────────────────── */
+.force-confirm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.force-confirm-box {
+  background: var(--color-bg2);
+  border: 2px solid var(--color-danger);
+  border-radius: 14px;
+  padding: 28px;
+  max-width: 480px;
+  width: 100%;
+  box-shadow: 0 8px 32px rgba(255, 107, 107, 0.25);
+}
+
+/* ── Pitfall cards ───────────────────────────────────────────── */
+.pitfall-card {
+  border-left: 3px solid var(--color-warning);
+}
+
+.fix-box {
+  background: color-mix(in srgb, var(--color-success) 10%, var(--color-bg3));
+  border-left: 2px solid var(--color-success);
+  border-radius: 6px;
+  padding: 10px 12px;
+}
+
+/* ── Comparison table ────────────────────────────────────────── */
+.comparison-table th {
+  border-bottom: 1px solid var(--color-bg3);
+  font-size: 0.85rem;
+}
+
+.comparison-table td {
+  border-bottom: 1px solid color-mix(in srgb, var(--color-bg3) 50%, transparent);
+  padding-right: 16px;
+}
+
+.row-even td {
+  background: color-mix(in srgb, var(--color-bg3) 20%, transparent);
+}
+
+/* ── Validation errors ───────────────────────────────────────── */
+.validation-errors {
+  background: color-mix(in srgb, var(--color-danger) 10%, var(--color-bg3));
+  border-left: 2px solid var(--color-danger);
+  border-radius: 6px;
+  padding: 8px 12px;
+}

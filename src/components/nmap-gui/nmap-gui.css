@@ -1,0 +1,113 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+/* ── Command preview segment colours ─────────────────────────── */
+.cmd-seg-command {
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+.cmd-seg-rest {
+  color: var(--color-success);
+}
+
+/* ── Form helpers ─────────────────────────────────────────────── */
+.field-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+  color: var(--color-text2);
+}
+
+/* ── Scan technique radio rows ────────────────────────────────── */
+.technique-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.technique-option:hover {
+  background: var(--color-bg3);
+}
+
+/* ── Legal banner ─────────────────────────────────────────────── */
+.legal-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  background: rgba(255, 107, 107, 0.12);
+  border: 1px solid var(--color-danger);
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: var(--color-text);
+  line-height: 1.5;
+}
+
+.legal-icon {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* ── Evasion warning ──────────────────────────────────────────── */
+.evasion-warning {
+  padding: 10px 14px;
+  background: rgba(255, 193, 7, 0.12);
+  border: 1px solid var(--color-warning);
+  border-radius: 6px;
+  font-size: 0.82rem;
+  color: var(--color-warning);
+}
+
+/* ── Legal tab content ────────────────────────────────────────── */
+.legal-section {
+  margin-bottom: 1.5rem;
+}
+
+.legal-heading {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-warning);
+  margin-bottom: 0.5rem;
+}
+
+.legal-list {
+  list-style: disc;
+  padding-left: 1.25rem;
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: var(--color-text);
+}
+
+.legal-link {
+  color: var(--color-info);
+  text-decoration: underline;
+}
+
+.legal-disclaimer {
+  padding: 12px 16px;
+  background: var(--color-bg3);
+  border-radius: 8px;
+  font-size: 0.82rem;
+  color: var(--color-text2);
+}
+
+/* ── NSE danger-category buttons ──────────────────────────────── */
+.nse-danger {
+  border: 1px solid var(--color-danger);
+  color: var(--color-danger);
+}
+
+.nse-danger:hover {
+  background: var(--color-danger);
+  color: white;
+}

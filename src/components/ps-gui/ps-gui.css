@@ -1,0 +1,13 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.cli-tabs-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  border-bottom: 1px solid var(--color-accent2);
+  padding-bottom: 8px;
+  margin-bottom: 4px;
+}

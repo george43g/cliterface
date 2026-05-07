@@ -1,0 +1,199 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+/* ── Tab row ──────────────────────────────────────────────── */
+.tabs-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding-bottom: 8px;
+}
+
+/* ── Tool card grid items ─────────────────────────────────── */
+.tool-card {
+  background: var(--color-bg2);
+  border: 1px solid var(--color-bg3);
+  border-radius: 10px;
+  padding: 16px;
+  transition: border-color 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tool-card:hover {
+  border-color: var(--color-accent2);
+}
+
+.tool-card-destructive {
+  border-color: rgba(255, 107, 107, 0.35);
+}
+
+.tool-card-destructive:hover {
+  border-color: var(--color-danger);
+}
+
+/* ── Tool card internals ──────────────────────────────────── */
+.tool-card-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tool-card-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.tool-name {
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-accent);
+  background: rgba(233, 69, 96, 0.1);
+  padding: 2px 8px;
+  border-radius: 5px;
+}
+
+.tool-name-destructive {
+  color: var(--color-danger);
+  background: rgba(255, 107, 107, 0.12);
+}
+
+.tool-desc {
+  font-size: 0.85rem;
+  color: var(--color-text2);
+  margin: 0;
+}
+
+/* ── Warning banner ───────────────────────────────────────── */
+.tool-warning {
+  font-size: 0.78rem;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: rgba(255, 193, 7, 0.12);
+  color: var(--color-warning);
+  border-left: 3px solid var(--color-warning);
+}
+
+.tool-warning-danger {
+  background: rgba(255, 107, 107, 0.12);
+  color: var(--color-danger);
+  border-left-color: var(--color-danger);
+}
+
+/* ── Example snippet ──────────────────────────────────────── */
+.tool-example {
+  background: var(--color-bg3);
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--color-text);
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+/* ── Flag chips ───────────────────────────────────────────── */
+.flag-chip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  padding: 3px 8px;
+  border-radius: 5px;
+  background: var(--color-bg3);
+  border: 1px solid var(--color-accent2);
+  font-size: 0.75rem;
+  cursor: default;
+  position: relative;
+  transition: border-color 0.15s ease;
+}
+
+.flag-chip code {
+  font-family: var(--font-mono);
+  color: var(--color-info);
+  font-weight: 600;
+}
+
+.flag-chip-desc {
+  color: var(--color-text2);
+  display: none;
+}
+
+/* Show description in tooltip on hover */
+.flag-chip:hover {
+  border-color: var(--color-accent);
+  background: rgba(83, 52, 131, 0.5);
+  z-index: 10;
+}
+
+/* Use title attribute for native tooltip — .flag-chip-desc is visually hidden */
+/* but screen-reader accessible as text node */
+
+/* ── Copy button ──────────────────────────────────────────── */
+.copy-btn {
+  flex-shrink: 0;
+  min-width: 60px;
+  text-align: center;
+}
+
+.copy-btn.copy-btn-copied {
+  background: var(--color-success);
+  color: #1a1a2e;
+}
+
+/* ── Builder panel internals ──────────────────────────────── */
+.builder-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-text2);
+  margin: 0 0 12px 0;
+  border-bottom: 1px solid var(--color-bg3);
+  padding-bottom: 8px;
+}
+
+.builder-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 640px) {
+  .builder-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.builder-label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.82rem;
+  color: var(--color-text2);
+}
+
+.flag-checkboxes {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  color: var(--color-text2);
+  cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+  accent-color: var(--color-accent);
+  width: 14px;
+  height: 14px;
+  cursor: pointer;
+}

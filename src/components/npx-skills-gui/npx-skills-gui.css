@@ -1,0 +1,52 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+/* Agent/skill selection chips */
+.skill-chip {
+  padding: 4px 10px;
+  border-radius: 9999px;
+  border: 1px solid var(--color-accent2);
+  background: var(--color-bg3);
+  color: var(--color-text2);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.skill-chip:hover {
+  border-color: var(--color-accent);
+  color: var(--color-text);
+}
+
+.skill-chip-active {
+  background: var(--color-accent2);
+  border-color: var(--color-accent);
+  color: var(--color-text);
+}
+
+/* Danger border helper (used on remove card) */
+.border-danger\/30 {
+  border-color: rgba(255, 107, 107, 0.3);
+}
+
+/* cli-badge-info shorthand (reused from global) */
+.cli-badge-info {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  background: var(--color-info);
+  color: #1a1a2e;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Disabled button state */
+.cli-btn[disabled] {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}

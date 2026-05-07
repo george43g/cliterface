@@ -1,0 +1,66 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.pitfall-card {
+  border-left: 3px solid var(--color-warning);
+}
+
+.pitfall-card .pitfall-problem {
+  color: var(--color-warning);
+}
+
+.flag-card {
+  border-left: 3px solid var(--color-accent2);
+}
+
+.pattern-card {
+  border-left: 3px solid var(--color-success);
+}
+
+.pipeline-preview {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.pipeline-pipe {
+  color: var(--color-accent);
+  font-weight: 700;
+  padding: 0 4px;
+}
+
+.cmd-segment {
+  padding: 2px 6px;
+  border-radius: 4px;
+  cursor: help;
+  transition: background 0.15s ease;
+}
+
+.cmd-segment:hover {
+  background: rgba(233, 69, 96, 0.15);
+}
+
+.cmd-segment-command {
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+.cmd-segment-flag {
+  color: var(--color-info);
+}
+
+.cmd-segment-value {
+  color: var(--color-warning);
+}
+
+.cmd-segment-argument {
+  color: var(--color-success);
+}
+
+.cmd-segment-separator {
+  color: transparent;
+  user-select: none;
+}

@@ -1,0 +1,54 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+/* Command segment hover styles */
+.cmd-seg {
+  display: inline;
+  padding: 0.1rem 0.2rem;
+  border-radius: 3px;
+  transition: background-color 0.15s ease;
+  cursor: help;
+}
+
+.cmd-seg-command {
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+.cmd-seg-flag {
+  color: var(--color-warning);
+}
+
+.cmd-seg-value {
+  color: var(--color-success);
+}
+
+.cmd-seg-subcommand {
+  color: var(--color-info);
+}
+
+.cmd-seg-separator {
+  color: var(--color-text2);
+}
+
+.cmd-seg-highlight {
+  background-color: rgba(233, 69, 96, 0.2);
+  outline: 1px solid var(--color-accent);
+  outline-offset: 1px;
+}
+
+/* Direction badge colours */
+.bg-info {
+  background-color: var(--color-info);
+}
+.bg-success {
+  background-color: var(--color-success);
+}
+.bg-warning {
+  background-color: var(--color-warning);
+}
+.text-bg {
+  color: var(--color-bg);
+}

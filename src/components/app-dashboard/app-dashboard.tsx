@@ -18,85 +18,43 @@ export class AppDashboard {
   @State() selectedTool: string | null = null;
 
   private tools: ToolInfo[] = [
-    {
-      id: 'yabai',
-      name: 'yabai',
-      description: 'Window manager for macOS',
-      icon: '🪟',
-      version: 'v7.1.17',
-      status: 'available',
-    },
-    {
-      id: 'jq',
-      name: 'jq',
-      description: 'Command-line JSON processor',
-      icon: '📋',
-      version: '1.7',
-      status: 'available',
-    },
-    {
-      id: 'sed',
-      name: 'sed',
-      description: 'Stream editor for text processing',
-      icon: '📝',
-      status: 'available',
-    },
-    {
-      id: 'awk',
-      name: 'awk',
-      description: 'Pattern scanning and processing language',
-      icon: '🔪',
-      status: 'available',
-    },
-    {
-      id: 'docker',
-      name: 'Docker',
-      description: 'Container management',
-      icon: '🐳',
-      status: 'coming-soon',
-    },
-    {
-      id: 'git',
-      name: 'Git',
-      description: 'Version control',
-      icon: '📦',
-      status: 'coming-soon',
-    },
-    {
-      id: 'ssh',
-      name: 'SSH',
-      description: 'Remote connection manager',
-      icon: '🔐',
-      status: 'coming-soon',
-    },
-    {
-      id: 'firebase',
-      name: 'Firebase',
-      description: 'Firebase CLI tools',
-      icon: '🔥',
-      status: 'coming-soon',
-    },
-    {
-      id: 'codex',
-      name: 'Codex CLI',
-      description: 'OpenAI coding and agent workflows',
-      icon: '🧠',
-      status: 'coming-soon',
-    },
-    {
-      id: 'oz',
-      name: 'Oz CLI',
-      description: 'Agent-friendly automation command toolkit',
-      icon: '🪄',
-      status: 'coming-soon',
-    },
-    {
-      id: 'cursor-agent',
-      name: 'Cursor Agent CLI',
-      description: 'Cursor cloud agent task runner',
-      icon: '☁️',
-      status: 'coming-soon',
-    },
+    { id: 'yabai', name: 'yabai', description: 'Window manager for macOS', icon: '🪟', version: 'v7.1.17', status: 'available' },
+    { id: 'jq', name: 'jq', description: 'Command-line JSON processor', icon: '📋', version: '1.7', status: 'available' },
+    { id: 'sed', name: 'sed', description: 'Stream editor for text processing', icon: '📝', status: 'available' },
+    { id: 'awk', name: 'awk', description: 'Pattern scanning and processing language', icon: '🔪', status: 'available' },
+    { id: 'ssh', name: 'SSH', description: 'Remote connection manager', icon: '🔐', status: 'available' },
+    { id: 'firebase', name: 'Firebase', description: 'Firebase CLI tools', icon: '🔥', status: 'available' },
+    { id: 'docker', name: 'Docker', description: 'Container management', icon: '🐳', status: 'available' },
+    { id: 'docker-compose', name: 'Docker Compose', description: 'Multi-container orchestration', icon: '🛳️', status: 'available' },
+    { id: 'git', name: 'Git', description: 'Version control', icon: '🌿', status: 'available' },
+    { id: 'gh', name: 'GitHub CLI', description: 'GitHub from the terminal', icon: '🐙', status: 'available' },
+    { id: 'codex', name: 'Codex CLI', description: 'OpenAI coding & agent workflows', icon: '🧠', status: 'available' },
+    { id: 'oz', name: 'Oz CLI', description: 'Warp cloud agent orchestration', icon: '🪄', status: 'available' },
+    { id: 'cursor-agent', name: 'Cursor Agent', description: 'Cursor cloud agent task runner', icon: '☁️', status: 'available' },
+    { id: 'npx-skills', name: 'npx skills', description: 'Reusable AI agent skills', icon: '💎', status: 'available' },
+    { id: 'tsr', name: 'tsr', description: 'TypeScript dead-code remover', icon: '🩺', status: 'available' },
+    { id: 'op', name: '1Password CLI', description: 'Secret manager (op)', icon: '🔑', status: 'available' },
+    { id: 'task', name: 'Taskwarrior', description: 'Command-line task tracker', icon: '✅', status: 'available' },
+    { id: 'supabase', name: 'Supabase', description: 'Supabase project & local dev', icon: '⚡', status: 'available' },
+    { id: 'vercel', name: 'Vercel', description: 'Deploy with Vercel', icon: '▲', status: 'available' },
+    { id: 'firecrawl', name: 'Firecrawl', description: 'Web scraping CLI', icon: '🕷️', status: 'available' },
+    { id: 'npm', name: 'npm', description: 'Node package manager', icon: '📦', status: 'available' },
+    { id: 'pnpm', name: 'pnpm', description: 'Performant npm', icon: '🚀', status: 'available' },
+    { id: 'ps', name: 'ps', description: 'Process status', icon: '📊', status: 'available' },
+    { id: 'tmux', name: 'tmux', description: 'Terminal multiplexer & cheatsheet', icon: '🧱', status: 'available' },
+    { id: 'zsh', name: 'zsh & zprezto', description: 'Z shell + framework reference', icon: '🐚', status: 'available' },
+    { id: 'vim', name: 'vim / nvim', description: 'Modal editor cheatsheet', icon: '🦄', status: 'available' },
+    { id: 'gcloud', name: 'gcloud', description: 'Google Cloud SDK', icon: '🌩️', status: 'available' },
+    { id: 'signal-cli', name: 'signal-cli', description: 'Signal Messenger CLI', icon: '📨', status: 'available' },
+    { id: 'xargs', name: 'xargs', description: 'Build arg lists from stdin', icon: '🪡', status: 'available' },
+    { id: 'tee', name: 'tee', description: 'Pipe to multiple outputs', icon: '🪣', status: 'available' },
+    { id: 'posix', name: 'POSIX tools', description: 'Standard utilities reference', icon: '🧰', status: 'available' },
+    { id: 'ln', name: 'ln', description: 'Symbolic & hard links', icon: '🪢', status: 'available' },
+    { id: 'bash-tests', name: 'bash tests', description: '[[ test ]] expressions cheatsheet', icon: '🧪', status: 'available' },
+    { id: 'scp', name: 'scp', description: 'Secure copy over SSH', icon: '📤', status: 'available' },
+    { id: 'rsync', name: 'rsync', description: 'Fast incremental file sync', icon: '🔄', status: 'available' },
+    { id: 'nc', name: 'nc (netcat)', description: 'TCP/UDP swiss army knife', icon: '🔌', status: 'available' },
+    { id: 'nmap', name: 'nmap', description: 'Network mapper / port scanner', icon: '🛰️', status: 'available' },
   ];
 
   selectTool(toolId: string): void {
@@ -161,14 +119,43 @@ export class AppDashboard {
 
   renderToolInterface(): Element {
     switch (this.selectedTool) {
-      case 'yabai':
-        return <yabai-gui />;
-      case 'jq':
-        return <jq-gui />;
-      case 'sed':
-        return <sed-gui />;
-      case 'awk':
-        return <awk-gui />;
+      case 'yabai': return <yabai-gui />;
+      case 'jq': return <jq-gui />;
+      case 'sed': return <sed-gui />;
+      case 'awk': return <awk-gui />;
+      case 'ssh': return <ssh-gui />;
+      case 'firebase': return <firebase-gui />;
+      case 'docker': return <docker-gui />;
+      case 'docker-compose': return <docker-compose-gui />;
+      case 'git': return <git-gui />;
+      case 'gh': return <gh-gui />;
+      case 'codex': return <codex-gui />;
+      case 'oz': return <oz-gui />;
+      case 'cursor-agent': return <cursor-agent-gui />;
+      case 'npx-skills': return <npx-skills-gui />;
+      case 'tsr': return <tsr-gui />;
+      case 'op': return <op-gui />;
+      case 'task': return <task-gui />;
+      case 'supabase': return <supabase-gui />;
+      case 'vercel': return <vercel-gui />;
+      case 'firecrawl': return <firecrawl-gui />;
+      case 'npm': return <npm-gui />;
+      case 'pnpm': return <pnpm-gui />;
+      case 'ps': return <ps-gui />;
+      case 'tmux': return <tmux-gui />;
+      case 'zsh': return <zsh-gui />;
+      case 'vim': return <vim-gui />;
+      case 'gcloud': return <gcloud-gui />;
+      case 'signal-cli': return <signal-cli-gui />;
+      case 'xargs': return <xargs-gui />;
+      case 'tee': return <tee-gui />;
+      case 'posix': return <posix-gui />;
+      case 'ln': return <ln-gui />;
+      case 'bash-tests': return <bash-tests-gui />;
+      case 'scp': return <scp-gui />;
+      case 'rsync': return <rsync-gui />;
+      case 'nc': return <nc-gui />;
+      case 'nmap': return <nmap-gui />;
       default:
         return (
           <div class="p-8 text-center">

@@ -1,0 +1,9 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+/* Tab content area */
+.tab-content {
+  width: 100%;
+}

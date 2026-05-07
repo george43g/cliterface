@@ -1,0 +1,69 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+/* ── Pipe diagram ─────────────────────────────────────────────── */
+.pipe-diagram-wrapper {
+  overflow-x: auto;
+}
+
+.pipe-diagram {
+  display: block;
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.diag-node {
+  stroke-width: 1.5;
+  fill-opacity: 0.9;
+}
+
+.diag-stdin {
+  fill: var(--color-bg3);
+  stroke: var(--color-accent2);
+}
+
+.diag-tee {
+  fill: var(--color-accent);
+  stroke: var(--color-accent);
+  filter: drop-shadow(0 0 6px rgba(233, 69, 96, 0.5));
+}
+
+.diag-stdout {
+  fill: var(--color-bg3);
+  stroke: var(--color-success);
+}
+
+.diag-file {
+  fill: var(--color-bg3);
+  stroke: var(--color-info);
+}
+
+.diag-arrow {
+  stroke: var(--color-text2);
+  stroke-width: 1.5;
+  fill: none;
+}
+
+.diag-arrowhead {
+  fill: var(--color-text2);
+}
+
+.diag-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  fill: var(--color-text);
+  user-select: none;
+}
+
+.diag-label-tee {
+  fill: #fff;
+  font-weight: 600;
+}
+
+.diag-output-label {
+  font-size: 9.5px;
+  fill: var(--color-text2);
+}
