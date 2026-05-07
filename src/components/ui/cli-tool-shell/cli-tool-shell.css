@@ -1,0 +1,19 @@
+:host {
+  display: block;
+}
+
+.cli-tool-shell {
+  min-height: 100vh;
+}
+
+.shell-tab-bar {
+  /* border-b provided via Tailwind in JSX */
+}
+
+.shell-content {
+  /* slot wrapper — no extra layout needed */
+}
+
+.shell-output-panel {
+  /* uses .cli-card from global; override only structural needs */
+}

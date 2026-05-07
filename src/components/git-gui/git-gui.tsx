@@ -1,6 +1,7 @@
 import { Component, h, State } from '@stencil/core';
 import { buildDiffCommand, buildLogCommand, buildPullCommand, buildPushCommand, GIT_DOCS, type LogFormatId, RESET_OPTIONS, validateRefName } from '../../git/git-command-builders';
 import { type CommandResult, executeCommand, gitService } from '../../git/git-service';
+import { GIT_VAULT_NOTES } from '../../git/git-vault-notes';
 
 const TABS = [
   { id: 'status', label: 'Status' },
@@ -10,6 +11,7 @@ const TABS = [
   { id: 'sync', label: 'Sync' },
   { id: 'stash', label: 'Stash' },
   { id: 'advanced', label: 'Advanced' },
+  { id: 'notes', label: '📓 Notes' },
 ] as const;
 
 type TabId = (typeof TABS)[number]['id'];
@@ -1553,6 +1555,29 @@ export class GitGui {
     );
   }
 
+  renderNotesTab() {
+    return (
+      <div class="grid grid-cols-1 gap-4">
+        {GIT_VAULT_NOTES.map((n, i) => (
+          <div key={i} class="cli-card">
+            <h3 class="text-base mb-2">{n.heading}</h3>
+            {n.tags && n.tags.length > 0 && (
+              <div class="mb-2 flex flex-wrap gap-1">
+                {n.tags.map(t => (
+                  <span key={t} class="text-xs px-2 py-0.5 bg-bg3 rounded text-text2">
+                    {t}
+                  </span>
+                ))}
+              </div>
+            )}
+            <pre class="text-sm text-text whitespace-pre-wrap font-mono leading-relaxed">{n.body}</pre>
+            {n.codeSnippet && <pre class="text-xs mt-2 p-2 bg-bg3 rounded font-mono whitespace-pre-wrap text-accent">{n.codeSnippet}</pre>}
+          </div>
+        ))}
+      </div>
+    );
+  }
+
   // ── Root render ───────────────────────────────────────────────────────────
 
   render() {
@@ -1588,6 +1613,7 @@ export class GitGui {
           {this.activeTab === 'sync' && this.renderSyncTab()}
           {this.activeTab === 'stash' && this.renderStashTab()}
           {this.activeTab === 'advanced' && this.renderAdvancedTab()}
+          {this.activeTab === 'notes' && this.renderNotesTab()}
         </div>
       </div>
     );

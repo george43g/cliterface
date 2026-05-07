@@ -3,8 +3,9 @@ import { awkActionPresets, awkExamples, awkFieldSeparators, awkPatternPresets, b
 import { getAwkManPage } from '../../awk/awk-documentation';
 import { awkService, type CommandResult } from '../../awk/awk-service';
 import { type CommandSegment, parseCommandIntoSegments } from '../../utils/command-builder';
+import type { ToolShellTab } from '../ui/cli-tool-shell/cli-tool-shell';
 
-const TAB_DEFINITIONS = [
+const TAB_DEFINITIONS: ToolShellTab[] = [
   { id: 'builder', label: 'Script Builder' },
   { id: 'presets', label: 'Presets' },
   { id: 'input', label: 'Text Input' },
@@ -242,14 +243,6 @@ export class AwkGui {
     this.highlightedSegmentIndex = null;
   }
 
-  renderTabs() {
-    return TAB_DEFINITIONS.map(tab => (
-      <button type="button" key={tab.id} class={`cli-tab ${this.activeTab === tab.id ? 'cli-tab-active' : ''}`} onClick={() => (this.activeTab = tab.id)}>
-        {tab.label}
-      </button>
-    ));
-  }
-
   renderCommandPreview() {
     return (
       <div class="cli-cmd-preview">
@@ -396,16 +389,6 @@ export class AwkGui {
             <h4 class="text-sm text-text2 mb-2">
               Status: <span class={this.status === 'error' ? 'text-danger' : this.status === 'success' ? 'text-success' : ''}>{this.statusMessage}</span>
             </h4>
-          </div>
-
-          <div class="mt-4">
-            <div class="flex justify-between items-center mb-2">
-              <span class="text-text2 text-sm">Output</span>
-              <button type="button" class="cli-btn cli-btn-sm" onClick={() => this.copyOutput()}>
-                Copy
-              </button>
-            </div>
-            <pre class="cli-output">{this.output}</pre>
           </div>
         </div>
 
@@ -609,42 +592,35 @@ export class AwkGui {
             Execute
           </button>
         </div>
-
-        <div class="cli-card">
-          <h3 class="text-text2 text-base mb-3">Output</h3>
-          <div class="flex justify-between items-center mb-2">
-            <span class="text-text2 text-sm">Result</span>
-            <button type="button" class="cli-btn cli-btn-sm" onClick={() => this.copyOutput()}>
-              Copy
-            </button>
-          </div>
-          <pre class="cli-output">{this.output}</pre>
-        </div>
       </div>
     );
   }
 
   render() {
     return (
-      <div class="min-h-screen">
-        <header class="mb-4">
-          <h2 class="text-xl font-semibold flex items-center gap-2">
-            <span>📝</span> awk GUI
-            <span class="text-sm font-normal text-text2">v{this.version}</span>
-          </h2>
-          <p class="text-text2 text-sm">Visual interface for awk - Pattern scanning and processing language</p>
-        </header>
-
-        <div class="border-b border-accent2 mb-4">{this.renderTabs()}</div>
-
-        <div class="tab-content">
-          {this.activeTab === 'builder' && this.renderBuilderTab()}
-          {this.activeTab === 'presets' && this.renderPresetsTab()}
-          {this.activeTab === 'input' && this.renderInputTab()}
-          {this.activeTab === 'docs' && this.renderDocsTab()}
-          {this.activeTab === 'raw' && this.renderRawTab()}
-        </div>
-      </div>
+      <cli-tool-shell
+        icon="📝"
+        toolTitle="awk GUI"
+        subtitle="Visual interface for awk - Pattern scanning and processing language"
+        version={`v${this.version}`}
+        tabs={TAB_DEFINITIONS}
+        activeTab={this.activeTab}
+        lastCommand={this.lastCommand}
+        output={this.output}
+        status={this.statusMessage}
+        statusState={this.status}
+        onTabChange={(e: CustomEvent<string>) => {
+          this.activeTab = e.detail;
+        }}
+        onCopyOutput={() => void this.copyOutput()}
+        onClearOutput={() => this.clearOutput()}
+      >
+        {this.activeTab === 'builder' && this.renderBuilderTab()}
+        {this.activeTab === 'presets' && this.renderPresetsTab()}
+        {this.activeTab === 'input' && this.renderInputTab()}
+        {this.activeTab === 'docs' && this.renderDocsTab()}
+        {this.activeTab === 'raw' && this.renderRawTab()}
+      </cli-tool-shell>
     );
   }
 }

@@ -1,4 +1,6 @@
 import { Component, h, State } from '@stencil/core';
+import { VIM_LEADER, VIM_PERSONAL_BINDINGS, VIM_PERSONAL_PLUGINS, VIM_PERSONAL_SETTINGS, VIM_PERSONAL_THEME } from '../../vim/vim-personal';
+import { VIM_VAULT_NOTES } from '../../vim/vim-vault-notes';
 import { getVimDocPage } from '../../vim/vim-documentation';
 import {
   CLI_FLAGS,
@@ -18,6 +20,7 @@ import {
 import { buildVimCommand, type VimCliOptions } from '../../vim/vim-service';
 
 const TABS = [
+  { id: 'personal', label: '⚙️ Your Setup' },
   { id: 'modes', label: 'Modes' },
   { id: 'motions', label: 'Motions' },
   { id: 'operators', label: 'Operators' },
@@ -26,6 +29,7 @@ const TABS = [
   { id: 'macros', label: 'Macros' },
   { id: 'excmds', label: 'Ex-Commands' },
   { id: 'flags', label: 'CLI Flags' },
+  { id: 'notes', label: '📓 Notes' },
 ];
 
 @Component({
@@ -614,6 +618,94 @@ export class VimGui {
     );
   }
 
+  renderPersonalTab() {
+    const cocBindings = VIM_PERSONAL_BINDINGS.filter(b => b.group === 'LSP/CoC');
+    const cocList = VIM_PERSONAL_BINDINGS.filter(b => b.group === 'CoC Lists');
+    const otherGroups = [...new Set(VIM_PERSONAL_BINDINGS.filter(b => b.group !== 'LSP/CoC' && b.group !== 'CoC Lists').map(b => b.group))];
+    return (
+      <div class="grid grid-cols-1 gap-5">
+        <div class="cli-card">
+          <h3 class="text-base mb-3">Theme &amp; Settings</h3>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+            <div class="p-2 bg-bg3 rounded"><div class="text-text2 text-xs mb-1">Leader key</div><code class="text-accent font-bold text-lg">{VIM_LEADER}</code></div>
+            <div class="p-2 bg-bg3 rounded"><div class="text-text2 text-xs mb-1">Font</div><code class="text-xs">{VIM_PERSONAL_THEME.font}</code></div>
+            <div class="p-2 bg-bg3 rounded"><div class="text-text2 text-xs mb-1">Line numbers</div><span class="text-success text-xs">{VIM_PERSONAL_THEME.lineNumbers}</span></div>
+            <div class="p-2 bg-bg3 rounded"><div class="text-text2 text-xs mb-1">Status line</div><span class="text-xs">{VIM_PERSONAL_THEME.statusLine}</span></div>
+          </div>
+          <div class="mt-3 flex flex-wrap gap-2 text-xs">
+            <span class="px-2 py-1 bg-bg3 rounded">updatetime={VIM_PERSONAL_SETTINGS.updatetime}ms</span>
+            <span class="px-2 py-1 bg-bg3 rounded">cmdheight={VIM_PERSONAL_SETTINGS.cmdheight}</span>
+            <span class="px-2 py-1 bg-bg3 rounded">NERDTree right, w={VIM_PERSONAL_SETTINGS.nerdtree_size}</span>
+            <span class="px-2 py-1 bg-bg3 rounded">Goyo width={VIM_PERSONAL_SETTINGS.goyo_width}</span>
+          </div>
+        </div>
+        <div class="cli-card border border-accent2">
+          <h3 class="text-base mb-1 flex items-center gap-2"><span class="text-accent">CoC LSP</span><span class="text-xs text-text2 font-normal">(Conqueror of Completion — Language Server Protocol)</span></h3>
+          <p class="text-xs text-text2 mb-3">gd/gy/gi/gr navigate code; K hovers; [g/]g cycle diagnostics</p>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <table class="w-full text-sm"><tbody>
+              {cocBindings.filter(b => ['gd', 'gy', 'gi', 'gr', 'K', '[g', ']g'].some(k => b.keys.startsWith(k))).map((b, i) => (
+                <tr key={i} class="border-b border-bg3"><td class="py-1 pr-3"><code class="text-accent font-mono">{b.keys}</code></td><td class="py-1 text-xs text-text2">{b.action}</td></tr>
+              ))}
+            </tbody></table>
+            <table class="w-full text-sm"><tbody>
+              {cocBindings.filter(b => !['gd', 'gy', 'gi', 'gr', 'K', '[g', ']g'].some(k => b.keys.startsWith(k))).map((b, i) => (
+                <tr key={i} class="border-b border-bg3"><td class="py-1 pr-3"><code class="text-accent font-mono">{b.keys}</code></td><td class="py-1 text-xs text-text2">{b.action}</td></tr>
+              ))}
+            </tbody></table>
+          </div>
+          <div class="mt-4">
+            <div class="text-xs text-text2 mb-2 uppercase tracking-wide">CoC Lists (space prefix)</div>
+            <div class="flex flex-wrap gap-2">
+              {cocList.map((b, i) => (
+                <div key={i} class="flex items-center gap-1 px-2 py-1 bg-bg3 rounded text-xs"><code class="text-accent font-mono">{b.keys}</code><span class="text-text2">→</span><span>{b.action}</span></div>
+              ))}
+            </div>
+          </div>
+        </div>
+        {otherGroups.map(group => (
+          <div key={group} class="cli-card">
+            <h3 class="text-base mb-3">{group}</h3>
+            <table class="w-full text-sm"><tbody>
+              {VIM_PERSONAL_BINDINGS.filter(b => b.group === group).map((b, i) => (
+                <tr key={i} class="border-b border-bg3"><td class="py-1 pr-3"><code class="text-accent font-mono">{b.keys}</code></td><td class="py-1 pr-3 text-xs text-text2">{b.mode || 'n'}</td><td class="py-1 text-xs">{b.action}</td><td class="py-1 text-xs text-text2 opacity-70">{b.plugin || ''}</td></tr>
+              ))}
+            </tbody></table>
+          </div>
+        ))}
+        <div class="cli-card">
+          <h3 class="text-base mb-3">Plugins ({VIM_PERSONAL_PLUGINS.length})</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {VIM_PERSONAL_PLUGINS.map((p, i) => (
+              <div key={i} class="p-3 bg-bg3 rounded-lg">
+                <div class="font-medium text-sm mb-1">{p.name}</div>
+                <div class="text-xs text-text2 mb-2">{p.purpose}</div>
+                {p.bindings && p.bindings.length > 0 && (
+                  <div class="flex flex-wrap gap-1">{p.bindings.map((b, j) => <code key={j} class="text-xs px-1 py-0.5 bg-bg2 rounded text-accent">{b}</code>)}</div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  renderNotesTab() {
+    return (
+      <div class="grid grid-cols-1 gap-4">
+        {VIM_VAULT_NOTES.map((n, i) => (
+          <div key={i} class="cli-card">
+            <h3 class="text-base mb-2">{n.heading}</h3>
+            {n.tags && n.tags.length > 0 && <div class="mb-2 flex flex-wrap gap-1">{n.tags.map(t => <span key={t} class="text-xs px-2 py-0.5 bg-bg3 rounded text-text2">{t}</span>)}</div>}
+            <pre class="text-sm text-text whitespace-pre-wrap font-mono leading-relaxed">{n.body}</pre>
+            {n.codeSnippet && <pre class="text-xs mt-2 p-2 bg-bg3 rounded font-mono whitespace-pre-wrap text-accent">{n.codeSnippet}</pre>}
+          </div>
+        ))}
+      </div>
+    );
+  }
+
   render() {
     return (
       <div class="min-h-screen">
@@ -660,6 +752,7 @@ export class VimGui {
 
         {/* Tab content */}
         <div class="tab-content">
+          {this.activeTab === 'personal' && this.renderPersonalTab()}
           {this.activeTab === 'modes' && this.renderModesTab()}
           {this.activeTab === 'motions' && this.renderMotionsTab()}
           {this.activeTab === 'operators' && this.renderOperatorsTab()}
@@ -668,6 +761,7 @@ export class VimGui {
           {this.activeTab === 'macros' && this.renderMacrosTab()}
           {this.activeTab === 'excmds' && this.renderExCmdsTab()}
           {this.activeTab === 'flags' && this.renderFlagsTab()}
+          {this.activeTab === 'notes' && this.renderNotesTab()}
         </div>
       </div>
     );

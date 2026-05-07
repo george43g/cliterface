@@ -1,14 +1,18 @@
 import { Component, h, State } from '@stencil/core';
 import { aliasSnippets, globSections, paramSections, promptThemes } from '../../zsh/zsh-documentation';
 import { bindkeyExamples, emacsBindings, type KeyBindingGroup, viBindings } from '../../zsh/zsh-keybindings';
+import { ZSH_ALIASES, ZSH_KEYBINDINGS, ZSH_PLUGINS, ZSH_SETTINGS } from '../../zsh/zsh-personal';
 import { type ZpreztoPlugin, zpreztoPlugins, zpreztoRcTemplate } from '../../zsh/zsh-plugins';
+import { ZSH_VAULT_NOTES } from '../../zsh/zsh-vault-notes';
 
 const TAB_DEFINITIONS = [
+  { id: 'personal', label: '⚙️ Your Setup' },
   { id: 'keybindings', label: 'Keybindings' },
   { id: 'plugins', label: 'Plugins / Modules' },
   { id: 'globbing', label: 'Globbing' },
   { id: 'param-expansion', label: 'Parameter Expansion' },
   { id: 'themes', label: 'Themes & Snippets' },
+  { id: 'notes', label: '📓 Notes' },
 ];
 
 @Component({
@@ -521,6 +525,118 @@ export class ZshGui {
     );
   }
 
+  // ── Personal tab ─────────────────────────────────────────────────────────
+
+  renderPersonalTab() {
+    const aliasCategories = [...new Set(ZSH_ALIASES.map(a => a.category))];
+    return (
+      <div class="grid grid-cols-1 gap-5">
+        {/* Settings chips */}
+        <div class="cli-card">
+          <h3 class="text-base mb-3">Settings</h3>
+          <div class="flex flex-wrap gap-2 text-xs">
+            <span class="px-2 py-1 bg-bg3 rounded">vi-mode={String(ZSH_SETTINGS.viMode)}</span>
+            <span class="px-2 py-1 bg-bg3 rounded">KEYTIMEOUT={ZSH_SETTINGS.keyTimeout}0ms</span>
+            <span class="px-2 py-1 bg-bg3 rounded">theme={ZSH_SETTINGS.promptTheme}</span>
+            <span class="px-2 py-1 bg-bg3 rounded">jumper={ZSH_SETTINGS.directoryJumper}</span>
+            <span class="px-2 py-1 bg-bg3 rounded">history={ZSH_SETTINGS.historyMode}</span>
+            {ZSH_SETTINGS.historyOptions.map((o, i) => (
+              <span key={i} class="px-2 py-1 bg-bg3 rounded">
+                {o}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* Aliases grouped by category */}
+        {aliasCategories.map(cat => (
+          <div key={cat} class="cli-card">
+            <h3 class="text-base mb-3">{cat} Aliases</h3>
+            <table class="w-full text-sm">
+              <tbody>
+                {ZSH_ALIASES.filter(a => a.category === cat).map((a, i) => (
+                  <tr key={i} class="border-b border-bg3">
+                    <td class="py-1 pr-3 whitespace-nowrap">
+                      <code class="text-accent font-mono">{a.alias}</code>
+                    </td>
+                    <td class="py-1 pr-3 font-mono text-xs text-info break-all">{a.command}</td>
+                    <td class="py-1 text-xs text-text2">{a.description}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ))}
+
+        {/* Plugins */}
+        <div class="cli-card">
+          <h3 class="text-base mb-3">Plugins &amp; Tools ({ZSH_PLUGINS.length})</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {ZSH_PLUGINS.map((p, i) => (
+              <div key={i} class="p-3 bg-bg3 rounded-lg">
+                <div class="font-medium text-sm mb-1">{p.name}</div>
+                <div class="text-xs text-text2 mb-1">{p.purpose}</div>
+                <div class="text-xs text-text2 opacity-70 mb-2">manager: {p.manager}</div>
+                {p.enables && p.enables.length > 0 && (
+                  <div class="flex flex-wrap gap-1">
+                    {p.enables.map((e, j) => (
+                      <code key={j} class="text-xs px-1 py-0.5 bg-bg2 rounded text-accent">
+                        {e}
+                      </code>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Keybindings */}
+        <div class="cli-card">
+          <h3 class="text-base mb-3">Custom Keybindings</h3>
+          <table class="w-full text-sm">
+            <tbody>
+              {ZSH_KEYBINDINGS.map((b, i) => (
+                <tr key={i} class="border-b border-bg3">
+                  <td class="py-1 pr-3 whitespace-nowrap">
+                    <code class="text-accent font-mono">{b.keys}</code>
+                  </td>
+                  <td class="py-1 text-xs">{b.action}</td>
+                  {b.note && <td class="py-1 text-xs text-text2 opacity-70">{b.note}</td>}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    );
+  }
+
+  // ── Notes tab ─────────────────────────────────────────────────────────────
+
+  renderNotesTab() {
+    return (
+      <div class="grid grid-cols-1 gap-4">
+        {ZSH_VAULT_NOTES.map((n, i) => (
+          <div key={i} class="cli-card">
+            <h3 class="text-base mb-2">{n.heading}</h3>
+            {n.tags && n.tags.length > 0 && (
+              <div class="mb-2 flex flex-wrap gap-1">
+                {n.tags.map(t => (
+                  <span key={t} class="text-xs px-2 py-0.5 bg-bg3 rounded text-text2">
+                    {t}
+                  </span>
+                ))}
+              </div>
+            )}
+            <pre class="text-sm text-text whitespace-pre-wrap font-mono leading-relaxed">{n.body}</pre>
+            {n.codeSnippet && <pre class="text-xs mt-2 p-2 bg-bg3 rounded font-mono whitespace-pre-wrap text-accent">{n.codeSnippet}</pre>}
+          </div>
+        ))}
+      </div>
+    );
+  }
+
   // ── Root render ──────────────────────────────────────────────────────────
 
   render() {
@@ -536,11 +652,13 @@ export class ZshGui {
         {this.renderTabs()}
 
         <div class="tab-content">
+          {this.activeTab === 'personal' && this.renderPersonalTab()}
           {this.activeTab === 'keybindings' && this.renderKeybindingsTab()}
           {this.activeTab === 'plugins' && this.renderPluginsTab()}
           {this.activeTab === 'globbing' && this.renderGlobbingTab()}
           {this.activeTab === 'param-expansion' && this.renderParamExpansionTab()}
           {this.activeTab === 'themes' && this.renderThemesTab()}
+          {this.activeTab === 'notes' && this.renderNotesTab()}
         </div>
       </div>
     );

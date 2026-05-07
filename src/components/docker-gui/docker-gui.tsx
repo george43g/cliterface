@@ -1,5 +1,6 @@
 import { Component, h, State } from '@stencil/core';
 import { type CommandResult, dockerService, executeCommand } from '../../docker/docker-service';
+import { DOCKER_VAULT_NOTES } from '../../docker/docker-vault-notes';
 
 const TABS = [
   { id: 'containers', label: '🐳 Containers' },
@@ -9,6 +10,7 @@ const TABS = [
   { id: 'build', label: '🔨 Build' },
   { id: 'run', label: '▶️ Run' },
   { id: 'system', label: '⚙️ System' },
+  { id: 'notes', label: '📓 Notes' },
 ];
 
 @Component({
@@ -1376,6 +1378,33 @@ export class DockerGui {
   }
 
   // ─────────────────────────────────────────────────────────────────────────
+  // Tab: Notes
+  // ─────────────────────────────────────────────────────────────────────────
+
+  renderNotesTab() {
+    return (
+      <div class="grid grid-cols-1 gap-4">
+        {DOCKER_VAULT_NOTES.map((n, i) => (
+          <div key={i} class="cli-card">
+            <h3 class="text-base mb-2">{n.heading}</h3>
+            {n.tags && n.tags.length > 0 && (
+              <div class="mb-2 flex flex-wrap gap-1">
+                {n.tags.map(t => (
+                  <span key={t} class="text-xs px-2 py-0.5 bg-bg3 rounded text-text2">
+                    {t}
+                  </span>
+                ))}
+              </div>
+            )}
+            <pre class="text-sm text-text whitespace-pre-wrap font-mono leading-relaxed">{n.body}</pre>
+            {n.codeSnippet && <pre class="text-xs mt-2 p-2 bg-bg3 rounded font-mono whitespace-pre-wrap text-accent">{n.codeSnippet}</pre>}
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
   // Root render
   // ─────────────────────────────────────────────────────────────────────────
 
@@ -1399,6 +1428,7 @@ export class DockerGui {
           {this.activeTab === 'build' && this.renderBuildTab()}
           {this.activeTab === 'run' && this.renderRunTab()}
           {this.activeTab === 'system' && this.renderSystemTab()}
+          {this.activeTab === 'notes' && this.renderNotesTab()}
         </div>
 
         {this.renderOutputPanel()}

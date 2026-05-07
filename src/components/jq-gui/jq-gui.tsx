@@ -2,14 +2,17 @@ import { Component, Event, type EventEmitter, h, Prop, State } from '@stencil/co
 import { buildJqCommand, type JqFilter, type JqVariable, jqExamples, jqFilterPresets } from '../../jq/jq-command-builders';
 import { getJqManPage } from '../../jq/jq-documentation';
 import { type CommandResult, executeJqCommand, jqService } from '../../jq/jq-service';
+import { JQ_VAULT_NOTES } from '../../jq/jq-vault-notes';
 import { type CommandSegment, parseCommandIntoSegments } from '../../utils/command-builder';
+import type { ToolShellTab } from '../ui/cli-tool-shell/cli-tool-shell';
 
-const TAB_DEFINITIONS = [
+const TAB_DEFINITIONS: ToolShellTab[] = [
   { id: 'filter', label: 'Filter Builder' },
   { id: 'presets', label: 'Presets' },
   { id: 'json', label: 'JSON Input' },
   { id: 'docs', label: 'Documentation' },
   { id: 'raw', label: 'Raw' },
+  { id: 'notes', label: '📓 Notes' },
 ];
 
 const SAMPLE_JSON = `{
@@ -203,14 +206,6 @@ export class JqGui {
     this.highlightedSegmentIndex = null;
   }
 
-  renderTabs() {
-    return TAB_DEFINITIONS.map(tab => (
-      <button type="button" key={tab.id} class={`cli-tab ${this.activeTab === tab.id ? 'cli-tab-active' : ''}`} onClick={() => (this.activeTab = tab.id)}>
-        {tab.label}
-      </button>
-    ));
-  }
-
   renderCommandPreview() {
     return (
       <div class="cli-cmd-preview">
@@ -293,7 +288,7 @@ export class JqGui {
                 max="8"
                 value={this.indentSize}
                 onInput={(e: Event) => {
-                  this.indentSize = parseInt((e.target as HTMLInputElement).value, 10) || 2;
+                  this.indentSize = parseInt((e.target as HTMLInputElement).value) || 2;
                   this.updateCommandSegments();
                 }}
               />
@@ -321,16 +316,6 @@ export class JqGui {
             <h4 class="text-sm text-text2 mb-2">
               Status: <span class={this.status === 'error' ? 'text-danger' : this.status === 'success' ? 'text-success' : ''}>{this.statusMessage}</span>
             </h4>
-          </div>
-
-          <div class="mt-4">
-            <div class="flex justify-between items-center mb-2">
-              <span class="text-text2 text-sm">Output</span>
-              <button type="button" class="cli-btn cli-btn-sm" onClick={() => this.copyOutput()}>
-                Copy
-              </button>
-            </div>
-            <pre class="cli-output">{this.output}</pre>
           </div>
         </div>
 
@@ -491,6 +476,29 @@ export class JqGui {
     );
   }
 
+  renderNotesTab() {
+    return (
+      <div class="grid grid-cols-1 gap-4">
+        {JQ_VAULT_NOTES.map((n, i) => (
+          <div key={i} class="cli-card">
+            <h3 class="text-base mb-2">{n.heading}</h3>
+            {n.tags && n.tags.length > 0 && (
+              <div class="mb-2 flex flex-wrap gap-1">
+                {n.tags.map(t => (
+                  <span key={t} class="text-xs px-2 py-0.5 bg-bg3 rounded text-text2">
+                    {t}
+                  </span>
+                ))}
+              </div>
+            )}
+            <pre class="text-sm text-text whitespace-pre-wrap font-mono leading-relaxed">{n.body}</pre>
+            {n.codeSnippet && <pre class="text-xs mt-2 p-2 bg-bg3 rounded font-mono whitespace-pre-wrap text-accent">{n.codeSnippet}</pre>}
+          </div>
+        ))}
+      </div>
+    );
+  }
+
   renderRawTab() {
     return (
       <div class="grid grid-cols-1 gap-5">
@@ -519,42 +527,36 @@ export class JqGui {
             Execute
           </button>
         </div>
-
-        <div class="cli-card">
-          <h3 class="text-text2 text-base mb-3">Output</h3>
-          <div class="flex justify-between items-center mb-2">
-            <span class="text-text2 text-sm">Result</span>
-            <button type="button" class="cli-btn cli-btn-sm" onClick={() => this.copyOutput()}>
-              Copy
-            </button>
-          </div>
-          <pre class="cli-output">{this.output}</pre>
-        </div>
       </div>
     );
   }
 
   render() {
     return (
-      <div class="min-h-screen">
-        <header class="mb-4">
-          <h2 class="text-xl font-semibold flex items-center gap-2">
-            <span>📋</span> jq GUI
-            <span class="text-sm font-normal text-text2">v{this.version}</span>
-          </h2>
-          <p class="text-text2 text-sm">Visual interface for jq - Command-line JSON processor</p>
-        </header>
-
-        <div class="border-b border-accent2 mb-4">{this.renderTabs()}</div>
-
-        <div class="tab-content">
-          {this.activeTab === 'filter' && this.renderFilterTab()}
-          {this.activeTab === 'presets' && this.renderPresetsTab()}
-          {this.activeTab === 'json' && this.renderJsonTab()}
-          {this.activeTab === 'docs' && this.renderDocsTab()}
-          {this.activeTab === 'raw' && this.renderRawTab()}
-        </div>
-      </div>
+      <cli-tool-shell
+        icon="📋"
+        toolTitle="jq GUI"
+        subtitle="Visual interface for jq - Command-line JSON processor"
+        version={`v${this.version}`}
+        tabs={TAB_DEFINITIONS}
+        activeTab={this.activeTab}
+        lastCommand={this.lastCommand}
+        output={this.output}
+        status={this.statusMessage}
+        statusState={this.status}
+        onTabChange={(e: CustomEvent<string>) => {
+          this.activeTab = e.detail;
+        }}
+        onCopyOutput={() => void this.copyOutput()}
+        onClearOutput={() => this.clearOutput()}
+      >
+        {this.activeTab === 'filter' && this.renderFilterTab()}
+        {this.activeTab === 'presets' && this.renderPresetsTab()}
+        {this.activeTab === 'json' && this.renderJsonTab()}
+        {this.activeTab === 'docs' && this.renderDocsTab()}
+        {this.activeTab === 'raw' && this.renderRawTab()}
+        {this.activeTab === 'notes' && this.renderNotesTab()}
+      </cli-tool-shell>
     );
   }
 }

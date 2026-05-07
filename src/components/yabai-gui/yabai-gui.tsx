@@ -1,12 +1,16 @@
 import { Component, Event, type EventEmitter, h, Prop, State } from '@stencil/core';
 import { buildQueryCommand, buildRuleCommand, buildSignalCommand, formatCliValue, type QueryArgumentType, type QueryDomain } from '../../yabai/yabai-command-builders';
+import { HS_GLOBAL_BINDINGS, HS_LAYOUT_ITEMS, HS_MODES, HS_MOVE_ITEMS, HS_RESIZE_ITEMS, HS_SETTINGS } from '../../yabai/yabai-personal';
 import { type CommandResult, type CommandStatus, executeCommand, SIGNAL_EVENTS, yabai } from '../../yabai/yabai-service';
+import { YABAI_VAULT_NOTES } from '../../yabai/yabai-vault-notes';
+import type { ToolShellTab } from '../ui/cli-tool-shell/cli-tool-shell';
 
 const DEFAULT_OUTPUT = 'Run any yabai command to see mock output from the bridge stub.';
 const DEFAULT_STATUS = 'Ready — using mock yabai bridge';
 const DISPLAY_SELECTORS = ['prev', 'next', 'first', 'last', 'recent', 'mouse', '1', '2', '3'];
 const SPACE_SELECTORS = ['prev', 'next', 'first', 'last', 'recent', 'mouse', '1', '2', '3', '4', '5'];
-const TAB_DEFINITIONS = [
+const TAB_DEFINITIONS: ToolShellTab[] = [
+  { id: 'personal', label: '⚙️ Your Setup' },
   { id: 'query', label: 'Query' },
   { id: 'windows', label: 'Windows' },
   { id: 'spaces', label: 'Spaces' },
@@ -16,6 +20,7 @@ const TAB_DEFINITIONS = [
   { id: 'signals', label: 'Signals' },
   { id: 'service', label: 'Service' },
   { id: 'raw', label: 'Raw' },
+  { id: 'notes', label: '📓 Notes' },
 ];
 
 @Component({
@@ -534,13 +539,7 @@ export class YabaiGui {
     await this.executeCmd(`yabai ${flag}`);
   }
 
-  renderTabs() {
-    return TAB_DEFINITIONS.map(tab => (
-      <button type="button" key={tab.id} class={`cli-tab ${this.activeTab === tab.id ? 'cli-tab-active' : ''}`} onClick={() => this.switchTab(tab.id)}>
-        {tab.label}
-      </button>
-    ));
-  }
+  // renderTabs() removed — handled by cli-tool-shell
 
   renderQueryTab() {
     return (
@@ -2188,31 +2187,149 @@ export class YabaiGui {
     );
   }
 
-  renderOutputPanel() {
+  // renderOutputPanel() removed — handled by cli-tool-shell
+
+  renderPersonalTab() {
     return (
-      <div class="cli-card mt-5">
-        <div class="flex justify-between items-center mb-2 gap-3 flex-wrap">
-          <div>
-            <h3 class="text-text2 text-base m-0">Output</h3>
-            <p class="text-text2 text-xs mt-1 mb-0">Status: {this.status}</p>
+      <div class="grid grid-cols-1 gap-5">
+        {/* Framework info */}
+        <div class="cli-card">
+          <h3 class="text-base mb-3">Window Management Stack</h3>
+          <div class="flex flex-wrap gap-2 text-xs mb-3">
+            <span class="px-2 py-1 bg-bg3 rounded">framework: {HS_SETTINGS.framework}</span>
+            <span class="px-2 py-1 bg-bg3 rounded">config: {HS_SETTINGS.wmStack}</span>
+            <span class="px-2 py-1 bg-bg3 rounded">animation: {HS_SETTINGS.animationDuration}s</span>
+            <span class="px-2 py-1 bg-bg3 rounded">min-window: {HS_SETTINGS.minWindowSize}</span>
           </div>
-          <div class="flex gap-2">
-            <button type="button" class="cli-btn cli-btn-sm" onClick={() => void this.copyOutput()}>
-              Copy
-            </button>
-            <button type="button" class="cli-btn cli-btn-sm cli-btn-warning" onClick={() => this.clearOutput()}>
-              Clear
-            </button>
+          <div class="flex flex-wrap gap-2">
+            {HS_SETTINGS.features.map((f, i) => (
+              <span key={i} class="text-xs px-2 py-0.5 bg-bg3 rounded text-text2">
+                {f}
+              </span>
+            ))}
           </div>
         </div>
-        <div class="cli-cmd-preview">{this.lastCommand}</div>
-        <pre class="cli-output">{this.output}</pre>
+
+        {/* Modal modes */}
+        <div class="cli-card">
+          <h3 class="text-base mb-3">Modal Entry Keys</h3>
+          <div class="flex flex-wrap gap-3">
+            {HS_MODES.map((m, i) => (
+              <div key={i} class="p-3 bg-bg3 rounded-lg flex items-center gap-3">
+                <span style={{ display: 'inline-block', width: '12px', height: '12px', borderRadius: '50%', backgroundColor: m.color, flexShrink: '0' as const }}></span>
+                <div>
+                  <div class="font-medium text-sm">{m.name}</div>
+                  <code class="text-accent text-xs font-mono">{m.entryKeys}</code>
+                  <div class="text-text2 text-xs mt-0.5">{m.description}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Global bindings */}
+        <div class="cli-card">
+          <h3 class="text-base mb-3">Global Bindings</h3>
+          <table class="w-full text-sm">
+            <tbody>
+              {HS_GLOBAL_BINDINGS.map((b, i) => (
+                <tr key={i} class="border-b border-bg3">
+                  <td class="py-1 pr-3 whitespace-nowrap">
+                    <code class="text-accent font-mono">{b.keys}</code>
+                  </td>
+                  <td class="py-1 text-xs">{b.action}</td>
+                  <td class="py-1 text-xs text-text2 opacity-70">{b.group}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Mode bindings side by side */}
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="cli-card">
+            <h3 class="text-sm font-semibold mb-2" style={{ color: '#FF6600' }}>
+              Resize Mode
+            </h3>
+            <table class="w-full text-xs">
+              <tbody>
+                {HS_RESIZE_ITEMS.map((b, i) => (
+                  <tr key={i} class="border-b border-bg3">
+                    <td class="py-1 pr-2 whitespace-nowrap">
+                      <code class="text-accent font-mono">{b.keys}</code>
+                    </td>
+                    <td class="py-1">{b.action}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div class="cli-card">
+            <h3 class="text-sm font-semibold mb-2" style={{ color: '#00FF66' }}>
+              Move Mode
+            </h3>
+            <table class="w-full text-xs">
+              <tbody>
+                {HS_MOVE_ITEMS.map((b, i) => (
+                  <tr key={i} class="border-b border-bg3">
+                    <td class="py-1 pr-2 whitespace-nowrap">
+                      <code class="text-accent font-mono">{b.keys}</code>
+                    </td>
+                    <td class="py-1">{b.action}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div class="cli-card">
+            <h3 class="text-sm font-semibold mb-2" style={{ color: '#6ea8fe' }}>
+              Layout Mode
+            </h3>
+            <table class="w-full text-xs">
+              <tbody>
+                {HS_LAYOUT_ITEMS.map((b, i) => (
+                  <tr key={i} class="border-b border-bg3">
+                    <td class="py-1 pr-2 whitespace-nowrap">
+                      <code class="text-accent font-mono">{b.keys}</code>
+                    </td>
+                    <td class="py-1">{b.action}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  renderNotesTab() {
+    return (
+      <div class="grid grid-cols-1 gap-4">
+        {YABAI_VAULT_NOTES.map((n, i) => (
+          <div key={i} class="cli-card">
+            <h3 class="text-base mb-2">{n.heading}</h3>
+            {n.tags && n.tags.length > 0 && (
+              <div class="mb-2 flex flex-wrap gap-1">
+                {n.tags.map(t => (
+                  <span key={t} class="text-xs px-2 py-0.5 bg-bg3 rounded text-text2">
+                    {t}
+                  </span>
+                ))}
+              </div>
+            )}
+            <pre class="text-sm text-text whitespace-pre-wrap font-mono leading-relaxed">{n.body}</pre>
+            {n.codeSnippet && <pre class="text-xs mt-2 p-2 bg-bg3 rounded font-mono whitespace-pre-wrap text-accent">{n.codeSnippet}</pre>}
+          </div>
+        ))}
       </div>
     );
   }
 
   renderActiveContent() {
     switch (this.activeTab) {
+      case 'personal':
+        return this.renderPersonalTab();
       case 'query':
         return this.renderQueryTab();
       case 'windows':
@@ -2231,6 +2348,8 @@ export class YabaiGui {
         return this.renderServiceTab();
       case 'raw':
         return this.renderRawTab();
+      case 'notes':
+        return this.renderNotesTab();
       default:
         return this.renderQueryTab();
     }
@@ -2238,24 +2357,31 @@ export class YabaiGui {
 
   render() {
     return (
-      <div class="pb-16">
-        <h1 class="text-3xl mb-5">
-          yabai GUI <span class="text-text2 text-lg">{this.version}</span>
-        </h1>
-
-        <div class="flex flex-wrap gap-1 mb-4">{this.renderTabs()}</div>
-
-        <div class="tab-content">{this.renderActiveContent()}</div>
-
-        {this.renderOutputPanel()}
-
+      <cli-tool-shell
+        icon="🪟"
+        toolTitle="yabai GUI"
+        subtitle="Tiling window manager for macOS"
+        version={this.version}
+        tabs={TAB_DEFINITIONS}
+        activeTab={this.activeTab}
+        lastCommand={this.lastCommand}
+        output={this.output}
+        status={this.statusMessage}
+        statusState={this.status}
+        onTabChange={(e: CustomEvent<string>) => {
+          this.switchTab(e.detail);
+        }}
+        onCopyOutput={() => void this.copyOutput()}
+        onClearOutput={() => this.clearOutput()}
+      >
+        {this.renderActiveContent()}
         <div class="fixed bottom-0 left-0 right-0 bg-bg2 px-5 py-2.5 border-t border-bg3 flex justify-between items-center text-xs z-10 gap-3">
           <span>{this.statusMessage}</span>
           <span class="text-text2">
             <span class="cli-badge-sip">SIP</span> = Requires SIP partially disabled
           </span>
         </div>
-      </div>
+      </cli-tool-shell>
     );
   }
 }

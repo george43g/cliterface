@@ -1,18 +1,19 @@
 import { Component, Event, type EventEmitter, h, State } from '@stencil/core';
 import { type AddressType, type CommandResult, executeCommand, SED_PRESETS, type SedCommand } from '../../sed/sed-service';
+import type { ToolShellTab } from '../ui/cli-tool-shell/cli-tool-shell';
 
 const SAMPLE_TEXT = `Hello World
 This is a test line with numbers 123
 Another line with data 456 and 789
   Line with leading spaces
-Line with trailing spaces   
+Line with trailing spaces
 UPPERCASE LINE
 lowercase line
 <p>Some HTML</p>
 The END
 `;
 
-const TAB_DEFINITIONS = [
+const TAB_DEFINITIONS: ToolShellTab[] = [
   { id: 'builder', label: 'Script Builder' },
   { id: 'presets', label: 'Presets' },
   { id: 'text', label: 'Text Input' },
@@ -255,9 +256,6 @@ export class SedGui {
     return str.replace(/\//g, '\\/');
   }
 
-  // Build command preview string (used internally)
-  // private getCommandPreview(): string { ... }
-
   private async executeScript(script: string, isPreview = false): Promise<void> {
     const opts: string[] = [];
     if (this.quiet) opts.push('-n');
@@ -364,26 +362,6 @@ export class SedGui {
     }
 
     this.updateCommandSegments();
-  }
-
-  private renderTabs() {
-    return (
-      <div class="cli-tabs-container">
-        {TAB_DEFINITIONS.map(tab => (
-          <button
-            type="button"
-            key={tab.id}
-            class={`cli-tab ${this.activeTab === tab.id ? 'cli-tab-active' : ''}`}
-            onClick={() => {
-              this.activeTab = tab.id;
-              this.updateCommandSegments();
-            }}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
-    );
   }
 
   private renderCommandPreview() {
@@ -943,63 +921,31 @@ export class SedGui {
     );
   }
 
-  private renderOutputPanel() {
-    const statusColors = {
-      idle: 'text-text2',
-      running: 'text-info',
-      success: 'text-success',
-      error: 'text-danger',
-    };
-
-    return (
-      <div class="cli-card mt-4">
-        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
-          <div class="flex items-center gap-2">
-            <span class={`font-semibold ${statusColors[this.status]}`}>
-              {this.status === 'running' ? '⏳' : this.status === 'success' ? '✓' : this.status === 'error' ? '✗' : '○'}
-            </span>
-            <span class="text-sm text-text2">{this.statusMessage}</span>
-          </div>
-          <div class="flex gap-2">
-            <cli-button size="sm" onCliClick={() => this.copyOutput()}>
-              Copy Output
-            </cli-button>
-            <cli-button size="sm" variant="warning" onCliClick={() => this.clearOutput()}>
-              Clear
-            </cli-button>
-          </div>
-        </div>
-
-        <div class="mb-2">
-          <span class="text-xs text-text2">Last command:</span>
-          <code class="text-xs bg-bg3 px-2 py-1 rounded ml-2 font-mono">{this.lastCommand}</code>
-        </div>
-
-        <pre class="cli-output">{this.output}</pre>
-      </div>
-    );
-  }
-
   render() {
     return (
-      <div class="pb-16">
-        <div class="flex items-center justify-between mb-4">
-          <h1 class="text-3xl">sed GUI</h1>
-          <span class="text-sm text-text2">v4.9</span>
-        </div>
-
-        {this.renderTabs()}
-
-        <div class="mt-4">
-          {this.activeTab === 'builder' && this.renderBuilderTab()}
-          {this.activeTab === 'presets' && this.renderPresetsTab()}
-          {this.activeTab === 'text' && this.renderTextTab()}
-          {this.activeTab === 'documentation' && this.renderDocumentationTab()}
-          {this.activeTab === 'raw' && this.renderRawTab()}
-        </div>
-
-        {this.renderOutputPanel()}
-      </div>
+      <cli-tool-shell
+        icon="✂️"
+        toolTitle="sed GUI"
+        subtitle="Stream Editor — search, replace, transform text"
+        version="v4.9"
+        tabs={TAB_DEFINITIONS}
+        activeTab={this.activeTab}
+        lastCommand={this.lastCommand}
+        output={this.output}
+        status={this.statusMessage}
+        statusState={this.status}
+        onTabChange={(e: CustomEvent<string>) => {
+          this.activeTab = e.detail;
+        }}
+        onCopyOutput={() => void this.copyOutput()}
+        onClearOutput={() => this.clearOutput()}
+      >
+        {this.activeTab === 'builder' && this.renderBuilderTab()}
+        {this.activeTab === 'presets' && this.renderPresetsTab()}
+        {this.activeTab === 'text' && this.renderTextTab()}
+        {this.activeTab === 'documentation' && this.renderDocumentationTab()}
+        {this.activeTab === 'raw' && this.renderRawTab()}
+      </cli-tool-shell>
     );
   }
 }

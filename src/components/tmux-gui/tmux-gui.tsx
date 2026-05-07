@@ -25,13 +25,17 @@ import {
   FORMAT_WINDOW,
 } from '../../tmux/tmux-command-builders';
 import { DEFAULT_PREFIX, type TmuxKeyCategory, tmuxKeybindingCategories } from '../../tmux/tmux-keybindings';
+import { TMUX_BINDINGS, TMUX_PREFIX_PRIMARY, TMUX_PREFIX_SECONDARY, TMUX_SETTINGS, TMUX_STATUS_SYMBOLS, TMUX_THEME_COLORS } from '../../tmux/tmux-personal';
 import { type CommandResult, executeCommand } from '../../tmux/tmux-service';
+import { TMUX_VAULT_NOTES } from '../../tmux/tmux-vault-notes';
 
 const TAB_DEFINITIONS = [
+  { id: 'personal', label: '⚙️ Your Setup' },
   { id: 'sessions', label: 'Sessions' },
   { id: 'windows-panes', label: 'Windows / Panes' },
   { id: 'cheatsheet', label: 'Cheatsheet' },
   { id: 'config', label: 'Config (.tmux.conf)' },
+  { id: 'notes', label: '📓 Notes' },
 ];
 
 @Component({
@@ -871,6 +875,122 @@ export class TmuxGui {
     );
   }
 
+  // ── Personal tab ──────────────────────────────────────────────────────────
+
+  private renderPersonalTab() {
+    const groups = [...new Set(TMUX_BINDINGS.map(b => b.group))];
+    return (
+      <div class="grid grid-cols-1 gap-5">
+        {/* Dual-prefix banner */}
+        <div class="cli-card border border-accent2">
+          <h3 class="text-base mb-3">Prefixes &amp; Framework</h3>
+          <div class="flex flex-wrap gap-3 mb-3">
+            <div class="p-2 bg-bg3 rounded">
+              <div class="text-text2 text-xs mb-1">Primary prefix</div>
+              <code class="text-accent font-bold text-lg">{TMUX_PREFIX_PRIMARY}</code>
+            </div>
+            <div class="p-2 bg-bg3 rounded">
+              <div class="text-text2 text-xs mb-1">Secondary prefix (screen-compat)</div>
+              <code class="text-accent font-bold text-lg">{TMUX_PREFIX_SECONDARY}</code>
+            </div>
+            <div class="p-2 bg-bg3 rounded">
+              <div class="text-text2 text-xs mb-1">Framework</div>
+              <span class="text-sm">{TMUX_SETTINGS.framework}</span>
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-2 text-xs">
+            <span class="px-2 py-1 bg-bg3 rounded">base-index={TMUX_SETTINGS.baseIndex}</span>
+            <span class="px-2 py-1 bg-bg3 rounded">history={TMUX_SETTINGS.historyLimit}</span>
+            <span class="px-2 py-1 bg-bg3 rounded">repeat-time={TMUX_SETTINGS.repeatTime}ms</span>
+            <span class="px-2 py-1 bg-bg3 rounded">status-interval={TMUX_SETTINGS.statusInterval}s</span>
+          </div>
+        </div>
+
+        {/* Color palette */}
+        <div class="cli-card">
+          <h3 class="text-base mb-3">Theme Colors ({TMUX_THEME_COLORS.length} swatches)</h3>
+          <div class="flex flex-wrap gap-2">
+            {TMUX_THEME_COLORS.map((c, i) => (
+              <div key={i} class="flex items-center gap-2 px-2 py-1 bg-bg3 rounded text-xs">
+                <span
+                  style={{
+                    display: 'inline-block',
+                    width: '14px',
+                    height: '14px',
+                    borderRadius: '3px',
+                    backgroundColor: c.hex,
+                    border: '1px solid #555',
+                    flexShrink: '0' as const,
+                  }}
+                ></span>
+                <code class="text-text2">#{c.id}</code>
+                <span class="text-text2">{c.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Bindings grouped */}
+        {groups.map(group => (
+          <div key={group} class="cli-card">
+            <h3 class="text-base mb-3">{group}</h3>
+            <table class="w-full text-sm">
+              <tbody>
+                {TMUX_BINDINGS.filter(b => b.group === group).map((b, i) => (
+                  <tr key={i} class="border-b border-bg3">
+                    <td class="py-1 pr-3 whitespace-nowrap">
+                      <code class="text-accent font-mono">{b.keys}</code>
+                    </td>
+                    <td class="py-1 text-xs">{b.action}</td>
+                    {b.note && <td class="py-1 text-xs text-text2 opacity-70">{b.note}</td>}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ))}
+
+        {/* Status symbols */}
+        <div class="cli-card">
+          <h3 class="text-base mb-3">Status Bar Symbols</h3>
+          <div class="flex flex-wrap gap-3">
+            {TMUX_STATUS_SYMBOLS.map((s, i) => (
+              <div key={i} class="flex items-center gap-2 px-2 py-1 bg-bg3 rounded text-sm">
+                <span class="text-accent font-mono text-base">{s.symbol}</span>
+                <span class="text-text2 text-xs">{s.meaning}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ── Notes tab ─────────────────────────────────────────────────────────────
+
+  private renderNotesTab() {
+    return (
+      <div class="grid grid-cols-1 gap-4">
+        {TMUX_VAULT_NOTES.map((n, i) => (
+          <div key={i} class="cli-card">
+            <h3 class="text-base mb-2">{n.heading}</h3>
+            {n.tags && n.tags.length > 0 && (
+              <div class="mb-2 flex flex-wrap gap-1">
+                {n.tags.map(t => (
+                  <span key={t} class="text-xs px-2 py-0.5 bg-bg3 rounded text-text2">
+                    {t}
+                  </span>
+                ))}
+              </div>
+            )}
+            <pre class="text-sm text-text whitespace-pre-wrap font-mono leading-relaxed">{n.body}</pre>
+            {n.codeSnippet && <pre class="text-xs mt-2 p-2 bg-bg3 rounded font-mono whitespace-pre-wrap text-accent">{n.codeSnippet}</pre>}
+          </div>
+        ))}
+      </div>
+    );
+  }
+
   // ── render ────────────────────────────────────────────────────────────────
 
   render() {
@@ -889,10 +1009,12 @@ export class TmuxGui {
         <div class="border-b border-accent2 mb-4">{this.renderTabs()}</div>
 
         <div class="tab-content">
+          {this.activeTab === 'personal' && this.renderPersonalTab()}
           {this.activeTab === 'sessions' && this.renderSessionsTab()}
           {this.activeTab === 'windows-panes' && this.renderWindowsPanesTab()}
           {this.activeTab === 'cheatsheet' && this.renderCheatsheetTab()}
           {this.activeTab === 'config' && this.renderConfigTab()}
+          {this.activeTab === 'notes' && this.renderNotesTab()}
         </div>
       </div>
     );
