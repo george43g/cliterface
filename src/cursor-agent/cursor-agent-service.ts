@@ -1,15 +1,17 @@
 /**
  * cursor-agent service
  *
- * Wraps the Cursor CLI (`cursor agent` / `cursor-agent`) for launching and managing
- * cloud agent tasks. All commands are stubs — replace `executeCommand` with your
- * native bridge (Tauri invoke, Electron IPC, WKWebView handler, etc.).
+ * Wraps the Cursor Agent CLI for launching and managing chat sessions and
+ * cloud agent tasks. All commands are stubs — replace `executeCommand` with
+ * your native bridge (Tauri invoke, Electron IPC, WKWebView handler, etc.).
  *
- * CLI reference: https://cursor.com/docs/cli/reference/parameters
- *
- * NOTE: The binary may be `cursor agent` (sub-command of the `cursor` binary)
- * rather than a standalone `cursor-agent` executable. Comments throughout
- * reflect this uncertainty — adjust the command prefix as needed.
+ * Install: `curl https://cursor.com/install -fsS | bash`
+ * Binary:  `agent` (verified against docs.cursor.com 2026-05).
+ *   - The Cursor editor binary `cursor` is separate (it's the IDE binary).
+ *   - There is no `cursor agent` sub-command on the editor binary.
+ *   - In some past docs the binary was referred to as `cursor-agent`; the
+ *     current install script provides `agent`.
+ * Docs:    https://cursor.com/docs/cli/overview
  */
 
 export { type CommandResult, executeCommand } from '../utils/execute-command';
@@ -53,12 +55,9 @@ export interface RunOptions {
 // ── Command builders ─────────────────────────────────────────────────────────
 
 /** The CLI command prefix. Adjust if the installed binary differs. */
-const CLI = 'cursor agent';
+const CLI = 'agent';
 
-/**
- * Build a `cursor agent` invocation string from structured options.
- * Marks uncertain flags with comments where the docs are ambiguous.
- */
+/** Build an `agent` invocation string from structured options. */
 export function buildRunCommand(opts: RunOptions): string {
   const parts: string[] = [CLI];
 
@@ -127,12 +126,12 @@ export function buildRunCommand(opts: RunOptions): string {
   return parts.join(' ');
 }
 
-/** Build `cursor agent ls` — list previous chat sessions. */
+/** Build `agent ls` — list previous chat sessions. */
 export function buildListCommand(): string {
   return `${CLI} ls`;
 }
 
-/** Build `cursor agent resume [id]` — resume most recent or specific session. */
+/** Build `agent resume [id]` — resume most recent or specific session. */
 export function buildResumeCommand(chatId?: string): string {
   if (chatId?.trim()) {
     return `${CLI} resume ${chatId.trim()}`;
@@ -140,21 +139,19 @@ export function buildResumeCommand(chatId?: string): string {
   return `${CLI} resume`;
 }
 
-/** Build `cursor models` — list available models. */
+/** Build `agent models` — list available models. */
 export function buildListModelsCommand(): string {
-  // NOTE: `models` may be a top-level `cursor` sub-command, not `cursor agent` sub-command.
-  return 'cursor models';
+  return 'agent models';
 }
 
-/** Build `cursor status` / `cursor whoami` — show auth/login status. */
+/** Build `agent status` — show auth/login status. */
 export function buildStatusCommand(): string {
-  // NOTE: `status` is a top-level `cursor` sub-command.
-  return 'cursor status';
+  return 'agent status';
 }
 
-/** Build `cursor login` — authenticate. */
+/** Build `agent login` — authenticate. */
 export function buildLoginCommand(): string {
-  return 'cursor login';
+  return 'agent login';
 }
 
 /** Build `cursor logout` — deauthenticate. */

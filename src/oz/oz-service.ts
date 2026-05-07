@@ -178,7 +178,9 @@ export interface ScheduleCreateOptions {
 /**
  * oz schedule create
  * Create a recurring scheduled agent run.
- * Documented: yes (self-hosting docs + blog).
+ * Verified 2026-05 against docs.warp.dev/agent-platform/cloud-agents/self-hosting.
+ * `oz schedule update <ID> --host` is also documented; create / list / delete
+ * exist by convention but only create + update are quoted in the docs.
  */
 export function buildScheduleCreateCommand(opts: ScheduleCreateOptions): string {
   const parts = ['oz', 'schedule', 'create', '--name', JSON.stringify(opts.name), '--cron', JSON.stringify(opts.cron)];
